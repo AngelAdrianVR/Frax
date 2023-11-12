@@ -1,0 +1,114 @@
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
+import Checkbox from '@/Components/Checkbox.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputWithPlaceholder from "@/Components/MyComponents/InputWithPlaceholder.vue";
+import { ref } from 'vue';
+
+defineProps({
+    canResetPassword: Boolean,
+    status: String,
+});
+
+const form = useForm({
+    email: '',
+    password: '',
+    remember: false,
+});
+
+const submit = () => {
+    form.transform(data => ({
+        ...data,
+        remember: form.remember ? 'on' : '',
+    })).post(route('login'), {
+        onFinish: () => form.reset('password'),
+    });
+};
+
+const showPassword = ref(false);
+const password = ref('');
+</script>
+
+<template>
+    <Head title="Log in" />
+
+    <AuthenticationCard>
+        <template #logo>
+            <AuthenticationCardLogo />
+        </template>
+
+        <div class="border-b border-gray-300 mb-12 text-center w-[80%] mx-auto">
+            <span class="inline-block border-b-2 border-primary px-3 text-gray-600">Iniciar sesión</span>
+        </div>
+
+        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+            {{ status }}
+        </div>
+
+        <form @submit.prevent="submit">
+            <div>
+                <InputWithPlaceholder
+                    id="email" 
+                    v-model="form.email"
+                    inputType="email"
+                    autofocus
+                    autocomplete="username"
+                > Correo electrónico
+                </InputWithPlaceholder>
+                <!-- <TextInput
+                    id="email"
+                    v-model="form.email"
+                    type="email"
+                    class="mt-1 block w-full"
+                    required
+                    autofocus
+                    autocomplete="username"
+                /> -->
+                <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+                <!-- <InputLabel for="password" value="Password" /> -->
+                <InputWithPlaceholder
+                    id="password" 
+                    v-model="form.password"
+                    inputType="password"
+                    autofocus
+                    autocomplete="username"
+                > Contraseña
+                </InputWithPlaceholder>
+                <!-- <TextInput
+                    id="password"
+                    v-model="form.password"
+                    type="password"
+                    class="mt-1 block w-full"
+                    required
+                    autocomplete="current-password"
+                /> -->
+                <InputError class="mt-2" :message="form.errors.password" />
+            </div>
+
+            <div class="block mt-4">
+                <label class="flex items-center">
+                    <Checkbox v-model:checked="form.remember" name="remember" />
+                    <span class="ms-2 text-sm text-gray-600">No cerrar sesión</span>
+                </label>
+            </div>
+
+            <div class="flex flex-col space-y-5 items-center justify-center mt-4">
+                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Olvidé mi contraseña
+                </Link>
+
+                <PrimaryButton class="" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    Iniciar sesión <i class="fa-solid fa-arrow-right ml-2"></i>
+                </PrimaryButton>
+            </div>
+        </form>
+    </AuthenticationCard>
+</template>
