@@ -19,9 +19,9 @@ export default {
             },
             colors: {
                 primary: '#35F69A',
-                primarylight: '#35F69A',
+                primarylight: '#1bff91',
                 secondary: '#373737',
-                secondarylight: '#35F69A',
+                secondarylight: '#474747',
                 gray1: '#313131',
                 gray2: '#97989A',
                 gray3: '#BEBFC1',

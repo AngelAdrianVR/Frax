@@ -32,6 +32,11 @@ const submit = () => {
 
 const showPassword = ref(false);
 const password = ref('');
+
+const togglePasswordVisibility = () => {
+    showPassword.value = !showPassword.value;
+};
+
 </script>
 
 <template>
@@ -74,14 +79,22 @@ const password = ref('');
 
             <div class="mt-4">
                 <!-- <InputLabel for="password" value="Password" /> -->
-                <InputWithPlaceholder
+                <div class="mt-4 relative">
+                <div class="flex justify-center items-center">
+                    <InputWithPlaceholder
                     id="password" 
                     v-model="form.password"
-                    inputType="password"
+                    :inputType="showPassword ? 'text' : 'password'"
                     autofocus
                     autocomplete="username"
-                > Contraseña
-                </InputWithPlaceholder>
+                    > Contraseña
+                    </InputWithPlaceholder>
+                    <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"
+                        class="text-gray-400 ml-2 cursor-pointer absolute right-3 top-3"
+                        @click="togglePasswordVisibility"></i>
+                </div>
+                <InputError class="mt-2" :message="form.errors.password" />
+            </div>
                 <!-- <TextInput
                     id="password"
                     v-model="form.password"
