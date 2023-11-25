@@ -92,7 +92,7 @@ const logout = () => {
                                             </button>
 
                                             <span v-else class="inline-flex rounded-md">
-                                                <button type="button"
+                                                <button :class="route().current('profile.show') ? 'text-primary bg-gray-300/10' : '' " type="button"
                                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-[#97989A] bg-white focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                         fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
