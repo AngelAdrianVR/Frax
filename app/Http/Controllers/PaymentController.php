@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,10 @@ class PaymentController extends Controller
     
     public function index()
     {
-        return inertia('Payment/Index');
+        $payments = PaymentResource::collection(Payment::latest()->where('user_id', auth()->id())->get());
+
+        // return $payments;
+        return inertia('Payment/Index', compact('payments'));
     }
 
     
@@ -47,5 +51,11 @@ class PaymentController extends Controller
     public function destroy(Payment $payment)
     {
         //
+    }
+
+
+    public function pay(Payment $payment)
+    {
+        return inertia('Payment/Pay', compact('payment'));
     }
 }

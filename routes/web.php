@@ -38,3 +38,4 @@ Route::middleware([
 //Payments routes---------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
 Route::resource('payments', PaymentController::class)->middleware('auth');
+Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name('payments.pay')->middleware('auth');
