@@ -12,6 +12,8 @@ class PaymentTicket extends Model
 
     protected $fillable = [
         'acredited_at',
+        'is_acredited',
+        'payment_method',
         'payment_id',
     ];
 

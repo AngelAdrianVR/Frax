@@ -57,7 +57,7 @@ export default {
                 {
                     label: 'Gestion de pagos',
                     icon: '<i class="fa-solid fa-dollar-sign"></i>',
-                    active: route().current('dashboard*'),
+                    active: route().current('payments.*'),
                     options: [
                         {
                             label: 'Pagos',
@@ -92,50 +92,16 @@ export default {
                     ],
                     show: true
                 },
-            //     {
-            //         label: 'Proyectos',
-            //         icon: '<i class="fa-solid fa-check mr-1"></i>',
-            //         route: route('pms.projects.index'),
-            //         active: route().current('pms.*'),
-            //         options: [
-            //             {
-            //                 label: 'Inicio',
-            //                 route: route('pms.dashboard'),
-            //                 active: route().current('pms.dashboard'),
-            //                 show: true,
-            //             },
-            //             {
-            //                 label: 'Proyectos',
-            //                 route: route('pms.projects.index'),
-            //                 active: route().current('pms.projects.*') || route().current('pms.tasks.*'),
-            //                 show: this.$page.props.auth.user.permissions.includes('Ver proyectos'),
-            //             },
-            //         ],
-            //         show: ['Ver proyectos'].some(permission => this.$page.props.auth.user.permissions.includes(permission)),
-            //     },
-            //     {
-            //         label: 'Usuarios',
-            //         icon: '<i class="fa-solid fa-user mr-1"></i>',
-            //         route: route('users.index'),
-            //         active: route().current('users.*'),
-            //         options: [],
-            //         show: this.$page.props.auth.user.permissions.includes('Ver usuarios')
-            //     },
-            //     {
-            //         label: 'Configuración',
-            //         icon: '<i class="fa-solid fa-gear mr-1"></i>',
-            //         route: route('settings.index'),
-            //         active: route().current('settings.*'),
-            //         options: [
-            //             {
-            //                 label: 'Roles y permisos',
-            //                 route: route('settings.role-permission.index'),
-            //                 show: this.$page.props.auth.user.permissions.includes('Ver roles y permisos'),
-            //                 active: route().current('settings.role-permission.index'),
-            //             },
-            //         ],
-            //         show: ['Ver roles y permisos'].some(permission => this.$page.props.auth.user.permissions.includes(permission)),
-            //     },
+                {
+                    label: 'Visitas',
+                    icon: '<i class="fa-solid fa-users text-sm"></i>',
+                    route: route('guests.index'),
+                    active: route().current('guests.*'),
+                    notifications: false,
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
             ],
         }
     },

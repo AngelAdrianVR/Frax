@@ -16,7 +16,6 @@ class Payment extends Model
         'limit_date',
         'paid_at',
         'bills',
-        'total',
         'user_id',
     ];
 
