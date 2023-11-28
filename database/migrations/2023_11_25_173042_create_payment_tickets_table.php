@@ -14,8 +14,12 @@ return new class extends Migration
         Schema::create('payment_tickets', function (Blueprint $table) {
             $table->id();
             $table->timestamp('acredited_at')->nullable();
+            $table->boolean('is_acredited')->nullable();
+            $table->string('payment_method');
             $table->foreignId('payment_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            // type calculated in resource
+            // status calculated in Resource
         });
     }
 

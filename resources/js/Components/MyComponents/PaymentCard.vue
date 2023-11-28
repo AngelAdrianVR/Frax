@@ -16,7 +16,7 @@
         </div>
         <div @click="showDetails = !showDetails" class="flex justify-between items-center cursor-pointer mt-4">
             <div class="flex items-center">
-                <i class="fa-solid fa-caret-right text-gray-300 mr-2"></i>
+                <i class="fa-solid fa-angles-right text-gray-300 mr-2"></i>
                 <p class="text-primary font-bold">Desgloce</p>
             </div>
             <i class="fa-solid fa-angle-up transform origin-center text-primary transition duration-200 ease-out"
@@ -24,19 +24,19 @@
         </div>
         <!-- Desgloce-------------------->
         <div v-if="showDetails" class="mt-5 grid grid-cols-2 mx-2 transition-all duration-500 ease-in-out">
-            <div class="space-y-3">
+            <div class="space-y-2">
                 <p v-for="billConcept in payment.bills" :key="billConcept">{{ billConcept['concept'] }}</p>
             </div>
-            <div class="space-y-3 text-right">
+            <div class="space-y-2 text-right">
                 <p v-for="billAmount in payment.bills" :key="billAmount">${{ billAmount['amount'] }}</p>
             </div>
             <div class="border-b-2 border-black w-full col-span-2 my-1"></div>
             <p class="font-bold">Total</p>
             <p class="font-bold text-right">${{ payment.total?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</p>
         </div>
-        <div class="text-center mt-5">
+        <div class="text-center mt-3">
             <PrimaryButton @click="$inertia.get(route('payments.pay', payment.id))">Pagar</PrimaryButton>
-            <p class="text-xs mt-2">Consulta los <a :href="route('dashboard')" target="_blank" class="text-primary cursor-pointer hover:underline font-bold">términos y condiciones de los pagos</a></p>
+            <p class="text-xs mt-3">Consulta los <a :href="route('dashboard')" target="_blank" class="text-primary cursor-pointer hover:underline font-bold">términos y condiciones de los pagos</a></p>
         </div>
     </div>
 </template>

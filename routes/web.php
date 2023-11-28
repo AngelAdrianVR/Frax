@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentTicketController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,3 +40,8 @@ Route::middleware([
 //------------------------------------------------------------------------------------------
 Route::resource('payments', PaymentController::class)->middleware('auth');
 Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name('payments.pay')->middleware('auth');
+
+
+//Payment-tickets routes---------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
+Route::resource('payment-tickets', PaymentTicketController::class)->middleware('auth');

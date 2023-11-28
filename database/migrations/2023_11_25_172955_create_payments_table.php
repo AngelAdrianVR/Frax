@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamp('limit_date');
             $table->timestamp('paid_at')->nullable();
             $table->json('bills')->nullable();
-            $table->unsignedFloat('total')->nullable();
+            // $table->unsignedFloat('total')->nullable(); //calculated in PaymentResource
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

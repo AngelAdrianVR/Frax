@@ -57,7 +57,7 @@ export default {
                 {
                     label: 'Gestion de pagos',
                     icon: '<i class="fa-solid fa-dollar-sign"></i>',
-                    active: route().current('dashboard*'),
+                    active: route().current('payments.*'),
                     options: [
                         {
                             label: 'Pagos',
