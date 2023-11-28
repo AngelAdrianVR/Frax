@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-md shadow-md shadow-gray-200 py-3 px-5 border border-[#D9D9D9] text-sm relative transition duration-300 ease-out hover:scale-105">
+    <div class="rounded-md shadow-md shadow-gray-200 py-3 px-5 border border-[#D9D9D9] text-sm relative transition duration-300 ease-out">
         <el-tooltip v-if="payment.is_expired" :content="'Venció el ' + payment.limit_date" placement="top">
             <i class="fa-regular fa-face-sad-tear text-lg text-red-500 absolute top-4 right-7"></i>
         </el-tooltip>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTicketController;
 use Illuminate\Foundation\Application;
@@ -43,5 +44,10 @@ Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name
 
 
 //Payment-tickets routes---------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 Route::resource('payment-tickets', PaymentTicketController::class)->middleware('auth');
+
+
+//Payment-tickets routes---------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('guests', GuestController::class)->middleware('auth');

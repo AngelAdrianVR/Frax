@@ -28,8 +28,10 @@ class PaymentTicketController extends Controller
     }
 
     
-    public function show(PaymentTicket $paymentTicket)
+    public function show($paymentTicket_id)
     {
+        $paymentTicket = PaymentTicketResource::make(PaymentTicket::with('payment')->find($paymentTicket_id));
+        
         return inertia('PaymentTicket/Show', compact('paymentTicket'));
     }
 

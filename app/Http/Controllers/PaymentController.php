@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PaymentHistoryResource;
 use App\Http\Resources\PaymentResource;
 use App\Http\Resources\PaymentTicketResource;
 use App\Models\Payment;
+use App\Models\PaymentHistory;
 use App\Models\PaymentTicket;
 use Illuminate\Http\Request;
 
@@ -15,14 +17,16 @@ class PaymentController extends Controller
     {
         $payments = PaymentResource::collection(Payment::latest()->where('user_id', auth()->id())->get());
         
-        $paymentTickets = PaymentTicketResource::collection(
+        $payment_tickets = PaymentTicketResource::collection(
             PaymentTicket::with('payment')->whereHas('payment', function ($query) {
                 $query->where('user_id', auth()->id());
             })->latest()->get()
         );
 
-        // return $paymentTickets;
-        return inertia('Payment/Index', compact('payments', 'paymentTickets'));
+        $payment_histories = PaymentHistoryResource::collection(PaymentHistory::latest()->where('user_id', auth()->id())->get());
+
+        // return $payment_histories;
+        return inertia('Payment/Index', compact('payments', 'payment_tickets', 'payment_histories'));
     }
 
     

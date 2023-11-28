@@ -24,12 +24,15 @@
                     <PaymentCard class="self-start" v-for="payment in payments.data" :key="payment" :payment="payment" />
                 </div>
             </div>
+        <div class="text-right lg:mr-9">
+            <ThirthButton @click="$inertia.get(route('dashboard'))">Envía tus comentarios</ThirthButton>
+        </div>
         </div>
         <!-- ------------- tab 1 section pagos pendientes ends ------------- -->
 
         <!-- ------------- tab 2 Transacciones starts ------------- -->
         <div class="p-4" v-if="currentTab == 2">
-            <table v-if="paymentTickets.data.length > 0" class="w-full mx-auto text-sm mt-5">
+            <table v-if="payment_tickets.data.length > 0" class="w-full mx-auto text-sm mt-5">
                 <thead>
                     <tr class="text-center">
                         <th class="font-bold pb-1 pl-2 text-left border-b border-primary">
@@ -59,8 +62,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr  v-for="(transaction, index) in paymentTickets.data" :key="transaction.id"
-                        class="mb-4 cursor-pointer rounded-full hover:text-primary"
+                    <tr v-for="(transaction, index) in payment_tickets.data" :key="transaction.id"
+                        class="mb-4 cursor-pointer rounded-full"
                         :class="{ 'bg-[#F2F2F2]': index % 2 == 0 }"
                         @click="$inertia.get(route('payment-tickets.show', transaction.id))"
                     >
@@ -92,6 +95,27 @@
         </div>
         <!-- ------------- tab 2 Transacciones ends ------------- -->
 
+        <!-- ------------- tab 3 Historial starts ------------- -->
+        <div class="p-4" v-if="currentTab == 3">
+            <div class="lg:mx-7">
+                <el-timeline>
+                    <template v-for="(monthActivities, month) in groupedActivities" :key="month">
+                    <el-timeline-item
+                        v-for="(activity, index) in monthActivities"
+                        :key="index"
+                        :timestamp="activity.description + ' el ' + activity.created_at"
+                        color="#000000"
+                        hollow="true"
+                    >
+                        {{ activity.month }}
+                    </el-timeline-item>
+                    </template>
+                </el-timeline>
+            </div>
+        </div>
+        <!-- ------------- tab 3 Historial ends ------------- -->
+
+
     </AppLayout>
 </template>
 
@@ -101,6 +125,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PaymentCard from '@/Components/MyComponents/PaymentCard.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import Tab from "@/Components/MyComponents/Tab.vue";
+import ThirthButton from "@/Components/ThirthButton.vue";
 
 export default {
 data() {
@@ -110,19 +135,21 @@ data() {
             'Pagos pendientes',
             'Transacciones',
             'Historial',
-        ]
+        ],
     }
 },
 components:{
 AppLayout,
 PrimaryButton,
+ThirthButton,
 PaymentCard,
 Link,
 Tab
 },
 props:{
 payments: Object,
-paymentTickets: Object,
+payment_tickets: Object,
+payment_histories: Object,
 },
 methods:{
     getStatusStiles (transaction) {
@@ -135,6 +162,21 @@ methods:{
         }
           
     }
-}
+},
+computed: {
+    groupedActivities() {
+      // Agrupar actividades por mes
+      const grouped = {};
+      this.payment_histories.data.forEach((activity) => {
+        const month = activity.month;
+        if (!grouped[month]) {
+          grouped[month] = [];
+        }
+        grouped[month].push(activity);
+      });
+      console.log(grouped);
+      return grouped;
+    },
+  },
 };
 </script>
