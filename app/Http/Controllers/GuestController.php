@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\GuestResource;
 use App\Models\Guest;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,11 @@ class GuestController extends Controller
     
     public function index()
     {
-        return inertia('Guest/Index');
+        $guests = GuestResource::collection(Guest::latest()->get());
+
+        // return $guests;
+
+        return inertia('Guest/Index', compact('guests'));
     }
 
     

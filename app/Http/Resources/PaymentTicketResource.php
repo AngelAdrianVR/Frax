@@ -30,7 +30,7 @@ class PaymentTicketResource extends JsonResource
             'payment_method' => $this->payment_method,
             'payment' => PaymentResource::make($this->whenLoaded('payment')),
             'status' => $status,
-            // 'type' => optional(optional($this->payment)->limit_date)->isPast() ? 'En tiempo' : 'Atrasado',
+            // 'type' => optional(optional($this->payment)->limit_date)->isPast() ? 'En tiempo' : 'Atrasado', //no lo vi conveniente,informacion irrelevante.
             'created_at' => $this->created_at?->isoFormat('DD MMMM YYYY, h:mm A'),
             'updated_at' => $this->updated_at?->isoFormat('DD MMMM YYYY, h:mm A'),
         ];
