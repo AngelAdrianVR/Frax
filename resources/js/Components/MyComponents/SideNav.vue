@@ -102,6 +102,16 @@ export default {
                     dropdown: false,
                     show: true
                 },
+                {
+                    label: 'Reservación de áreas',
+                    icon: '<i class="fa-solid fa-leaf text-sm"></i>',
+                    route: route('common-areas.index'),
+                    active: route().current('common-areas.*'),
+                    notifications: false,
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
             ],
         }
     },
