@@ -13,6 +13,8 @@ class Guest extends Model
     protected $fillable = [
         'name',
         'visit_date',
+        'time',
+        'identification',
         'arrived_at',
         'leaved_at',
         'notes',

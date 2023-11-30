@@ -21,7 +21,7 @@ class GuestController extends Controller
     
     public function create()
     {
-        //
+        return inertia('Guest/Create');
     }
 
     

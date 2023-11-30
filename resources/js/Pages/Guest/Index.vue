@@ -18,7 +18,7 @@
     <div class="p-4" v-if="currentTab == 1">
       <div class="flex justify-between lg:mx-12">
         <h2 class="font-bold">Hoy</h2>
-        <PrimaryButton>Programar visita</PrimaryButton>
+        <PrimaryButton @click="$inertia.get(route('guests.create'))">Programar visita</PrimaryButton>
       </div>
       <div class="mt-4 lg:mx-12">
         <div class="grid grid-cols-3 gap-5">

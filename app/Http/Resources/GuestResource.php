@@ -25,6 +25,8 @@ class GuestResource extends JsonResource
             'name' => $this->name,
             'type' => $type,
             'visit_date' => $this->visit_date?->isoFormat('DD MMMM YYYY'),
+            'time' => $this->time,
+            'identification' => $this->identification,
             'arrived_at' => $this->arrived_at?->isoFormat('DD MMMM YYYY, h:mm A'),
             'leaved_at' => $this->leaved_at?->isoFormat('DD MMMM YYYY, h:mm A'),
             'notes' => $this->notes,

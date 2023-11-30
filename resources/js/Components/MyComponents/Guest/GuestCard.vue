@@ -55,8 +55,8 @@
         <section>
           <p class="mb-1">{{ guest.visit_date }}</p>
           <p class="mb-1">05:35 PM</p>
-          <p v-if="cardDetails" class="mb-1">Vehicular</p>
           <p v-if="cardDetails" class="mb-1">{{ guest.type }}</p>
+          <p v-if="cardDetails" class="mb-1">{{ guest.notes }}</p>
         </section>
         <div
           v-if="vehicleDetails && cardDetails"
