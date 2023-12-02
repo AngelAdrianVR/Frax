@@ -57,39 +57,11 @@ export default {
                 {
                     label: 'Gestion de pagos',
                     icon: '<i class="fa-solid fa-dollar-sign"></i>',
+                    route: route('payments.index'),
                     active: route().current('payments.*'),
-                    options: [
-                        {
-                            label: 'Pagos',
-                            route: route('payments.index'),
-                            show: true,
-                            active: route().current('payments.*'),
-                        },
-                        {
-                            label: 'Estado de cuenta',
-                            route: route('dashboard'),
-                            show: true,
-                            active: route().current('dashboard.*'),
-                        },
-                        {
-                            label: 'Transacciones',
-                            route: route('dashboard'),
-                            show: true,
-                            active: route().current('dashboard.*'),
-                        },
-                        {
-                            label: 'Historial',
-                            route: route('dashboard'),
-                            show: true,
-                            active: route().current('dashboard.*'),
-                        },
-                        // { tiene rol como ejemplo
-                        //     label: 'Historial',
-                        //     route: route('dashboard'),
-                        //     show: this.$page.props.auth.user.permissions.includes('Ver clientes') || true, //quitar el true y poner un rol (de ser necesario).
-                        //     active: route().current('dashboard.*'),
-                        // },
-                    ],
+                    notifications: false,
+                    options: [],
+                    dropdown: false,
                     show: true
                 },
                 {
