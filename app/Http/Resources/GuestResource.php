@@ -14,6 +14,29 @@ class GuestResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $type = 'Peatonal';
+        
+        if (isset($this->vehicle_details)) {
+            $type = 'Vehículo';
+        }
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'type' => $type,
+            'visit_date' => $this->visit_date?->isoFormat('DD MMMM YYYY'),
+            'time' => $this->time?->isoFormat('h:mm A'),
+            'identification' => $this->identification,
+            'arrived_at' => $this->arrived_at?->isoFormat('DD MMMM YYYY, h:mm A'),
+            'leaved_at' => $this->leaved_at?->isoFormat('DD MMMM YYYY, h:mm A'),
+            'notes' => $this->notes,
+            'qr_code' => $this->qr_code,
+            'vehicle_details' => $this->vehicle_details,
+            'media_guest' => $this->getMedia('guest_images')->all(),
+            'media_vehicle' => $this->getMedia('vehicle_images')->all(),
+            'user' => $this->whenLoaded('user'),
+            'created_at' => $this->created_at?->isoFormat('DD MMMM YYYY, h:mm A'),
+            'updated_at' => $this->updated_at?->isoFormat('DD MMMM YYYY, h:mm A'),
+        ];
     }
 }

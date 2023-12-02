@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('guests', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
             $table->date('visit_date');
+            $table->timestamp('time')->nullable();
+            $table->boolean('identification')->default(false);
             $table->timestamp('arrived_at')->nullable();
+            $table->timestamp('leaved_at')->nullable();
             $table->text('notes')->nullable();
             $table->string('qr_code')->nullable();
             $table->json('vehicle_details')->nullable();

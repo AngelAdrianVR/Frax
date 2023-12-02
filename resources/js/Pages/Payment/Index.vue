@@ -122,8 +122,8 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import PaymentCard from '@/Components/MyComponents/PaymentCard.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import PaymentCard from '@/Components/MyComponents/Payment/PaymentCard.vue';
+import { Link } from '@inertiajs/vue3';
 import Tab from "@/Components/MyComponents/Tab.vue";
 import ThirthButton from "@/Components/ThirthButton.vue";
 

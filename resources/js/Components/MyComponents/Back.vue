@@ -1,7 +1,7 @@
 <template>
   <button @click="goBack" class="back-button rounded-full border border-[#35F69A] text-primary px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
     <div class="flex items-center ">
-        <i class="fa-solid fa-reply lg:mr-3"></i>
+        <i class="fa-solid fa-angle-left lg:mr-3"></i>
         <p class="hidden lg:block">Regresar</p>
     </div>
   </button>
