@@ -22,7 +22,7 @@
       </div>
       <div class="mt-4 lg:mx-12">
         <div class="grid grid-cols-3 gap-5">
-          <GuestCard v-for="guest in guests.data" :key="guest" :guest="guest" />
+          <GuestCard @guestDeleted="handleGuestDeleted" v-for="guest in guests.data" :key="guest" :guest="guest" />
         </div>
       </div>
     </div>
@@ -54,6 +54,16 @@ export default {
   props: {
     guests: Object
   },
-  methods: {},
+  methods: {
+    handleGuestDeleted(deletedItemId) {
+      // Encuentra el índice del objeto eliminado en la lista
+      const deletedItemIndex = this.guests.data.findIndex(item => item.id === deletedItemId);
+
+      // Elimina el objeto localmente
+      if (deletedItemIndex !== -1) {
+        this.guests.data.splice(deletedItemIndex, 1);
+      }
+    },
+  },
 };
 </script>

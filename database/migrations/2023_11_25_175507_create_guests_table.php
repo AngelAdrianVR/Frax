@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->date('visit_date');
-            $table->time('time')->nullable();
+            $table->timestamp('time')->nullable();
             $table->boolean('identification')->default(false);
             $table->timestamp('arrived_at')->nullable();
             $table->timestamp('leaved_at')->nullable();

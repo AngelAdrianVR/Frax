@@ -3,7 +3,7 @@
         <div class="lg:py-7 lg:px-10">
             <Back />
 
-            <form @submit.prevent="store" class="mx-8 mt-9 grid grid-cols-2 border p-4">
+            <form @submit.prevent="store" class="mx-8 mt-9 grid grid-cols-2 gap-9 p-4">
                 <div>
                     <div class="flex justify-center items-start space-x-12 text-sm mb-8">
                         <div class="flex items-center mr-5">
@@ -28,59 +28,118 @@
                     <!-- --------------- Programar visita -------------- -->
                     <section v-if="form.type == 'Visita'">
                         <div class="relative">
-                            <InputLabel value="Nombre del visitante *" class="ml-3 mb-1" />
+                            <InputLabel value="Nombre del visitante*" class="ml-3 mb-1" />
                             <p class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
-                            <input v-model="form.name" class="input" type="text" placeholder="Agregar título" />
+                            <input v-model="form.name" class="input" type="text" />
                             <InputError :message="form.errors.name" />
                             <p class="text-xs ml-3">En caso de no saber el nombre de la visita, solo puede agregar  el nombre de la empresa o el tipo de servicio que le realizarán. (p ej. servicio de comida)</p>
                         </div>
 
                         <div class="mt-4">
                             <InputLabel value="Foto del visitante" class="ml-3 mb-1" />
-                            <figure @click="triggerInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                                <i v-if="image" @click.stop="image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
-                                <i v-if="!image" class="fa-solid fa-camera text-gray-400 text-xl"></i>
-                                 <img v-if="image" :src="image" alt="Vista previa" class="w-full h-full object-cover rounded-md opacity-50" />
-                                <input ref="fileInput" type="file" @change="handleImageUpload" class="hidden" />
+                            <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
+                                <i v-if="guestImage" @click.stop="guestImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
+                                <i v-if="!guestImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
+                                 <img v-if="guestImage" :src="guestImage" alt="Vista previa" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
+                                <input ref="fileGuestInput" type="file" @change="handleGuestImageUpload" class="hidden" />
                             </figure>
                         </div>
 
                         <div class="mt-3">
-                            <InputLabel value="Fecha de la visita *" class="ml-2" />
+                            <InputLabel value="Fecha de la visita*" class="ml-3 mb-1" />
                             <el-date-picker v-model="form.visit_date" type="date" placeholder="Seleccione" :disabled-date="disabledDate" />
                             <InputError :message="form.errors.visit_date" />
                         </div>
 
                         <div class="mt-3">
-                            <InputLabel value="Hora" class="ml-2" />
-                            <el-time-picker v-model="time" placeholder="Seleccione (opcional)" />
+                            <InputLabel value="Hora" class="ml-3 mb-1" />
+                            <el-time-picker v-model="form.time" placeholder="Seleccione (opcional)" />
                             <InputError :message="form.errors.time" />
                         </div>
 
-                        <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
+                        <label class="flex items-center mt-4 text-xs">
                             <Checkbox v-model:checked="form.identification" class="bg-transparent disabled:border-gray-400" />
-                            <span class="ml-2 text-xs">Solictar foto o identificación del visitante</span>
+                            <span class="ml-2 mr-2 text-xs">Solictar foto o identificación del visitante</span>
+                            <el-tooltip
+                            content="Puedes requerirlo para mayor seguridad"
+                            placement="top">
+                            <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                              <i class="fa-solid fa-info text-primary text-[7px]"></i>
+                            </div>
+                          </el-tooltip>
                         </label>
-                        <!-- <div>
-                            <InputLabel value="Participante(s) *" class="ml-2" />
-                            <el-select class="w-full" v-model="form.participants" clearable filterable multiple
-                                placeholder="Seleccionar participantes" no-data-text="No hay usuarios registrados"
-                                no-match-text="No se encontraron coincidencias">
-                                <el-option v-for="user in users" :key="user.id" :label="user.name" :value="user.id">
-                                <div v-if="$page.props.jetstream.managesProfilePhotos"
-                                    class="flex text-sm rounded-full items-center mt-[3px]">
-                                    <img class="h-7 w-7 rounded-full object-cover mr-4" :src="user.profile_photo_url" :alt="user.name" />
-                                    <p>{{ user.name }}</p>
-                                </div>
-                                </el-option>
-                            </el-select>
-                            <InputError :message="form.errors.participants" />
-                        </div> -->
                     </section>
                 </div>
-            </form>
+            
+                <section v-if="form.type == 'Visita'" class="mt-14">
+                  <div>
+                      <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
+                      <el-select class="w-full" v-model="form.guest_type" clearable
+                          placeholder="Seleccione" no-data-text="No hay opciones registradas"
+                          no-match-text="No se encontraron coincidencias">
+                          <el-option v-for="item in guestTypes" :key="item" :label="item" :value="item" />
+                      </el-select>
+                      <InputError :message="form.errors.guest_type" />
+                  </div>
+                  <div class="rounded-md border border-[#D9D9D9] mt-3" v-if="guest_type == 'Vehicular'">
+                    <div class="bg-[#F2F2F2] rounded-t-md p-2 flex items-center text-gray-500">
+                      <i class="fa-solid fa-car mx-3"></i>
+                      <p>Datos del vehículo</p>
+                    </div>
+                    <div class="pt-1 pb-5 px-7">
+                      <div>
+                            <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
+                            <figure @click="triggerVehicleImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
+                                <i v-if="vehicleImage" @click.stop="vehicleImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
+                                <i v-if="!vehicleImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
+                                 <img v-if="vehicleImage" :src="vehicleImage" alt="Vista previa" class="w-full h-full  object-contain bg-no-repeat rounded-md opacity-50" />
+                                <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
+                            </figure>
+                        </div>
+                        <div class="mt-3">
+                            <InputLabel value="Marca*" class="ml-3 mb-1" />
+                            <input class="input" v-model="form.vehicle_details.brand" type="text" required />
+                            <!-- <InputError :message="form.errors?.vehicle_details?.brand" /> -->
+                        </div>
+                        <div class="mt-3">
+                            <InputLabel value="Modelo*" class="ml-3 mb-1" />
+                            <input class="input" v-model="form.vehicle_details.model" type="text" required />
+                            <!-- <InputError :message="form.errors.vehicle_details.model" /> -->
+                        </div>
+                        <div class="mt-3">
+                            <InputLabel value="Color*" class="ml-3 mb-1" />
+                            <input class="input" v-model="form.vehicle_details.color" type="text" required />
+                            <!-- <InputError :message="form.errors.vehicle_details.color" /> -->
+                        </div>
+                        <div class="mt-3">
+                            <InputLabel value="Placa*" class="ml-3 mb-1" />
+                            <input class="input" v-model="form.vehicle_details.plate" type="text" required />
+                            <!-- <InputError :message="form.errors.vehicle_details.plate" /> -->
+                        </div>
+                    </div>
+                  </div>
+                  <div class="mt-3">
+                      <InputLabel value="Notas" class="ml-3 mb-1" />
+                      <textarea v-model="form.notes" class="textarea" rows="3"></textarea>
+                      <InputError :message="form.errors.notes" />
+                  </div>
+                  <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
+                      <Checkbox v-model:checked="form.is_favorite_guest" class="bg-transparent disabled:border-gray-400" />
+                      <span class="ml-2 mr-2 text-xs">Agregar esta visita como frecuente</span>
+                      <el-tooltip
+                      content="Marca esta visita como frecuente para agilizar futuras programaciones de acceso"
+                      placement="top">
+                      <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                        <i class="fa-solid fa-info text-primary text-[7px]"></i>
+                      </div>
+                    </el-tooltip>
+                  </label>
+                </section>
+                <div class="text-right col-span-2">
+                  <PrimaryButton>Guardar</PrimaryButton>
+                </div>
+        </form>
         </div>
-    <!-- {{form}} -->
     </AppLayout>
   
 </template>
@@ -98,15 +157,27 @@ export default {
   data() {
     const form = useForm({
       type: "Visita",
+      guest_type: null, //solo para hacer validación desde metodo store.
       name: null,
       visit_date: null,
       time: null,
       identification: false,
-      media: [],
+      notes: null,
+      is_favorite_guest: false,
+      vehicle_details: {
+        brand: null,
+        model: null,
+        color: null,
+        plate: null
+      },
+      guest_image: null,
+      vehicle_image: null,
     });
     return {
       form,
-      image: null,
+      guestImage: null,
+      vehicleImage: null,
+      guestTypes: ["Peatonal", "Vehicular"],
     };
   },
   components: {
@@ -132,20 +203,36 @@ export default {
         },
       });
     },
-    triggerInput() {
+    triggerGuestImageInput() {
       // Simular clic en el input file cuando se hace clic en el icono de la cámara
-      this.$refs.fileInput.click();
+      this.$refs.fileGuestInput.click();
     },
-    handleImageUpload(event) {
+    triggerVehicleImageInput() {
+      // Simular clic en el input file cuando se hace clic en el icono de la cámara
+      this.$refs.fileVehicleInput.click();
+    },
+    handleGuestImageUpload(event) {
       const file = event.target.files[0];
-      this.form.media.push(file);
+      this.form.guest_image = file;
 
       if (file) {
         // Obtener la URL de la imagen cargada
         const imageURL = URL.createObjectURL(file);
 
         // Mostrar la vista previa de la imagen
-        this.image = imageURL;
+        this.guestImage = imageURL;
+      }
+    },
+    handleVehicleImageUpload(event) {
+      const file = event.target.files[0];
+      this.form.vehicle_image = file;
+
+      if (file) {
+        // Obtener la URL de la imagen cargada
+        const imageURL = URL.createObjectURL(file);
+
+        // Mostrar la vista previa de la imagen
+        this.vehicleImage = imageURL;
       }
     },
     disabledDate(time) {
