@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedFloat('preparation_hours')->default(0);
             $table->unsignedFloat('hours_anticipation_booking')->default(0);
+            $table->unsignedFloat('cost')->default(0);
+            $table->unsignedSmallInteger('capacity');
             $table->boolean('is_multiple_reserved')->default(false);
             $table->text('description')->nullable();
             $table->text('notes')->nullable();
