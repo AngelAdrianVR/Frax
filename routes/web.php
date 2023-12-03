@@ -48,6 +48,11 @@ Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name
 Route::resource('payment-tickets', PaymentTicketController::class)->middleware('auth');
 
 
-//Payment-tickets routes---------------------------------------------------------------------------
+//Guests routes---------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('guests', GuestController::class)->middleware('auth');
+
+
+//Events routes---------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('events', GuestController::class)->middleware('auth');

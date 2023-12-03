@@ -78,7 +78,7 @@ class GuestController extends Controller
     
     public function edit(Guest $guest)
     {
-        //
+        return inertia('Guest/Edit', compact('guest'));
     }
 
     
@@ -90,6 +90,7 @@ class GuestController extends Controller
    
     public function destroy(Guest $guest)
     {
+        $guest->clearMediaCollection();
         $guest->delete();
 
         return response()->json(['item' => $guest]);
