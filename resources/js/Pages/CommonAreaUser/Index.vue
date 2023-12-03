@@ -54,6 +54,7 @@ export default {
         CommonAreaCard,
     },
     props: {
+        common_areas: Array,
     },
     methods: {
 

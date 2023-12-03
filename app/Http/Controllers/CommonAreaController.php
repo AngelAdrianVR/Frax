@@ -9,7 +9,7 @@ class CommonAreaController extends Controller
 {
     public function index()
     {
-        return inertia('CommonArea/Index');
+        //
     }
 
     public function create()
