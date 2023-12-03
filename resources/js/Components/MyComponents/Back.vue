@@ -1,5 +1,5 @@
 <template>
-  <button @click="goBack" class="back-button flex justify-center items-center rounded-full border hover:bg-primarylight hover:border-transparent py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+  <button @click="goBack" class="back-button flex justify-center items-center rounded-full border hover:bg-primarylight hover:border-transparent py-[9px] px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
         <i class="fa-solid fa-angle-left"></i>
   </button>
 </template>

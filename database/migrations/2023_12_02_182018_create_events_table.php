@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->unsignedSmallInteger('guests_quantity');
             $table->date('event_date');
-            $table->timestamp('start_time')->nullable();
-            $table->timestamp('end_time')->nullable();
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
             $table->string('location')->nullable();
             $table->string('description')->nullable();
             $table->string('qr_code')->nullable();

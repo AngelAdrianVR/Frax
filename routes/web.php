@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTicketController;
@@ -48,11 +50,17 @@ Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name
 Route::resource('payment-tickets', PaymentTicketController::class)->middleware('auth');
 
 
-//Guests routes---------------------------------------------------------------------------
+//Guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('guests', GuestController::class)->middleware('auth');
 
 
-//Events routes---------------------------------------------------------------------------
+//Favorite guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
-Route::resource('events', GuestController::class)->middleware('auth');
+Route::resource('favorite-guests', FavoriteGuestController::class)->middleware('auth');
+Route::get('favorite-guests/fetch', [FavoriteGuestController::class, 'getFavoriteGuests'])->name('favorite-guests.fetch')->middleware('auth');
+
+
+//Events routes-----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('events', EventController::class)->middleware('auth');

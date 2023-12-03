@@ -10,7 +10,7 @@
           <i class="fa-regular fa-trash-can bg-[#F2F2F2] rounded-md p-2 cursor-pointer"></i>
           </template>
         </el-popconfirm>
-        <PrimaryButton v-if="!guest.arrived_at" class="rounded-md !py-1">Editar</PrimaryButton>
+        <PrimaryButton @click="$inertia.get(route('guests.edit', guest.id))" v-if="!guest.arrived_at" class="rounded-md !py-1">Editar</PrimaryButton>
       </div>
       <!-- -----------photo--------- -->
       <div class="flex space-x-2">
@@ -45,7 +45,7 @@
             <p>Solicitar foto o id del visitante</p>
           </div>
           <div
-            v-if="cardDetails && guest.vehicle_details.brand"
+            v-if="cardDetails && guest.vehicle_details"
             @click="vehicleDetails = !vehicleDetails"
             class="flex items-center mb-1 cursor-pointer"
           >
@@ -68,8 +68,8 @@
           class="rounded-md bg-[#F2F2F2] col-span-2 mx-auto w-4/5 px-2 py-4 space-y-2 text-xs"
         >
           <p class="text-gray-400 text-center">Foto del vehiculo</p>
-          <figure class="w-48 h-32 rounded-xl border border-[#CCCCCC] mx-auto">
-            <img class="object-contain bg-no-repeat  h-32 rounded-xl" :src="guest.media_vehicle[0]?.original_url" alt="Sin imagen" />
+          <figure class="w-48 h-32 rounded-xl mx-auto">
+            <img class="object-contain bg-no-repeat h-32 rounded-lg" :src="guest.media_vehicle[0]?.original_url" alt="Sin imagen" />
           </figure>
           <div
             class="w-full border-b border-dashed border-[#CCCCCC] mt-2 flex justify-between"

@@ -29,7 +29,7 @@
                     <section v-if="guestForm.type == 'Visita'">
                         <div class="relative">
                             <InputLabel value="Nombre del visitante*" class="ml-3 mb-1" />
-                            <p class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
+                            <p @click="favoriteGuestModal = true" class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
                             <input v-model="guestForm.name" class="input" type="text" />
                             <InputError :message="guestForm.errors.name" />
                             <p class="text-xs ml-3">En caso de no saber el nombre de la visita, solo puede agregar  el nombre de la empresa o el tipo de servicio que le realizarán. (p ej. servicio de comida)</p>
@@ -201,10 +201,10 @@
                       <h1 class="font-bold text-xl text-center">Envia QR o código de autorización</h1>
                       <div class="text-center mt-7">
                         <i class="fa-solid fa-qrcode text-9xl"></i>
-                        <p class="text-[#9A9A9A] my-4">{{ eventForm.qr_code }}</p>
+                        <p ref="qrCode" class="text-[#9A9A9A] my-4">{{ eventForm.qr_code }}</p>
                         <div class="flex items-center justify-center space-x-4">
-                          <PrimaryButton @click.stop="" class="!py-1">Copiar QR</PrimaryButton>
-                          <i class="fa-solid fa-share-nodes text-primary bg-primarylight rounded-full p-2 cursor-pointer"></i>
+                          <PrimaryButton type="button" @click="copyQRCode" class="!py-1">Copiar QR</PrimaryButton>
+                          <i class="fa-solid fa-share-nodes text-gray2 bg-[#F2F2F2] rounded-full p-2 cursor-pointer"></i>
                         </div>
                         <p class="text-sm mt-3">Generamos dos códigos para su evento: un código QR y un código de autorización. Al ingresar 
                           sus invitados deben mostrar cualquiera de ellos al personal de seguridad para un ingreso.
@@ -213,12 +213,47 @@
                       </div>
                     </section>
                 
-
                 <div class="text-left col-span-2">
                   <PrimaryButton>Guardar</PrimaryButton>
                 </div>
         </form>
         </div>
+
+        <!-- Visitante frecuente modal -------------------------------------------------->
+        <Modal :show="favoriteGuestModal"
+          @close="favoriteGuestModal = false">
+          <div class="mx-7 my-4 space-y-4 relative">
+            <div @click="favoriteGuestModal = false"
+              class="cursor-pointer w-5 h-5 rounded-full border-2 border-black flex items-center justify-center absolute top-0 -right-2">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+
+            <h1>Programar visita frecuente</h1>
+
+            <div class="mt-4">
+              <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
+              <el-select class="w-full" v-model="guestForm.guest_type" clearable filterable
+                  placeholder="Seleccione" no-data-text="No hay opciones registradas"
+                  no-match-text="No se encontraron coincidencias">
+                  <el-option v-for="item in favorite_guests.data" :key="item" :label="item" :value="item">
+                    <figure v-if="item.media_guest?.length > 0" style="float: left">
+                      <img class="object-contain bg-no-repeat w-10 h-10 rounded-full" :src="item.media_guest[0]?.original_url" alt="" />
+                    </figure>
+                    <span figurestyle="float: left"><i class="fa-solid fa-circle-user text-blue-200 text-2xl"></i></span>
+                    <span style="float: center; margin-left: 12px; font-size: 13px">{{
+                      item.name
+                    }}</span>
+                  </el-option>
+              </el-select>
+              <InputError :message="guestForm.errors.guest_type" />
+            </div>
+
+            <div class="flex justify-end space-x-1 pt-5 pb-1">
+              <CancelButton @click="cancelUpdating">Cancelar</CancelButton>  
+              <PrimaryButton @click="CreateSale">Continuar</PrimaryButton>
+            </div>
+          </div>
+        </Modal>
     </AppLayout>
   
 </template>
@@ -226,10 +261,13 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import CancelButton from "@/Components/MyComponents/CancelButton.vue";
 import Back from '@/Components/MyComponents/Back.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Checkbox from "@/Components/Checkbox.vue";
+import Modal from "@/Components/Modal.vue";
+import { ElMessage } from 'element-plus'
 import { useForm } from "@inertiajs/vue3";
 
 export default {
@@ -251,7 +289,6 @@ export default {
       },
       guest_image: null,
       vehicle_image: null,
-      event_date: null,
     });
 
     const eventForm = useForm({
@@ -271,23 +308,31 @@ export default {
       eventForm,
       guestImage: null,
       vehicleImage: null,
+      vehicleImage: null,
+      favoriteGuestModal: false,
       guestTypes: ["Peatonal", "Vehicular"],
     };
   },
   components: {
     AppLayout,
     PrimaryButton,
+    CancelButton,
     InputLabel,
     InputError,
     Checkbox,
+    Modal,
     Back
   },
   props: {
-    guests: Object
+    guests: Object,
+    favorite_guests: Object,
   },
   methods: {
     store() {
       if (this.guestForm.type == 'Visita') {
+       if (this.guestForm.guest_type == 'Peatonal'){ //si no es vehicular el json de vehicle_details es null para no guardar el formato en la bd.
+          this.guestForm.vehicle_details = null;
+       }
       this.guestForm.post(route("guests.store"), {
         onSuccess: () => {
           this.$notify({
@@ -298,6 +343,7 @@ export default {
         },
       });
     } else if ((this.guestForm.type == 'Evento')) {
+      console.log('Evento');
       this.eventForm.post(route("events.store"), {
         onSuccess: () => {
           this.$notify({
@@ -368,7 +414,29 @@ export default {
         this.eventForm.start_time = null;
         this.eventForm.end_time = null;
       }
-    }
+    },
+    copyQRCode() {
+      // Seleccionar el contenido del elemento ref qrCode
+      const qrCodeElement = this.$refs.qrCode;
+      const range = document.createRange();
+      range.selectNode(qrCodeElement);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      // Copiar al portapapeles
+      try {
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+
+        ElMessage({
+        message: 'Código QR copiado al portapapeles',
+        type: 'success',
+      });
+
+      } catch (err) {
+        console.error('Error al copiar el código QR al portapapeles', err);
+      }
+    },
   },
   mounted() {
      this.qrGenerator(8);

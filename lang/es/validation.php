@@ -140,6 +140,9 @@ return [
         'name' => 'nombre',
         'guest_type' => 'tipo de acceso',
         'visit_date' => 'fecha de visita',
-        
+        'title' => 'título',
+        'guests' => 'invitados',
+        'event_date' => 'fecha del evento',
+        'guests_quantity' => 'cantidad de invitados',
     ],
 ];
