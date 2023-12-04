@@ -58,7 +58,7 @@ Route::resource('guests', GuestController::class)->middleware('auth');
 //Favorite guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('favorite-guests', FavoriteGuestController::class)->middleware('auth');
-Route::get('favorite-guests/fetch', [FavoriteGuestController::class, 'getFavoriteGuests'])->name('favorite-guests.fetch')->middleware('auth');
+Route::get('favorite-guest-get-all', [FavoriteGuestController::class, 'getAll'])->name('favorite-guests.get-all')->middleware('auth');
 
 
 //Events routes-----------------------------------------------------------------------------------

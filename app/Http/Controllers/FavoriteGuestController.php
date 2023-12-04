@@ -19,7 +19,7 @@ class FavoriteGuestController extends Controller
     
     public function create()
     {
-        //
+        return inertia('FavoriteGuest/Create');
     }
 
     
@@ -52,12 +52,10 @@ class FavoriteGuestController extends Controller
         //
     }
 
-    public function getFavoriteGuests()
+    public function getAll()
     {
-        $favorite_guests = FavoriteGuest::latest()->getOr([]);
+        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::all());
 
-        $favorite_guests = FavoriteGuestResource::collection($favorite_guests);
-
-        return response()->json(['favorite_guests' => $favorite_guests]);
+        return response()->json(['items' => $favorite_guests]);
     }
 }

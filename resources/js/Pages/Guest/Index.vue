@@ -37,9 +37,10 @@
         <PrimaryButton @click="$inertia.get(route('favorite-guests.create'))">Agregar visita frecuente</PrimaryButton>
       </div>
       <div class="mt-4 lg:mx-12">
-        <div class="grid grid-cols-3 gap-5">
-          <GuestCard @guestDeleted="handleGuestDeleted" v-for="guest in guests.data" :key="guest" :guest="guest" />
+        <div v-if="favoriteGuests" class="grid grid-cols-3 gap-5">
+          <FavoriteGuestCard @guestDeleted="handleGuestDeleted" v-for="favorite_guest in favorite_guests" :key="favorite_guest" :favorite_guest="favorite_guest" />
         </div>
+        <p class="text-xs text-gray-400 text-center" v-else>No tienes visitantes frecuentes registrados</p>
       </div>
     </div>
     <!-- ------------- tab 2 section visitas frecuentes ends ------------- -->
@@ -52,26 +53,28 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
 import Tab from "@/Components/MyComponents/Tab.vue";
 import GuestCard from "@/Components/MyComponents/Guest/GuestCard.vue";
+import FavoriteGuestCard from "@/Components/MyComponents/Guest/FavoriteGuestCard.vue";
 import axios from 'axios';
 
 export default {
   data() {
     return {
       currentTab: 1,
+      favoriteGuests: null,
+      guestHistory: null,
       tabs: ["Visitas programadas", "Visitas frecuentes", "Historial"],
     };
   },
   components: {
     AppLayout,
     PrimaryButton,
+    FavoriteGuestCard,
     GuestCard,
     Link,
     Tab,
   },
   props: {
     guests: Object,
-    favorite_guests: Object,
-    guest_history: Object,
   },
   methods: {
     handleGuestDeleted(deletedItemId) {
@@ -83,20 +86,24 @@ export default {
         this.guests.data.splice(deletedItemIndex, 1);
       }
     },
-  },
-  watch:{
-    async currentTab(){
+    async fetchFavoriteGuests(){
       try {
-        if (this.currentTab == 2) { //recupera la información de visitas frecuentes
-          const response = await axios.get(route('favorite-guests.fetch'));
+          const response = await axios.get(route('favorite-guests.get-all'));
           if (response.status === 200) {
-            this.favorite_guests = response.data.favorite_guests;
+            this.favoriteGuests = response.data.items;
           }
-        } 
       } catch (error) {
         console.log(error);
       }
     }
+  },
+  watch:{
+    currentTab(newVal) {
+      if (newVal == 2 && this.favoriteGuests === null) {
+        //recupera la información de visitas frecuentes
+        this.fetchFavoriteGuests();
+        } 
+      }
   }
 };
 </script>

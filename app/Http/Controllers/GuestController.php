@@ -16,12 +16,10 @@ class GuestController extends Controller
     public function index()
     {
         $guests = GuestResource::collection(Guest::with('media')->latest()->get());
-        $favorite_guests = null;
-        $guest_history = null;
 
         // return $guests;
 
-        return inertia('Guest/Index', compact('guests', 'favorite_guests', 'guest_history'));
+        return inertia('Guest/Index', compact('guests'));
     }
 
     

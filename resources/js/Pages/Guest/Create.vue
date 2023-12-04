@@ -81,11 +81,13 @@
                       </el-select>
                       <InputError :message="guestForm.errors.guest_type" />
                   </div>
+
                   <div class="rounded-md border border-[#D9D9D9] mt-3" v-if="guestForm.guest_type == 'Vehicular'">
                     <div class="bg-[#F2F2F2] rounded-t-md p-2 flex items-center text-gray-500">
                       <i class="fa-solid fa-car mx-3"></i>
                       <p>Datos del vehículo</p>
                     </div>
+
                     <div class="pt-1 pb-5 px-7">
                       <div>
                             <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
@@ -96,21 +98,25 @@
                                 <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
                             </figure>
                         </div>
+
                         <div class="mt-3">
                             <InputLabel value="Marca*" class="ml-3 mb-1" />
                             <input class="input" v-model="guestForm.vehicle_details.brand" type="text" required />
                             <!-- <InputError :message="guestForm.errors?.vehicle_details?.brand" /> -->
                         </div>
+
                         <div class="mt-3">
                             <InputLabel value="Modelo*" class="ml-3 mb-1" />
                             <input class="input" v-model="guestForm.vehicle_details.model" type="text" required />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.model" /> -->
                         </div>
+
                         <div class="mt-3">
                             <InputLabel value="Color*" class="ml-3 mb-1" />
                             <input class="input" v-model="guestForm.vehicle_details.color" type="text" required />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.color" /> -->
                         </div>
+
                         <div class="mt-3">
                             <InputLabel value="Placa*" class="ml-3 mb-1" />
                             <input class="input uppercase" v-model="guestForm.vehicle_details.plate" type="text" required />
@@ -118,11 +124,13 @@
                         </div>
                     </div>
                   </div>
+
                   <div class="mt-3">
                       <InputLabel value="Notas" class="ml-3 mb-1" />
                       <textarea v-model="guestForm.notes" class="textarea" rows="3"></textarea>
                       <InputError :message="guestForm.errors.notes" />
                   </div>
+                  
                   <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
                       <Checkbox v-model:checked="guestForm.is_favorite_guest" class="bg-transparent disabled:border-gray-400" />
                       <span class="ml-2 mr-2 text-xs">Agregar esta visita como frecuente</span>
@@ -235,21 +243,21 @@
               <el-select class="w-full" v-model="guestForm.guest_type" clearable filterable
                   placeholder="Seleccione" no-data-text="No hay opciones registradas"
                   no-match-text="No se encontraron coincidencias">
-                  <el-option v-for="item in favorite_guests.data" :key="item" :label="item" :value="item">
+                  <el-option v-for="item in favorite_guests.data" :key="item" :label="item.name" :value="item.id">
                     <figure v-if="item.media_guest?.length > 0" style="float: left">
                       <img class="object-contain bg-no-repeat w-10 h-10 rounded-full" :src="item.media_guest[0]?.original_url" alt="" />
                     </figure>
-                    <span figurestyle="float: left"><i class="fa-solid fa-circle-user text-blue-200 text-2xl"></i></span>
-                    <span style="float: center; margin-left: 12px; font-size: 13px">{{
-                      item.name
-                    }}</span>
+                    <span v-else figurestyle="float: left"><i class="fa-solid fa-circle-user text-blue-200 text-2xl mt-[2px]"></i></span>
+                    <span style="float: center; margin-left: 12px; font-size: 13px">
+                      {{ item.name }}
+                    </span>
                   </el-option>
               </el-select>
               <InputError :message="guestForm.errors.guest_type" />
             </div>
 
             <div class="flex justify-end space-x-1 pt-5 pb-1">
-              <CancelButton @click="cancelUpdating">Cancelar</CancelButton>  
+              <CancelButton @click="favoriteGuestModal = false">Cancelar</CancelButton>  
               <PrimaryButton @click="CreateSale">Continuar</PrimaryButton>
             </div>
           </div>
@@ -307,7 +315,6 @@ export default {
       guestForm,
       eventForm,
       guestImage: null,
-      vehicleImage: null,
       vehicleImage: null,
       favoriteGuestModal: false,
       guestTypes: ["Peatonal", "Vehicular"],
