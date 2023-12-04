@@ -1,5 +1,8 @@
 <?php
 
+
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
 use App\Http\Controllers\CommonAreaUserController;
 use App\Http\Controllers\GuestController;
@@ -57,6 +60,17 @@ Route::resource('common-areas-users', CommonAreaUserController::class)->middlewa
 Route::resource('payment-tickets', PaymentTicketController::class)->middleware('auth');
 
 
-//Payment-tickets routes---------------------------------------------------------------------------
+//Guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('guests', GuestController::class)->middleware('auth');
+
+
+//Favorite guests routes-----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('favorite-guests', FavoriteGuestController::class)->middleware('auth');
+Route::get('favorite-guest-get-all', [FavoriteGuestController::class, 'getAll'])->name('favorite-guests.get-all')->middleware('auth');
+
+
+//Events routes-----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('events', EventController::class)->middleware('auth');

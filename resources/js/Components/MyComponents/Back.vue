@@ -1,9 +1,6 @@
 <template>
-  <button @click="goBack" class="back-button rounded-full border border-[#35F69A] text-primary px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-    <div class="flex items-center ">
-        <i class="fa-solid fa-angle-left lg:mr-3"></i>
-        <p class="hidden lg:block">Regresar</p>
-    </div>
+  <button @click="goBack" class="back-button flex justify-center items-center rounded-full border hover:bg-primarylight hover:border-transparent py-[9px] px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+        <i class="fa-solid fa-angle-left"></i>
   </button>
 </template>
 
@@ -21,6 +18,6 @@ export default {
 
 <style scoped>
 .back-button {
-  transition: background-color 0.3s ease; /* Transición de color de fondo */
+  transition: background-color 0.5s ease-out; /* Transición de color de fondo */
 }
 </style>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FavoriteGuestResource;
 use App\Http\Resources\GuestResource;
+use App\Models\FavoriteGuest;
 use App\Models\Guest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,7 +25,11 @@ class GuestController extends Controller
     
     public function create()
     {
-        return inertia('Guest/Create');
+        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::with('media')->latest()->get());
+
+        // return $favorite_guests;
+
+        return inertia('Guest/Create', compact('favorite_guests'));
     }
 
     
@@ -76,9 +82,13 @@ class GuestController extends Controller
     }
 
     
-    public function edit(Guest $guest)
+    public function edit($guest_id)
     {
-        //
+        $guest = Guest::with('media')->find($guest_id);
+
+        // return $guest;
+
+        return inertia('Guest/Edit', compact('guest'));
     }
 
     
@@ -90,6 +100,7 @@ class GuestController extends Controller
    
     public function destroy(Guest $guest)
     {
+        $guest->clearMediaCollection();
         $guest->delete();
 
         return response()->json(['item' => $guest]);

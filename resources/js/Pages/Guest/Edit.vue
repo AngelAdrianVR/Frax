@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Registrar visita">
+    <AppLayout title="Editar visita">
         <div class="lg:py-7 lg:px-10">
             <Back />
 
@@ -7,8 +7,8 @@
                 <div>
                     <div class="flex justify-center items-start space-x-12 text-sm mb-8">
                         <div class="flex items-center mr-5">
-                        <input v-model="guestForm.type" value="Visita"
-                            class="checked:bg-primary focus:text-primary focus:ring-primary bg-transparent w-3 h-3 cursor-pointer"
+                        <input :disabled="guestForm.type == 'Evento'" v-model="guestForm.type" value="Visita"
+                            class="checked:bg-primary focus:text-primary focus:ring-primary bg-transparent w-3 h-3 cursor-pointer disabled:cursor-not-allowed disabled:opacity-30"
                             type="radio" name="task_type" />
                         <p class="ml-3 flex items-center">
                             <i class="fa-regular fa-user mr-2"></i>
@@ -16,8 +16,8 @@
                         </p>
                         </div>
                         <div class="flex items-center">
-                        <input v-model="guestForm.type" value="Evento"
-                            class="checked:bg-primary focus:text-primary focus:ring-primary bg-transparent w-3 h-3 cursor-pointer"
+                        <input :disabled="guestForm.type == 'Visita'" v-model="guestForm.type" value="Evento"
+                            class="checked:bg-primary focus:text-primary focus:ring-primary bg-transparent w-3 h-3 cursor-pointer disabled:cursor-not-allowed disabled:opacity-30"
                             type="radio" name="task_type" />
                         <p class="ml-3 flex items-center">
                             <i class="fa-regular fa-calendar mr-2"></i>
@@ -29,7 +29,7 @@
                     <section v-if="guestForm.type == 'Visita'">
                         <div class="relative">
                             <InputLabel value="Nombre del visitante*" class="ml-3 mb-1" />
-                            <p @click="favoriteGuestModal = true" class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
+                            <p class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
                             <input v-model="guestForm.name" class="input" type="text" />
                             <InputError :message="guestForm.errors.name" />
                             <p class="text-xs ml-3">En caso de no saber el nombre de la visita, solo puede agregar  el nombre de la empresa o el tipo de servicio que le realizarán. (p ej. servicio de comida)</p>
@@ -81,13 +81,11 @@
                       </el-select>
                       <InputError :message="guestForm.errors.guest_type" />
                   </div>
-
                   <div class="rounded-md border border-[#D9D9D9] mt-3" v-if="guestForm.guest_type == 'Vehicular'">
                     <div class="bg-[#F2F2F2] rounded-t-md p-2 flex items-center text-gray-500">
                       <i class="fa-solid fa-car mx-3"></i>
                       <p>Datos del vehículo</p>
                     </div>
-
                     <div class="pt-1 pb-5 px-7">
                       <div>
                             <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
@@ -98,25 +96,21 @@
                                 <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
                             </figure>
                         </div>
-
                         <div class="mt-3">
                             <InputLabel value="Marca*" class="ml-3 mb-1" />
                             <input class="input" v-model="guestForm.vehicle_details.brand" type="text" required />
                             <!-- <InputError :message="guestForm.errors?.vehicle_details?.brand" /> -->
                         </div>
-
                         <div class="mt-3">
                             <InputLabel value="Modelo*" class="ml-3 mb-1" />
                             <input class="input" v-model="guestForm.vehicle_details.model" type="text" required />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.model" /> -->
                         </div>
-
                         <div class="mt-3">
                             <InputLabel value="Color*" class="ml-3 mb-1" />
                             <input class="input" v-model="guestForm.vehicle_details.color" type="text" required />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.color" /> -->
                         </div>
-
                         <div class="mt-3">
                             <InputLabel value="Placa*" class="ml-3 mb-1" />
                             <input class="input uppercase" v-model="guestForm.vehicle_details.plate" type="text" required />
@@ -124,13 +118,11 @@
                         </div>
                     </div>
                   </div>
-
                   <div class="mt-3">
                       <InputLabel value="Notas" class="ml-3 mb-1" />
                       <textarea v-model="guestForm.notes" class="textarea" rows="3"></textarea>
                       <InputError :message="guestForm.errors.notes" />
                   </div>
-                  
                   <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
                       <Checkbox v-model:checked="guestForm.is_favorite_guest" class="bg-transparent disabled:border-gray-400" />
                       <span class="ml-2 mr-2 text-xs">Agregar esta visita como frecuente</span>
@@ -221,47 +213,12 @@
                       </div>
                     </section>
                 
+
                 <div class="text-left col-span-2">
                   <PrimaryButton>Guardar</PrimaryButton>
                 </div>
         </form>
         </div>
-
-        <!-- Visitante frecuente modal -------------------------------------------------->
-        <Modal :show="favoriteGuestModal"
-          @close="favoriteGuestModal = false">
-          <div class="mx-7 my-4 space-y-4 relative">
-            <div @click="favoriteGuestModal = false"
-              class="cursor-pointer w-5 h-5 rounded-full border-2 border-black flex items-center justify-center absolute top-0 -right-2">
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-
-            <h1>Programar visita frecuente</h1>
-
-            <div class="mt-4">
-              <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
-              <el-select class="w-full" v-model="guestForm.guest_type" clearable filterable
-                  placeholder="Seleccione" no-data-text="No hay opciones registradas"
-                  no-match-text="No se encontraron coincidencias">
-                  <el-option v-for="item in favorite_guests.data" :key="item" :label="item.name" :value="item.id">
-                    <figure v-if="item.media_guest?.length > 0" style="float: left">
-                      <img class="object-contain bg-no-repeat w-10 h-10 rounded-full" :src="item.media_guest[0]?.original_url" alt="" />
-                    </figure>
-                    <span v-else figurestyle="float: left"><i class="fa-solid fa-circle-user text-blue-200 text-2xl mt-[2px]"></i></span>
-                    <span style="float: center; margin-left: 12px; font-size: 13px">
-                      {{ item.name }}
-                    </span>
-                  </el-option>
-              </el-select>
-              <InputError :message="guestForm.errors.guest_type" />
-            </div>
-
-            <div class="flex justify-end space-x-1 pt-5 pb-1">
-              <CancelButton @click="favoriteGuestModal = false">Cancelar</CancelButton>  
-              <PrimaryButton @click="CreateSale">Continuar</PrimaryButton>
-            </div>
-          </div>
-        </Modal>
     </AppLayout>
   
 </template>
@@ -269,12 +226,10 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import CancelButton from "@/Components/MyComponents/CancelButton.vue";
 import Back from '@/Components/MyComponents/Back.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Checkbox from "@/Components/Checkbox.vue";
-import Modal from "@/Components/Modal.vue";
 import { ElMessage } from 'element-plus'
 import { useForm } from "@inertiajs/vue3";
 
@@ -282,21 +237,21 @@ export default {
   data() {
     const guestForm = useForm({
       type: "Visita",
-      guest_type: null, //solo para hacer validación desde metodo store.
-      name: null,
-      visit_date: null,
-      time: null,
-      identification: false,
-      notes: null,
+      guest_type: this.guest.vehicle_details ? 'Vehicular' : 'Peatonal', //solo para hacer validación desde metodo store.
+      name: this.guest.name,
+      visit_date: this.guest.visit_date,
+      time: this.guest.time,
+      identification: this.guest.identification,
+      notes: this.guest.notes,
       is_favorite_guest: false,
       vehicle_details: {
-        brand: null,
-        model: null,
-        color: null,
-        plate: null
+        brand: this.guest.vehicle_details?.brand,
+        model: this.guest.vehicle_details?.model,
+        color: this.guest.vehicle_details?.color,
+        plate: this.guest.vehicle_details?.plate
       },
-      guest_image: null,
-      vehicle_image: null,
+      guest_image: this.guest.media[0],
+      vehicle_image: this.guest.media[1],
     });
 
     const eventForm = useForm({
@@ -316,30 +271,24 @@ export default {
       eventForm,
       guestImage: null,
       vehicleImage: null,
-      favoriteGuestModal: false,
       guestTypes: ["Peatonal", "Vehicular"],
     };
   },
   components: {
     AppLayout,
     PrimaryButton,
-    CancelButton,
     InputLabel,
     InputError,
     Checkbox,
-    Modal,
     Back
   },
   props: {
-    guests: Object,
-    favorite_guests: Object,
+    guest: Object
   },
   methods: {
     store() {
       if (this.guestForm.type == 'Visita') {
-       if (this.guestForm.guest_type == 'Peatonal'){ //si no es vehicular el json de vehicle_details es null para no guardar el formato en la bd.
-          this.guestForm.vehicle_details = null;
-       }
+        console.log('visita');
       this.guestForm.post(route("guests.store"), {
         onSuccess: () => {
           this.$notify({
@@ -434,7 +383,7 @@ export default {
       try {
         document.execCommand('copy');
         window.getSelection().removeAllRanges();
-
+        
         ElMessage({
         message: 'Código QR copiado al portapapeles',
         type: 'success',
@@ -446,7 +395,8 @@ export default {
     },
   },
   mounted() {
-     this.qrGenerator(8);
+    this.qrGenerator(8);
+
   }
 };
 </script>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->json('vehicle_details')->nullable();
+            $table->boolean('identification')->default(false);
             $table->text('notes')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
