@@ -1,7 +1,10 @@
 <?php
 
+
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteGuestController;
+use App\Http\Controllers\CommonAreaController;
+use App\Http\Controllers\CommonAreaUserController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTicketController;
@@ -44,6 +47,13 @@ Route::middleware([
 Route::resource('payments', PaymentController::class)->middleware('auth');
 Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name('payments.pay')->middleware('auth');
 
+//Common areas routes---------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
+Route::resource('common-areas', CommonAreaController::class)->middleware('auth');
+
+//Common areas user (bookings) routes---------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
+Route::resource('common-areas-users', CommonAreaUserController::class)->middleware('auth');
 
 //Payment-tickets routes---------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
