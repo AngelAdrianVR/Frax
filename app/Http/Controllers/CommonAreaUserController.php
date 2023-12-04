@@ -25,7 +25,7 @@ class CommonAreaUserController extends Controller
     {
         $common_area = CommonArea::find($request->common_area_id);
 
-        return inertia('CommonAreaUser/Index', compact('common_area'));
+        return inertia('CommonAreaUser/Create', compact('common_area'));
     }
 
     /**
