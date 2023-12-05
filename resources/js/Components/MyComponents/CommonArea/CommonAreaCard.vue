@@ -5,9 +5,6 @@
                 <Slide v-for="slide in 10" :key="slide">
                     <div class="carousel__item">{{ slide }}</div>
                 </Slide>
-                <!-- <template #addons>
-                    <Pagination />
-                </template> -->
             </Carousel>
             <div class="flex justify-center space-x-2 mt-2">
                 <button v-for="image in 10" :key="image" @click="currentSlide = image" class="w-2 h-2 rounded-full"

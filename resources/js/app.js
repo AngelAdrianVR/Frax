@@ -8,6 +8,8 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
+import es from 'element-plus/dist/locale/es.mjs';
+import 'dayjs/locale/es';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -19,6 +21,9 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(ElementPlus)
+            .use(ElementPlus, {
+                locale: es,
+              })
             .mount(el);
     },
     progress: {
