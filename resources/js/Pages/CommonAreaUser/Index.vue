@@ -6,7 +6,7 @@
             el reglamento y
             las polícas establecidas para cada área. </p>
         <div class="mt-4 mx-20 lg:grid grid-cols-3 gap-6">
-            <CommonAreaCard :commonArea="commonAreaTest" />
+            <CommonAreaCard v-for="item in common_areas" :key="item.id" :commonArea="item" />
         </div>
     </AppLayout>
 </template>
@@ -19,33 +19,7 @@ import { Link } from "@inertiajs/vue3";
 export default {
     data() {
         return {
-            commonAreaTest: {
-                name: 'Alberca común',
-                cost: 200,
-                capacity: 20,
-                features: [
-                    {
-                        icon: "fa-solid fa-person-swimming",
-                        label: 'Profundidad',
-                        value: '1.52 metros'
-                    },
-                    {
-                        icon: "fa-solid fa-fan",
-                        label: 'Área infantil',
-                        value: '10 niños'
-                    },
-                    {
-                        icon: "fa-solid fa-person-swimming",
-                        label: 'Profundidad',
-                        value: '1.52 metros'
-                    },
-                    {
-                        icon: "fa-solid fa-fan",
-                        label: 'Área infantil',
-                        value: '10 niños'
-                    },
-                ],
-            },
+            
         };
     },
     components: {
