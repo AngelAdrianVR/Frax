@@ -16,7 +16,7 @@ class CommonArea extends Model implements HasMedia
     protected $fillable = [
         'name',
         'preparation_hours',
-        'hours_anticipation_booking',
+        'days_anticipation_booking',
         'cost',
         'capacity',
         'is_multiple_reserved',
