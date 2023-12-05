@@ -14,9 +14,10 @@
       </div>
       <!-- -----------photo--------- -->
       <div class="flex space-x-2">
-        <figure class="bg-[#F2F2F2] w-44 h-36 rounded-sm">
+        <figure v-if="guest.media_guest?.length > 0" class="bg-[#F2F2F2] w-44 h-36 rounded-sm">
           <img class="object-contain bg-no-repeat w-44 h-36" :src="guest.media_guest[0]?.original_url" alt="" />
         </figure>
+        <div class="bg-[#F2F2F2] w-44 h-36 rounded-sm flex justify-center items-center" v-else><i class="fa-regular fa-user text-4xl text-gray3"></i></div>
         <div class="flex flex-col items-center justify-center pl-9">
           <p class="font-semibold">{{ guest.name }}</p>
         </div>
@@ -42,7 +43,7 @@
           </div>
           <div v-if="cardDetails && guest.identification" class="flex items-center mb-1 col-span-2 text-primary">
             <i class="fa-regular fa-square-check mr-4"></i>
-            <p>Solicitar foto o id del visitante</p>
+            <p>Solicitar foto o id</p>
           </div>
           <div
             v-if="cardDetails && guest.vehicle_details"
@@ -68,14 +69,15 @@
           class="rounded-md bg-[#F2F2F2] col-span-2 mx-auto w-4/5 px-2 py-4 space-y-2 text-xs"
         >
           <p class="text-gray-400 text-center">Foto del vehiculo</p>
-          <figure class="w-48 h-32 rounded-xl mx-auto">
+          <figure v-if="guest.media_vehicle?.length > 0" class="w-48 h-32 rounded-xl mx-auto">
             <img class="object-contain bg-no-repeat h-32 rounded-lg" :src="guest.media_vehicle[0]?.original_url" alt="Sin imagen" />
           </figure>
+          <div class="w-48 h-32 rounded-xl flex border border-dashed border-gray2 mx-auto" v-else></div>
           <div
             class="w-full border-b border-dashed border-[#CCCCCC] mt-2 flex justify-between"
           >
             <p class="pl-9 text-gray-500">Marca</p>
-            <p class="pr-9">{{ guest.vehicle_details?.branch }}</p>
+            <p class="pr-9">{{ guest.vehicle_details?.brand }}</p>
           </div>
           <div
             class="w-full border-b border-dashed border-[#CCCCCC] mt-2 flex justify-between"

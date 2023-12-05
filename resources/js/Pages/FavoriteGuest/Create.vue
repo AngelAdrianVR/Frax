@@ -17,7 +17,7 @@
                         <div class="mt-4">
                             <InputLabel value="Foto del visitante" class="ml-3 mb-1" />
                             <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                                <i v-if="guestImage" @click.stop="guestImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
+                                <i v-if="guestImage" @click.stop="guestImage = null; form.guest_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
                                 <i v-if="!guestImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
                                  <img v-if="guestImage" :src="guestImage" alt="Vista previa" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
                                 <input ref="fileGuestInput" type="file" @change="handleGuestImageUpload" class="hidden" />
@@ -73,39 +73,45 @@
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Marca*" class="ml-3 mb-1" />
-                                    <input class="input" v-model="localVehicleDetails.brand" type="text" required />
+                                    <input class="input" v-model="localVehicleDetails.brand" type="text" placeholder="Escribe el modelo del vehículo" />
                                     <!-- <InputError :message="form.errors?.vehicle_details?.brand" /> -->
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Modelo*" class="ml-3 mb-1" />
-                                    <input class="input" v-model="localVehicleDetails.model" type="text" required />
+                                    <input class="input" v-model="localVehicleDetails.model" type="text" placeholder="Escribe la marca del vehículo" />
                                     <!-- <InputError :message="form.errors.vehicle_details.model" /> -->
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Color*" class="ml-3 mb-1" />
-                                    <input class="input" v-model="localVehicleDetails.color" type="text" required />
+                                    <input class="input" v-model="localVehicleDetails.color" type="text" placeholder="Escribe el color del vehículo" />
                                     <!-- <InputError :message="form.errors.vehicle_details.color" /> -->
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Placa*" class="ml-3 mb-1" />
-                                    <input class="input uppercase" v-model="localVehicleDetails.plate" type="text" required />
+                                    <input class="input uppercase" v-model="localVehicleDetails.plate" type="text" placeholder="Escribe la placa del vehículo" />
                                     <!-- <InputError :message="form.errors.vehicle_details.plate" /> -->
                                 </div>
 
                                 <div class="text-right mt-3">
                                     <ThirthButton @click="addVehicle" 
                                     :disabled="!localVehicleDetails.brand || !localVehicleDetails.model || !localVehicleDetails.color || !localVehicleDetails.plate"
-                                     type="button">Agregar a la lista</ThirthButton>
+                                     type="button">{{editIndex !== null ? 'Actualzar' : 'Agregar a la lista'}}</ThirthButton>
                                 </div>
-
+                                <!-- Lista de vehiculos ------------------- -->
                                 <div v-if="form.vehicle_details?.length > 0" class="mt-3">
                                     <p class="font-bold">Lista de vehiculos</p>
                                     <ul>
-                                        <li class="flex justify-between items-center"  v-for="(vehicle, index) in form.vehicle_details" :key="index">
-                                            <p class="text-[#677677]">{{ (index + 1) + '. Auto: ' + vehicle?.brand + ' ' + vehicle?.model  }}</p>
+                                        <li class="flex justify-between items-center space-y-1"  v-for="(vehicle, index) in form.vehicle_details" :key="index">
+                                          <p class="text-[#677677]">{{ (index + 1) + '. Auto: ' + vehicle?.brand + ' ' + vehicle?.model  }}</p>
                                             <div class="flex items-center space-x-2">
-                                                <i class="fa-solid fa-pencil p-2 text-gray2 rounded-full bg-[#F2F2F2] cursor-pointer"></i>
-                                                <i class="fa-regular fa-trash-can p-2 text-gray2 rounded-full bg-[#F2F2F2] cursor-pointer"></i>
+                                              <el-tag v-if="index == editIndex" class="ml-2">En edición</el-tag>
+                                              <i @click="editVehicle(index)" class="fa-solid fa-pencil p-2 text-gray2 rounded-full bg-[#F2F2F2] cursor-pointer"></i>
+                                              <el-popconfirm confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537" title="¿Eliminar?"
+                                                @confirm="deleteVehicle(index)">
+                                                <template #reference>
+                                                  <i class="fa-regular fa-trash-can p-2 text-gray2 rounded-full bg-[#F2F2F2] cursor-pointer"></i>
+                                                </template>
+                                              </el-popconfirm>
                                             </div>
                                         </li>
                                     </ul>
@@ -114,16 +120,19 @@
                         </div>
 
                         <div class="mt-3">
-                            <InputLabel value="Notas" class="ml-3 mb-1" />
-                            <textarea v-model="form.notes" class="textarea" rows="3"></textarea>
-                            <InputError :message="form.errors.notes" />
+                          <InputLabel value="Notas" class="ml-3 mb-1" />
+                          <textarea v-model="form.notes" class="textarea" rows="3"></textarea>
+                          <InputError :message="form.errors.notes" />
                         </div>
                     </section>
 
-                </div>
-            </form>
+                    <div class="text-right col-span-2">
+                    <PrimaryButton>Guardar</PrimaryButton>
+                  </div>
 {{localVehicleDetails}}
 {{form.vehicle_details}}
+                </div>
+            </form>
         </div>
         
     </AppLayout>
@@ -145,25 +154,23 @@ export default {
     const form = useForm({
       guest_type: null, //solo para hacer validación desde metodo store.
       name: null,
-      visit_date: null,
-      time: null,
       identification: false,
       notes: null,
-      is_favorite_guest: false,
       vehicle_details: [],
       guest_image: null,
-      vehicle_image: null,
     });
 
     return {
       form,
       guestImage: null,
       vehicleImage: null,
+      editIndex: null,
       localVehicleDetails: {
         brand: null,
         model: null,
         color: null,
-        plate: null
+        plate: null,
+        image: null
       },
       guestTypes: ["Peatonal", "Vehicular"],
     };
@@ -182,25 +189,47 @@ export default {
   },
   methods: {
     store() {
-       if (this.form.guest_type == 'Peatonal'){ //si no es vehicular el json de vehicle_details es null para no guardar el formato en la bd.
-          this.form.vehicle_details = null;
-       }
       this.form.post(route("favorite-guests.store"), {
         onSuccess: () => {
           this.$notify({
             title: "Correcto",
-            message: "Se ha registrado la visita frecuente",
+            message: "Se ha registrado tu visita frecuente",
             type: "success",
           });
         },
       });
     },
     addVehicle() {
-        this.form.vehicle_details.push(this.localVehicleDetails);
-        this.localVehicleDetails.brand = null;
-        this.localVehicleDetails.model = null;
-        this.localVehicleDetails.color = null;
-        this.localVehicleDetails.plate = null;
+      // Crear una nueva instancia del objeto localVehicleDetails
+      const vehicle = { ...this.localVehicleDetails };
+
+      //Actualiza el vehiculo si existe un index de edicion
+      if (this.editIndex !== null) {
+        this.form.vehicle_details[this.editIndex] = { ...this.localVehicleDetails };
+        } else {
+
+          // Agregar el nuevo objeto al array
+        this.form.vehicle_details.push(vehicle);
+        }
+
+      // Restablecer localVehicleDetails
+      this.localVehicleDetails.brand = null;
+      this.localVehicleDetails.model = null;
+      this.localVehicleDetails.color = null;
+      this.localVehicleDetails.plate = null;
+      this.localVehicleDetails.image = null;
+      this.vehicleImage = null;
+      this.editIndex = null;
+    },
+    editVehicle(index) {
+      // Aquí puedes utilizar el índice para realizar la lógica de edición
+      this.editIndex = index;
+      this.localVehicleDetails = { ...this.form.vehicle_details[this.editIndex] };
+
+    },
+    deleteVehicle(index) {
+      // Eliminar el vehículo del array
+      this.form.vehicle_details.splice(index, 1);
     },
     triggerGuestImageInput() {
       // Simular clic en el input file cuando se hace clic en el icono de la cámara
@@ -224,7 +253,7 @@ export default {
     },
     handleVehicleImageUpload(event) {
       const file = event.target.files[0];
-      this.form.vehicle_image = file;
+      this.localVehicleDetails.image = file;
 
       if (file) {
         // Obtener la URL de la imagen cargada

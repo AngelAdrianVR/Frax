@@ -28,7 +28,7 @@ class FavoriteGuestResource extends JsonResource
             'identification' => $this->identification,
             'notes' => $this->notes,
             'user' => $this->whenLoaded('user'),
-            'media_guest' => $this->getMedia('guest_images')->all(),
+            'media_guest' => $this->getMedia('guest_image')->all(),
             'media_vehicle' => $this->getMedia('vehicle_images')->all(),
             'created_at' => $this->created_at?->isoFormat('DD MMMM YYYY, h:mm A'),
             'updated_at' => $this->updated_at?->isoFormat('DD MMMM YYYY, h:mm A'),

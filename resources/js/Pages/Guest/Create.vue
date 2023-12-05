@@ -38,7 +38,7 @@
                         <div class="mt-4">
                             <InputLabel value="Foto del visitante" class="ml-3 mb-1" />
                             <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                                <i v-if="guestImage" @click.stop="guestImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
+                                <i v-if="guestImage" @click.stop="guestImage = null; guestForm.guest_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
                                 <i v-if="!guestImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
                                  <img v-if="guestImage" :src="guestImage" alt="Vista previa" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
                                 <input ref="fileGuestInput" type="file" @change="handleGuestImageUpload" class="hidden" />
@@ -73,13 +73,13 @@
             
                 <section v-if="guestForm.type == 'Visita'" class="mt-14">
                   <div>
-                      <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
-                      <el-select class="w-full" v-model="guestForm.guest_type" clearable
-                          placeholder="Seleccione" no-data-text="No hay opciones registradas"
-                          no-match-text="No se encontraron coincidencias">
-                          <el-option v-for="item in guestTypes" :key="item" :label="item" :value="item" />
-                      </el-select>
-                      <InputError :message="guestForm.errors.guest_type" />
+                    <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
+                    <el-select class="w-full" v-model="guestForm.guest_type" clearable
+                        placeholder="Seleccione" no-data-text="No hay opciones registradas"
+                        no-match-text="No se encontraron coincidencias">
+                        <el-option v-for="item in guestTypes" :key="item" :label="item" :value="item" />
+                    </el-select>
+                    <InputError :message="guestForm.errors.guest_type" />
                   </div>
 
                   <div class="rounded-md border border-[#D9D9D9] mt-3" v-if="guestForm.guest_type == 'Vehicular'">
@@ -90,14 +90,14 @@
 
                     <div class="pt-1 pb-5 px-7">
                       <div>
-                            <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
-                            <figure @click="triggerVehicleImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                                <i v-if="vehicleImage" @click.stop="vehicleImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
-                                <i v-if="!vehicleImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
-                                 <img v-if="vehicleImage" :src="vehicleImage" alt="Vista previa" class="w-full h-full  object-contain bg-no-repeat rounded-md opacity-50" />
-                                <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
-                            </figure>
-                        </div>
+                        <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
+                        <figure @click="triggerVehicleImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
+                            <i v-if="vehicleImage" @click.stop="vehicleImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
+                            <i v-if="!vehicleImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
+                              <img v-if="vehicleImage" :src="vehicleImage" alt="Vista previa" class="w-full h-full  object-contain bg-no-repeat rounded-md opacity-50" />
+                            <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
+                        </figure>
+                      </div>
 
                         <div class="mt-3">
                             <InputLabel value="Marca*" class="ml-3 mb-1" />
@@ -240,12 +240,12 @@
 
             <div class="mt-4">
               <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
-              <el-select class="w-full" v-model="guestForm.guest_type" clearable filterable
+              <el-select @change="findFavoriteGuest" class="w-full" v-model="favoriteGuestId" clearable filterable
                   placeholder="Seleccione" no-data-text="No hay opciones registradas"
                   no-match-text="No se encontraron coincidencias">
                   <el-option v-for="item in favorite_guests.data" :key="item" :label="item.name" :value="item.id">
                     <figure v-if="item.media_guest?.length > 0" style="float: left">
-                      <img class="object-contain bg-no-repeat w-10 h-10 rounded-full" :src="item.media_guest[0]?.original_url" alt="" />
+                      <img class="object-contain bg-no-repeat w-6 h-6 rounded-full mt-1" :src="item.media_guest[0]?.original_url" alt="" />
                     </figure>
                     <span v-else figurestyle="float: left"><i class="fa-solid fa-circle-user text-blue-200 text-2xl mt-[2px]"></i></span>
                     <span style="float: center; margin-left: 12px; font-size: 13px">
@@ -256,12 +256,76 @@
               <InputError :message="guestForm.errors.guest_type" />
             </div>
 
+            <section v-if="selectedFavoriteGuest" class="grid grid-cols-2">
+              <!-- Primer mitad del grid del formulariovisita frecuente ------------------ -->
+              <div>
+                <figure v-if="selectedFavoriteGuest?.media_guest?.length > 0" class="bg-[#F2F2F2] w-44 h-36 rounded-sm">
+                  <img class="object-contain bg-no-repeat w-44 h-36" :src="selectedFavoriteGuest?.media_guest[0]?.original_url" alt="" />
+                </figure>
+                <div class="bg-[#F2F2F2] w-44 h-36 rounded-sm flex justify-center items-center" v-else><i class="fa-regular fa-user text-4xl text-gray3"></i></div>
+                <p class="font-bold text-center w-44 mt-1">{{ selectedFavoriteGuest?.name }}</p>
+
+                  <div class="mt-7">
+                    <InputLabel value="Fecha de la visita*" class="ml-3 mb-1" />
+                    <el-date-picker v-model="guestForm.visit_date" type="date" placeholder="Seleccione" :disabled-date="disabledDate" />
+                    <InputError :message="guestForm.errors.visit_date" />
+                  </div>
+
+                  <div class="mt-2">
+                    <InputLabel value="Hora" class="ml-3 mb-1" />
+                    <el-time-picker v-model="guestForm.time" placeholder="Seleccione (opcional)" />
+                    <InputError :message="guestForm.errors.time" />
+                  </div>
+
+                  <label class="flex items-center mt-4 text-xs">
+                      <Checkbox v-model:checked="guestForm.identification" class="bg-transparent disabled:border-gray-400" />
+                      <span class="ml-2 mr-2 text-xs">Solictar foto o identificación del visitante</span>
+                      <el-tooltip
+                      content="Puedes requerirlo para mayor seguridad"
+                      placement="top">
+                      <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                        <i class="fa-solid fa-info text-primary text-[7px]"></i>
+                      </div>
+                    </el-tooltip>
+                  </label>
+              </div>
+
+              <!-- Primer mitad del grid del formulariovisita frecuente ------------------ -->
+              <div>
+                <div>
+                  <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
+                  <el-select class="w-full" v-model="guestForm.guest_type" clearable
+                      placeholder="Seleccione" no-data-text="No hay opciones registradas"
+                      no-match-text="No se encontraron coincidencias">
+                      <el-option v-for="item in guestTypes" :key="item" :label="item" :value="item" />
+                  </el-select>
+                  <InputError :message="guestForm.errors.guest_type" />
+                </div>
+
+                <div v-if="guestForm.guest_type == 'Vehicular'" class="border border-[#D9D9D9] rounded-sm mt-2 py-3 px-5">
+                  <div class="flex justify-between items-center text-sm">
+                    <p class="font-bold">Selecciona el vehículo</p>
+                    <el-tooltip
+                      content="Selecciona el vehículo en el que vendrá tu visita"
+                      placement="top">
+                      <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                        <i class="fa-solid fa-info text-primary text-[7px]"></i>
+                      </div>
+                    </el-tooltip>
+                  </div>
+                </div>
+              </div>
+
+
+            </section>
+
             <div class="flex justify-end space-x-1 pt-5 pb-1">
               <CancelButton @click="favoriteGuestModal = false">Cancelar</CancelButton>  
               <PrimaryButton @click="CreateSale">Continuar</PrimaryButton>
             </div>
           </div>
         </Modal>
+        {{selectedFavoriteGuest}}
     </AppLayout>
   
 </template>
@@ -314,6 +378,8 @@ export default {
     return {
       guestForm,
       eventForm,
+      favoriteGuestId: null,
+      selectedFavoriteGuest: null,
       guestImage: null,
       vehicleImage: null,
       favoriteGuestModal: false,
@@ -443,6 +509,9 @@ export default {
       } catch (err) {
         console.error('Error al copiar el código QR al portapapeles', err);
       }
+    },
+    findFavoriteGuest() {
+      this.selectedFavoriteGuest = this.favorite_guests.data.find( item => item.id == this.favoriteGuestId);
     },
   },
   mounted() {
