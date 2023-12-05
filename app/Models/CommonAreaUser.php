@@ -18,11 +18,25 @@ class CommonAreaUser extends Pivot
         'qr_code',
         'payment_data',
         'cancelation_data',
+        'user_id',
+        'common_area_id',
     ];
 
     protected $casts = [
         'payment_data' => 'array',
         'cancelation_data' => 'array',
+        'time' => 'datetime',
+        'date' => 'datetime',
     ];
 
+    // relationships
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function commonArea()
+    {
+        return $this->belongsTo(CommonArea::class);
+    }
 }
