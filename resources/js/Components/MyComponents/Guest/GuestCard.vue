@@ -41,7 +41,7 @@
             <i class="fa-regular fa-file-lines mr-4"></i>
             <p>Notas</p>
           </div>
-          <div v-if="cardDetails && guest.identification" class="flex items-center mb-1 col-span-2 text-primary">
+          <div v-if="cardDetails && guest.identification" class="flex items-center mb-1 mt-4 col-span-2 text-primary">
             <i class="fa-regular fa-square-check mr-4"></i>
             <p>Solicitar foto o id</p>
           </div>

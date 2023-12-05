@@ -63,12 +63,15 @@ Route::resource('payment-tickets', PaymentTicketController::class)->middleware('
 //Guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('guests', GuestController::class)->middleware('auth');
+Route::post('guests/update-with-media/{guest}', [GuestController::class, 'updateWithMedia'])->name('guests.update-with-media')->middleware('auth');
+
 
 
 //Favorite guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('favorite-guests', FavoriteGuestController::class)->middleware('auth');
 Route::get('favorite-guest-get-all', [FavoriteGuestController::class, 'getAll'])->name('favorite-guests.get-all')->middleware('auth');
+Route::post('favorite-guest/update-with-media/{guest}', [FavoriteGuestController::class, 'updateWithMedia'])->name('favorite-guest.update-with-media')->middleware('auth');
 
 
 //Events routes-----------------------------------------------------------------------------------

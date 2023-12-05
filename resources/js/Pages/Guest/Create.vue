@@ -2,7 +2,6 @@
     <AppLayout title="Registrar visita">
         <div class="lg:py-7 lg:px-10">
             <Back />
-
             <form @submit.prevent="store" class="mx-8 mt-9 grid grid-cols-2 gap-9 p-4">
                 <div>
                     <div class="flex justify-center items-start space-x-12 text-sm mb-8">
@@ -29,7 +28,7 @@
                     <section v-if="guestForm.type == 'Visita'">
                         <div class="relative">
                             <InputLabel value="Nombre del visitante*" class="ml-3 mb-1" />
-                            <p @click="favoriteGuestModal = true" class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
+                            <p @click="guestForm.reset(); favoriteGuestModal = true" class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
                             <input v-model="guestForm.name" class="input" type="text" />
                             <InputError :message="guestForm.errors.name" />
                             <p class="text-xs ml-3">En caso de no saber el nombre de la visita, solo puede agregar  el nombre de la empresa o el tipo de servicio que le realizarán. (p ej. servicio de comida)</p>
@@ -74,7 +73,7 @@
                 <section v-if="guestForm.type == 'Visita'" class="mt-14">
                   <div>
                     <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
-                    <el-select class="w-full" v-model="guestForm.guest_type" clearable
+                    <el-select @change="resetVehicleData" class="w-full" v-model="guestForm.guest_type" clearable
                         placeholder="Seleccione" no-data-text="No hay opciones registradas"
                         no-match-text="No se encontraron coincidencias">
                         <el-option v-for="item in guestTypes" :key="item" :label="item" :value="item" />
@@ -92,7 +91,7 @@
                       <div>
                         <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
                         <figure @click="triggerVehicleImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                            <i v-if="vehicleImage" @click.stop="vehicleImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
+                            <i v-if="vehicleImage" @click.stop="vehicleImage = null; guestForm.vehicle_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
                             <i v-if="!vehicleImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
                               <img v-if="vehicleImage" :src="vehicleImage" alt="Vista previa" class="w-full h-full  object-contain bg-no-repeat rounded-md opacity-50" />
                             <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
@@ -126,9 +125,9 @@
                   </div>
 
                   <div class="mt-3">
-                      <InputLabel value="Notas" class="ml-3 mb-1" />
-                      <textarea v-model="guestForm.notes" class="textarea" rows="3"></textarea>
-                      <InputError :message="guestForm.errors.notes" />
+                    <InputLabel value="Notas" class="ml-3 mb-1" />
+                    <textarea v-model="guestForm.notes" class="textarea" rows="3"></textarea>
+                    <InputError :message="guestForm.errors.notes" />
                   </div>
                   
                   <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
@@ -226,7 +225,6 @@
                 </div>
         </form>
         </div>
-
         <!-- Visitante frecuente modal -------------------------------------------------->
         <Modal :show="favoriteGuestModal"
           @close="favoriteGuestModal = false">
@@ -239,7 +237,6 @@
             <h1>Programar visita frecuente</h1>
 
             <div class="mt-4">
-              <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
               <el-select @change="findFavoriteGuest" class="w-full" v-model="favoriteGuestId" clearable filterable
                   placeholder="Seleccione" no-data-text="No hay opciones registradas"
                   no-match-text="No se encontraron coincidencias">
@@ -303,7 +300,7 @@
                 </div>
 
                 <div v-if="guestForm.guest_type == 'Vehicular'" class="border border-[#D9D9D9] rounded-sm mt-2 py-3 px-5">
-                  <div class="flex justify-between items-center text-sm">
+                  <div class="flex justify-between items-center text-sm mb-3">
                     <p class="font-bold">Selecciona el vehículo</p>
                     <el-tooltip
                       content="Selecciona el vehículo en el que vendrá tu visita"
@@ -313,21 +310,67 @@
                       </div>
                     </el-tooltip>
                   </div>
+                  <!-- --------- info vehículos ----------- -->
+                  <div v-for="(vehicle, index) in selectedFavoriteGuest?.vehicle_details" :key="index"
+                    class="rounded-md bg-[#F2F2F2] col-span-2 mx-auto w-full px-2 py-2 space-y-2 text-xs mt-1"
+                  >
+                    <div @click="vehicleDetails[index] = !vehicleDetails[index]" class="flex justify-between items-center cursor-pointer relative">
+                      <input v-model="selectedVehicleIndex" :value="index" @click.stop="" @change="saveVehicleDetails" class="absolute left-0 bg-transparent checked:text-primary active:text-primary focus:ring-primary transition duration-300 ease-out" type="radio" name="selectedVehicle">
+                      <p class="text-gray-800 text-center font-bold ml-7">Vehículo {{ index + 1 }}</p>
+                      <i
+                        class="fa-solid fa-angle-up transform origin-center transition duration-200 ease-out ml-5"
+                        :class="{ '!rotate-180': vehicleDetails[index] }"
+                      ></i>
+                    </div>
+                    <section v-if="vehicleDetails[index]">
+                      <div class="border border-[#CCCCCC] border-dashed w-full"></div>
+                      <p class="text-gray-400 text-center">Foto del vehículo</p>
+                      <figure v-if="selectedFavoriteGuest?.media_vehicle?.length > 0" class="w-48 h-32 rounded-xl mx-auto">
+                        <img class="object-contain bg-no-repeat h-32 rounded-lg" :src="selectedFavoriteGuest?.media_vehicle[index]?.original_url" alt="Sin imagen" />
+                      </figure>
+                      <div class="w-48 h-32 rounded-xl flex border border-dashed border-gray2 mx-auto" v-else></div>
+                      <div
+                        class="w-full border-b border-dashed border-[#CCCCCC] mt-2 flex justify-between"
+                      >
+                        <p class="pl-9 text-gray-500">Marca</p>
+                        <p class="pr-9">{{ vehicle.brand }}</p>
+                      </div>
+                      <div
+                        class="w-full border-b border-dashed border-[#CCCCCC] mt-2 flex justify-between"
+                      >
+                        <p class="pl-9 text-gray-500">Modelo</p>
+                        <p class="pr-9">{{ vehicle.model }}</p>
+                      </div>
+                      <div
+                        class="w-full border-b border-dashed border-[#CCCCCC] mt-2 flex justify-between"
+                      >
+                        <p class="pl-9 text-gray-500">Color</p>
+                        <p class="pr-9">{{ vehicle.color }}</p>
+                      </div>
+                      <div
+                        class="w-full border-b border-dashed border-[#CCCCCC] mt-2 flex justify-between"
+                      >
+                        <p class="pl-9 text-gray-500">Placas</p>
+                        <p class="pr-9">{{ vehicle.plate }}</p>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <InputLabel value="Notas" class="ml-3 mb-1" />
+                  <textarea v-model="guestForm.notes" class="textarea" rows="3"></textarea>
+                  <InputError :message="guestForm.errors.notes" />
                 </div>
               </div>
-
-
             </section>
 
             <div class="flex justify-end space-x-1 pt-5 pb-1">
-              <CancelButton @click="favoriteGuestModal = false">Cancelar</CancelButton>  
-              <PrimaryButton @click="CreateSale">Continuar</PrimaryButton>
+              <CancelButton @click="guestForm.reset(); favoriteGuestModal = false">Cancelar</CancelButton>  
+              <PrimaryButton @click="store">Continuar</PrimaryButton>
             </div>
           </div>
         </Modal>
-        {{selectedFavoriteGuest}}
     </AppLayout>
-  
 </template>
 
 <script>
@@ -357,10 +400,11 @@ export default {
         brand: null,
         model: null,
         color: null,
-        plate: null
+        plate: null,
       },
       guest_image: null,
       vehicle_image: null,
+      qr_code: null,
     });
 
     const eventForm = useForm({
@@ -378,11 +422,13 @@ export default {
     return {
       guestForm,
       eventForm,
-      favoriteGuestId: null,
-      selectedFavoriteGuest: null,
       guestImage: null,
       vehicleImage: null,
-      favoriteGuestModal: false,
+      favoriteGuestId: null, //modal visita frecuente
+      selectedFavoriteGuest: null, //modal visita frecuente
+      selectedVehicleIndex: null, //modal visita frecuente
+      favoriteGuestModal: false, //modal visita frecuente
+      vehicleDetails: Array.from({ length: this.selectedFavoriteGuest?.vehicle_details?.length }, () => false), //modal visita frecuente
       guestTypes: ["Peatonal", "Vehicular"],
     };
   },
@@ -441,6 +487,7 @@ export default {
 
       // Asignar la cadena aleatoria al dato 'cadenaAleatoria'
       this.eventForm.qr_code = cadenaAleatoria;
+      this.guestForm.qr_code = cadenaAleatoria;
     },
     triggerGuestImageInput() {
       // Simular clic en el input file cuando se hace clic en el icono de la cámara
@@ -511,11 +558,28 @@ export default {
       }
     },
     findFavoriteGuest() {
+      this.guestForm.reset();
+      this.vehicleDetails = Array.from({ length: this.selectedFavoriteGuest?.vehicle_details?.length }, () => false)
+      this.selectedVehicleIndex = null;
       this.selectedFavoriteGuest = this.favorite_guests.data.find( item => item.id == this.favoriteGuestId);
+
+      //guardar informacion a variables de formulario
+      this.guestForm.name = this.selectedFavoriteGuest.name;
     },
+    saveVehicleDetails() {
+      this.guestForm.vehicle_details = { ... this.selectedFavoriteGuest.vehicle_details[this.selectedVehicleIndex]};
+    },
+    resetVehicleData() {
+      this.guestForm.vehicle_image = null;
+      this.vehicleImage = null;
+      this.guestForm.vehicle_details.brand = null;
+      this.guestForm.vehicle_details.model = null;
+      this.guestForm.vehicle_details.color = null;
+      this.guestForm.vehicle_details.plate = null;
+    }
   },
   mounted() {
-     this.qrGenerator(8);
+     this.qrGenerator(5);
   }
 };
 </script>
