@@ -38,7 +38,7 @@
       </div>
       <div class="mt-4 lg:mx-12">
         <div v-if="favoriteGuests" class="grid grid-cols-3 gap-5">
-          <FavoriteGuestCard @guestDeleted="handleGuestDeleted" v-for="favorite_guest in favorite_guests" :key="favorite_guest" :favorite_guest="favorite_guest" />
+          <FavoriteGuestCard @favoriteGuestDeleted="handleFavoriteGuestDeleted" v-for="favoriteGuest in favoriteGuests" :key="favoriteGuest" :favoriteGuest="favoriteGuest" />
         </div>
         <p class="text-xs text-gray-400 text-center" v-else>No tienes visitantes frecuentes registrados</p>
       </div>
@@ -86,6 +86,15 @@ export default {
         this.guests.data.splice(deletedItemIndex, 1);
       }
     },
+    handleFavoriteGuestDeleted(deletedItemId) {
+      // Encuentra el índice del objeto eliminado en la lista
+      const deletedItemIndex = this.favoriteGuests.findIndex(item => item.id === deletedItemId);
+
+      // Elimina el objeto localmente
+      if (deletedItemIndex !== -1) {
+        this.favoriteGuests.splice(deletedItemIndex, 1);
+      }
+    },
     async fetchFavoriteGuests(){
       try {
           const response = await axios.get(route('favorite-guests.get-all'));
@@ -102,8 +111,32 @@ export default {
       if (newVal == 2 && this.favoriteGuests === null) {
         //recupera la información de visitas frecuentes
         this.fetchFavoriteGuests();
+
         } 
+      if (newVal == 3 && this.guestHistory === null) {
+        //recupera la información de visitas frecuentes
+        // this.fetchGuestHistory();
+        } 
+
+        // Agrega la variable currentTab=newVal a la URL para mejorar la navegacion al actalizar o cambiar de pagina
+        const currentURL = new URL(window.location.href);
+        currentURL.searchParams.set('currentTab', newVal);
+
+        // Actualiza la URL
+        window.history.replaceState({}, document.title, currentURL.href);
       }
-  }
+  },
+  mounted() {
+  // Obtén la URL actual
+  const currentURL = new URL(window.location.href);
+
+  // Extrae el valor de 'currentTab' de los parámetros de búsqueda
+  const currentTabFromURL = currentURL.searchParams.get('currentTab');
+
+  // Convierte el valor a un número, ya que los parámetros de búsqueda son cadenas
+  this.currentTab = parseInt(currentTabFromURL) || 1;
+
+  // ... el resto de tu lógica en el mounted ...
+},
 };
 </script>
