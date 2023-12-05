@@ -14,30 +14,13 @@
   background-color: #9fe6c3 !important;
 }
 
-
-.input::-webkit-input-placeholder {
-    color: #9fe6c3; /* Establece el color del placeholder en blanco */
-  }
-  
-  .input:-moz-placeholder {
-    color: #9fe6c3; /* Establece el color del placeholder en blanco para Firefox */
-  }
-  
-  .input::-moz-placeholder {
-    color: #9fe6c3; /* Establece el color del placeholder en blanco para Firefox */
-  }
-  
-  .input:-ms-input-placeholder {
-    color: #9fe6c3; /* Establece el color del placeholder en blanco para Microsoft Edge */
-  }
-
 @layer components{
     .input{
-        @apply h-9 w-full bg-transparent border placeholder:text-gray3 border-[#D9D9D9] text-gray-600 text-sm rounded-md focus:ring-primary focus:border-primary block p-2.5;
+        @apply h-9 w-full bg-transparent border placeholder:text-gray3 border-[#D9D9D9] text-gray-600 text-sm rounded-md focus:ring-0 focus:border-gray4 block p-2.5;
     }
 
     .textarea{
-        @apply bg-transparent placeholder:text-gray3 border border-[#D9D9D9] text-gray-600 text-sm rounded-md focus:ring-primary focus:border-primary block w-full p-2.5;
+        @apply bg-gray4 placeholder:text-gray3 border border-[#D9D9D9] text-gray2 text-sm rounded-md focus:ring-0 focus:border-gray4 block w-full p-2.5;
     }
 
     .label{

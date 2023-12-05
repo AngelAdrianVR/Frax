@@ -5,9 +5,6 @@
                 <Slide v-for="slide in 10" :key="slide">
                     <div class="carousel__item">{{ slide }}</div>
                 </Slide>
-                <!-- <template #addons>
-                    <Pagination />
-                </template> -->
             </Carousel>
             <div class="flex justify-center space-x-2 mt-2">
                 <button v-for="image in 10" :key="image" @click="currentSlide = image" class="w-2 h-2 rounded-full"
@@ -39,16 +36,17 @@
             </div>
         </div>
         <div class="h-[12%] flex">
-            <PrimaryButton class="w-full self-end">Reservar</PrimaryButton>
+            <PrimaryButton @click="$inertia.get(route('common-areas-users.create'), {common_area_id: commonArea.id})" class="w-full self-end">Reservar
+            </PrimaryButton>
         </div>
     </div>
 </template>
   
 <script>
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Carousel, Pagination, Slide } from 'vue3-carousel';
+import { Link } from "@inertiajs/vue3";
+import { Carousel, Slide } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
-import axios from 'axios';
 
 export default {
     data() {
@@ -60,7 +58,7 @@ export default {
         PrimaryButton,
         Carousel,
         Slide,
-        Pagination,
+        Link,
     },
     props: {
         commonArea: Object,
