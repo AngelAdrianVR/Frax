@@ -33,13 +33,15 @@
                         <div>
                             <InputLabel value="Fecha de reservación*" class="ml-3 mb-1" />
                             <el-date-picker v-model="form.date" @change="updateTimeOptions" type="date"
-                                placeholder="Seleccione" :disabled-date="disabledDate" format="ddd DD/MM/YYYY" />
-                            <InputError :message="form.errors.date" />
+                                placeholder="Seleccione" :disabled-date="disabledDate" format="dddd, DD/MMM/YYYY"
+                                value-format="YYYY-MM-DD" />
+                            <InputError :message="form.errors.date" /> {{ timePickerOptions }}
                         </div>
                         <div v-if="form.date" class="mt-2">
                             <InputLabel value="Horario disponible a reservar*" class="ml-3 mb-1" />
                             <el-time-select v-model="form.time" :start="timePickerOptions[0]" :end="timePickerOptions[1]"
-                                :step="timePickerOptions[2]" format="hh:mm A" placeholder="Elige el horario" class="w-full" />
+                                :step="timePickerOptions[2]" format="hh:mm A" placeholder="Elige el horario"
+                                class="w-full" />
                             <InputError :message="form.errors.time" />
                         </div>
                         <div class="mt-2">
@@ -100,6 +102,8 @@ import Checkbox from "@/Components/Checkbox.vue";
 import { useForm, Link } from "@inertiajs/vue3";
 import { Carousel, Slide } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
+import { parse, parseISO, format, addHours, isBefore } from 'date-fns';
+import axios from "axios";
 
 export default {
     data() {
@@ -112,8 +116,9 @@ export default {
         return {
             form,
             currentSlide: 1,
-            reservedDates: ["2023-12-05", "2023-12-13"],
+            // reservations: [],
             timePickerOptions: [],
+
         };
     },
     components: {
@@ -128,43 +133,55 @@ export default {
         Slide,
     },
     props: {
-        common_area: Object
+        common_area: Object,
+        reservations: Object,
     },
     methods: {
         updateTimeOptions() {
             if (this.form.date) {
-                const dayOfWeek = this.form.date.getDay();
-                const scheduleInfo = this.common_area.schedule[dayOfWeek];
+                const reservationDate = parseISO(this.form.date);
+
+                const scheduleInfo = this.common_area.schedule[reservationDate.getDay()];
 
                 if (scheduleInfo && scheduleInfo !== null) {
                     const openTime = scheduleInfo.open;
                     const closeTime = scheduleInfo.close;
                     const duration = scheduleInfo.duration;
 
-                    this.timePickerOptions = [openTime, closeTime, duration];
+                    // Filtra las reservaciones del día seleccionado
+                    const reservationsOfDay = this.reservations.data.filter(reservation => reservation.date == this.formatDate(reservationDate));
+                    // Genera la lista de horarios disponibles
+                    this.generateTimeOptions(openTime, closeTime, duration, reservationsOfDay);
                 }
             }
         },
-        // generateTimeOptions(openTime, closeTime, duration) {
-        //     const timeOptions = [];
-        //     const currentTime = new Date(`2000-01-01T${openTime}`);
-        //     const closeDateTime = new Date(`2000-01-01T${closeTime}`);
+        generateTimeOptions(openTime, closeTime, duration, reservationsOfDay) {
+            const timeOptions = [];
+            const currentTime = parse(`2000-01-01T${openTime}`, 'yyyy-MM-dd HH:mm', new Date());
+            const closeDateTime = parse(`2000-01-01T${closeTime}`, 'yyyy-MM-dd HH:mm', new Date());
 
-        //     while (currentTime <= closeDateTime) {
-        //         const formattedTime = this.formatTime(currentTime);
-        //         timeOptions.push(formattedTime);
+            // Itera sobre el horario y verifica las reservaciones
+            while (isBefore(currentTime, closeDateTime)) {
+                const formattedTime = format(currentTime, 'HH:mm');
 
-        //         currentTime.setMinutes(currentTime.getMinutes() + duration);
-        //     }
+                // Verifica si la hora actual está disponible
+                const isAvailable = !reservationsOfDay.some(reservation => reservation.time == formattedTime);
 
-        //     this.timePickerOptions = timeOptions;
-        // },
-        // formatTime(date) {
-        //     // Formatea la hora en el formato "HH:mm"
-        //     const hours = String(date.getHours()).padStart(2, "0");
-        //     const minutes = String(date.getMinutes()).padStart(2, "0");
-        //     return `${hours}:${minutes}`;
-        // },
+                if (isAvailable) {
+                    timeOptions.push(formattedTime);
+                }
+                currentTime = addHours(currentTime, duration);
+            }
+            console.log(duration)
+
+            this.timePickerOptions = timeOptions;
+        },
+        formatTime(date) {
+            // Formatea la hora en el formato "HH:mm"
+            const hours = String(date.getHours()).padStart(2, "0");
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            return `${hours}:${minutes}`;
+        },
         store() {
             this.form.post(route("guests.store"), {
                 onSuccess: () => {
@@ -186,8 +203,10 @@ export default {
             // Formatea la fecha para compararla con las fechas reservadas
             const formattedDate = this.formatDate(time);
 
-            // Verifica si la fecha está en la lista de fechas reservadas
-            const isReservedDate = this.reservedDates.includes(formattedDate);
+            // Verifica si la fecha y hora está en la lista de reservaciones
+            const isReservedDateTime = this.reservations.data.some(reservation => {
+                return formattedDate == reservation.date;
+            });
 
             // Verifica si la fecha está dentro de la anticipación de la reserva
             const today = new Date();
@@ -195,8 +214,12 @@ export default {
             anticipationDate.setDate(today.getDate() + this.common_area.days_anticipation_booking);
             const isWithinAnticipation = time < anticipationDate;
 
-            // La fecha se deshabilita si es un día configurado como "null" o una fecha reservada
-            return isDayNull || isReservedDate || isWithinAnticipation;
+            // Verifica si la fecha es anterior a la fecha actual
+            const isPastDate = time < today;
+
+            // La fecha se deshabilita si es un día configurado como "null", una fecha reservada, está dentro de la anticipación o es una fecha pasada
+            // return isDayNull || isReservedDateTime || isWithinAnticipation || isPastDate;
+            return isDayNull || isWithinAnticipation || isPastDate;
         },
         formatDate(date) {
             // Formatea la fecha en el formato "YYYY-MM-DD"
@@ -204,7 +227,7 @@ export default {
             const month = String(date.getMonth() + 1).padStart(2, "0");
             const day = String(date.getDate()).padStart(2, "0");
             return `${year}-${month}-${day}`;
-        }
+        },
     },
 };
 </script>

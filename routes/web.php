@@ -51,6 +51,7 @@ Route::resource('common-areas', CommonAreaController::class)->middleware('auth')
 //Common areas user (bookings) routes---------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
 Route::resource('common-areas-users', CommonAreaUserController::class)->middleware('auth');
+// Route::get('common-areas-users-active-reservations', [CommonAreaUserController::class, 'activeReservations'])->name('common-areas-users.active-reservations')->middleware('auth');
 
 //Payment-tickets routes---------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------

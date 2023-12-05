@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommonAreaUserResource;
 use App\Models\CommonArea;
 use App\Models\CommonAreaUser;
 use Illuminate\Http\Request;
@@ -24,8 +25,9 @@ class CommonAreaUserController extends Controller
     public function create(Request $request)
     {
         $common_area = CommonArea::find($request->common_area_id);
+        $reservations = CommonAreaUserResource::collection(CommonAreaUser::whereDate('date', '>=', today())->get(['id', 'date', 'time']));
 
-        return inertia('CommonAreaUser/Create', compact('common_area'));
+        return inertia('CommonAreaUser/Create', compact('common_area', 'reservations'));
     }
 
     /**
@@ -67,4 +69,11 @@ class CommonAreaUserController extends Controller
     {
         //
     }
+    
+    // public function activeReservations()
+    // {
+    //     $reservations = CommonAreaUser::whereDate('date', '<=', today())->get(['id', 'date', 'time']);
+
+    //     return response()->json(['items' => $reservations]);
+    // }
 }
