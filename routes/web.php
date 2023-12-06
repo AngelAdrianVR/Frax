@@ -6,6 +6,7 @@ use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
 use App\Http\Controllers\CommonAreaUserController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTicketController;
 use Illuminate\Foundation\Application;
@@ -60,13 +61,14 @@ Route::resource('common-areas-users', CommonAreaUserController::class)->middlewa
 //-------------------------------------------------------------------------------------------------
 Route::resource('payment-tickets', PaymentTicketController::class)->middleware('auth');
 
+//maintenances routes---------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('maintenances', MaintenanceController::class)->middleware('auth');
 
 //Guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('guests', GuestController::class)->middleware('auth');
 Route::post('guests/update-with-media/{guest}', [GuestController::class, 'updateWithMedia'])->name('guests.update-with-media')->middleware('auth');
-
-
 
 //Favorite guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
