@@ -49,7 +49,6 @@ export default {
                     icon: '<i class="fa-solid fa-house text-xs"></i>',
                     route: route('dashboard'),
                     active: route().current('dashboard'),
-                    notifications: false,
                     options: [],
                     dropdown: false,
                     show: true
@@ -59,7 +58,6 @@ export default {
                     icon: '<i class="fa-solid fa-dollar-sign"></i>',
                     route: route('payments.index'),
                     active: route().current('payments.*'),
-                    notifications: false,
                     options: [],
                     dropdown: false,
                     show: true
@@ -69,7 +67,6 @@ export default {
                     icon: '<i class="fa-solid fa-users text-sm"></i>',
                     route: route('guests.index'),
                     active: route().current('guests.*'),
-                    notifications: false,
                     options: [],
                     dropdown: false,
                     show: true
@@ -79,7 +76,15 @@ export default {
                     icon: '<i class="fa-solid fa-leaf text-sm"></i>',
                     route: route('common-areas-users.index'),
                     active: route().current('common-areas-users.*'),
-                    notifications: false,
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
+                {
+                    label: 'Mantenimiento',
+                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm"></i>',
+                    route: route('maintenances.index'),
+                    active: route().current('maintenances.*'),
                     options: [],
                     dropdown: false,
                     show: true
