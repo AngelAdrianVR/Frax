@@ -102,7 +102,7 @@
     </div>
     <div
       @click="cardDetails = !cardDetails"
-      class="flex items-center text-primary font-bold cursor-pointer lg:mx-5"
+      class="flex items-center text-primary font-bold cursor-pointer mx-5"
     >
       <p>{{ cardDetails ? "Ocultar" : "Ver más" }}</p>
       <i

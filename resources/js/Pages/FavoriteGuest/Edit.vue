@@ -1,9 +1,9 @@
 <template>
-    <AppLayout title="Registrar visita frecuente">
+    <AppLayout title="Editar visita frecuente">
         <div class="lg:py-7 lg:px-10 py-2 px-1">
             <Back />
-            <form @submit.prevent="store" class="lg:mx-16 mt-5 p-4">
-                <h1 class="font-bold text-lg"><i class="fa-regular fa-star mr-2"></i> Agregar visita frecuente</h1>
+            <form @submit.prevent="update" class="lg:mx-16 mt-5 p-4">
+                <h1 class="font-bold text-lg"><i class="fa-regular fa-star mr-2"></i> Editar visita frecuente</h1>
                 <div class="lg:grid grid-cols-2 gap-9">
                     <!-- Primera mitad del grid ---------------------- -->
                     <section>
@@ -127,7 +127,7 @@
                     </section>
 
                     <div class="text-right col-span-2 my-3">
-                    <PrimaryButton>Guardar</PrimaryButton>
+                    <PrimaryButton>Actualizar</PrimaryButton>
                   </div>
                 </div>
             </form>
@@ -150,17 +150,17 @@ import { useForm } from "@inertiajs/vue3";
 export default {
   data() {
     const form = useForm({
-      guest_type: null, //solo para hacer validación desde metodo store.
-      name: null,
-      identification: false,
-      notes: null,
-      vehicle_details: [],
-      guest_image: null,
+      guest_type: this.favorite_guest.vehicle_details?.length > 0 ? 'Vehicular' : 'Peatonal', //solo para hacer validación desde metodo update.
+      name: this.favorite_guest.name,
+      identification: !!this.favorite_guest.identification,
+      notes: this.favorite_guest.notes,
+      vehicle_details: this.favorite_guest.vehicle_details,
+      guest_image: null, //se asigna en el mounted
     });
 
     return {
       form,
-      guestImage: null,
+      guestImage: null, //se asigna en el mounted
       vehicleImage: null,
       editIndex: null,
       localVehicleDetails: {
@@ -183,19 +183,33 @@ export default {
     Back
   },
   props: {
-
+    favorite_guest: Object
   },
   methods: {
-    store() {
-      this.form.post(route("favorite-guests.store"), {
-        onSuccess: () => {
-          this.$notify({
-            title: "Correcto",
-            message: "Se ha registrado tu visita frecuente",
-            type: "success",
-          });
-        },
-      });
+    update() {
+        if (this.form.guest_image !== null ) {
+            this.form.post(route("favorite-guests.update-with-media", this.favorite_guest.id), {
+                method: '_put',
+                onSuccess: () => {
+                  this.$notify({
+                  title: "Correcto",
+                  message: "Se ha editado la visita",
+                  type: "success",
+                      });
+                  },
+              });
+              } else {
+
+        this.form.put(route("favorite-guests.update", this.favorite_guest.id), {
+            onSuccess: () => {
+                this.$notify({
+                    title: "Correcto",
+                    message: "Se ha editado tu visita frecuente",
+                    type: "success",
+                });
+                },
+            });
+             }
     },
     addVehicle() {
       // Crear una nueva instancia del objeto localVehicleDetails
@@ -263,6 +277,10 @@ export default {
     },
   },
   mounted() {
+    // Encuentra el primer elemento en favorite_guest.media con collection_name igual a "guest_image"
+    const guestImageMedia = this.favorite_guest.media.find(item => item.collection_name === "guest_image");
+    this.form.guest_image = guestImageMedia.original_url;
+    this.guestImage = guestImageMedia.original_url;
   }
 };
 </script>
