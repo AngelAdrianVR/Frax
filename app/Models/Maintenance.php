@@ -16,8 +16,14 @@ class Maintenance extends Model implements HasMedia
         'status',
         'response_time',
         'description',
+        'location',
         'is_anonymous_report',
         'user_id',
+        'finished_at',
+    ];
+
+    protected $casts = [
+        'finished_at' => 'datetime',
     ];
 
     // relationships

@@ -6,6 +6,10 @@
     display: none;
 }
 
+body {
+    font-family: 'Maitree', sans-serif;
+}
+
 .input:-webkit-autofill,
 .input:-webkit-autofill:hover,
 .input:-webkit-autofill:focus,
