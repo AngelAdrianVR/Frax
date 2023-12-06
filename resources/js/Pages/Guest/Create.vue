@@ -1,8 +1,8 @@
 <template>
     <AppLayout title="Registrar visita">
-        <div class="lg:py-7 lg:px-10">
+        <div class="lg:py-7 lg:px-10 py-2 px-1">
             <Back />
-            <form @submit.prevent="store" class="mx-8 mt-9 grid grid-cols-2 gap-9 p-4">
+            <form @submit.prevent="store" class="mx-8 mt-9 md:grid grid-cols-2 md:gap-9 md:p-4">
                 <div>
                     <div class="flex justify-center items-start space-x-12 text-sm mb-8">
                         <div class="flex items-center mr-5">
@@ -100,25 +100,25 @@
 
                         <div class="mt-3">
                             <InputLabel value="Marca*" class="ml-3 mb-1" />
-                            <input class="input" v-model="guestForm.vehicle_details.brand" type="text" required />
+                            <input class="input" v-model="guestForm.vehicle_details.brand" type="text" placeholder="Escribe la marca del vehículo" required />
                             <!-- <InputError :message="guestForm.errors?.vehicle_details?.brand" /> -->
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Modelo*" class="ml-3 mb-1" />
-                            <input class="input" v-model="guestForm.vehicle_details.model" type="text" required />
+                            <input class="input" v-model="guestForm.vehicle_details.model" type="text" placeholder="Escribe el modelo del vehículo" required />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.model" /> -->
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Color*" class="ml-3 mb-1" />
-                            <input class="input" v-model="guestForm.vehicle_details.color" type="text" required />
+                            <input class="input" v-model="guestForm.vehicle_details.color" type="text" placeholder="Escribe el color del vehículo" required />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.color" /> -->
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Placa*" class="ml-3 mb-1" />
-                            <input class="input uppercase" v-model="guestForm.vehicle_details.plate" type="text" required />
+                            <input class="input uppercase" v-model="guestForm.vehicle_details.plate" type="text" placeholder="Escribe la placa del vehículo" required />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.plate" /> -->
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                             <InputLabel value="Horario" class="ml-3 mb-1" />
                               <el-time-select
                                 v-model="eventForm.start_time"
-                                class="mr-4"
+                                class="mr-4 mb-2 lg:mb-0"
                                 placeholder="Hora de inicio"
                                 start="07:00"
                                 step="00:15"
@@ -204,7 +204,7 @@
                         </div>
                     </section>
 
-                    <section v-if="guestForm.type == 'Evento'">
+                    <section class="mt-5 lg:mt-0" v-if="guestForm.type == 'Evento'">
                       <h1 class="font-bold text-xl text-center">Envia QR o código de autorización</h1>
                       <div class="text-center mt-7">
                         <i class="fa-solid fa-qrcode text-9xl"></i>
@@ -220,7 +220,7 @@
                       </div>
                     </section>
                 
-                <div class="text-left col-span-2">
+                <div class="text-left col-span-2 mt-5 mb-3">
                   <PrimaryButton>Guardar</PrimaryButton>
                 </div>
         </form>
@@ -253,7 +253,7 @@
               <InputError :message="guestForm.errors.guest_type" />
             </div>
 
-            <section v-if="selectedFavoriteGuest" class="grid grid-cols-2">
+            <section v-if="selectedFavoriteGuest" class="lg:grid grid-cols-2">
               <!-- Primer mitad del grid del formulariovisita frecuente ------------------ -->
               <div>
                 <figure v-if="selectedFavoriteGuest?.media_guest?.length > 0" class="bg-[#F2F2F2] w-44 h-36 rounded-sm">
@@ -290,7 +290,7 @@
               <!-- Primer mitad del grid del formulariovisita frecuente ------------------ -->
               <div>
                 <div>
-                  <InputLabel value="Tipo de acceso*" class="ml-3 mb-1" />
+                  <InputLabel value="Tipo de acceso*" class="ml-3 mb-1 mt-7 lg:mt-0" />
                   <el-select class="w-full" v-model="guestForm.guest_type" clearable
                       placeholder="Seleccione" no-data-text="No hay opciones registradas"
                       no-match-text="No se encontraron coincidencias">

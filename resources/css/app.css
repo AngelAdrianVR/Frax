@@ -20,7 +20,7 @@
     }
 
     .textarea{
-        @apply bg-gray4 placeholder:text-gray3 border border-[#D9D9D9] text-gray2 text-sm rounded-md focus:ring-0 focus:border-gray4 block w-full p-2.5;
+        @apply bg-transparent placeholder:text-gray3 border border-[#D9D9D9] text-gray2 text-sm rounded-md focus:ring-0 focus:border-gray4 block w-full p-2.5;
     }
 
     .label{

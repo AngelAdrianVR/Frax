@@ -6,6 +6,7 @@ use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
 use App\Http\Controllers\CommonAreaUserController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\GuestHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTicketController;
 use Illuminate\Foundation\Application;
@@ -47,13 +48,16 @@ Route::middleware([
 Route::resource('payments', PaymentController::class)->middleware('auth');
 Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name('payments.pay')->middleware('auth');
 
+
 //Common areas routes---------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 Route::resource('common-areas', CommonAreaController::class)->middleware('auth');
 
+
 //Common areas user (bookings) routes---------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------
 Route::resource('common-areas-users', CommonAreaUserController::class)->middleware('auth');
+
 
 //Payment-tickets routes---------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
@@ -66,12 +70,17 @@ Route::resource('guests', GuestController::class)->middleware('auth');
 Route::post('guests/update-with-media/{guest}', [GuestController::class, 'updateWithMedia'])->name('guests.update-with-media')->middleware('auth');
 
 
-
 //Favorite guests routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('favorite-guests', FavoriteGuestController::class)->middleware('auth');
 Route::get('favorite-guest-get-all', [FavoriteGuestController::class, 'getAll'])->name('favorite-guests.get-all')->middleware('auth');
-Route::post('favorite-guest/update-with-media/{guest}', [FavoriteGuestController::class, 'updateWithMedia'])->name('favorite-guest.update-with-media')->middleware('auth');
+Route::post('favorite-guest/update-with-media/{favorite_guest}', [FavoriteGuestController::class, 'updateWithMedia'])->name('favorite-guests.update-with-media')->middleware('auth');
+
+
+//Guest history routes-----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('guest-histories', GuestHistoryController::class)->middleware('auth');
+Route::get('guest-histories-get-all', [GuestHistoryController::class, 'getAll'])->name('guest-histories.get-all')->middleware('auth');
 
 
 //Events routes-----------------------------------------------------------------------------------

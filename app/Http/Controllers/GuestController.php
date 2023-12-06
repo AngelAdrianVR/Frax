@@ -15,7 +15,7 @@ class GuestController extends Controller
     
     public function index()
     {
-        $guests = GuestResource::collection(Guest::with('media')->latest()->get());
+        $guests = GuestResource::collection(Guest::with('media')->latest()->where('user_id', auth()->id())->get());
 
         // return $guests;
 

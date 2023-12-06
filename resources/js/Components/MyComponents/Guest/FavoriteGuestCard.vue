@@ -42,7 +42,7 @@
             <p>Solicitar foto o id</p>
           </div>
           <div
-            v-if="favoriteGuest.vehicle_details"
+            v-if="favoriteGuest.vehicle_details?.length > 0"
             @click="showVehicles = !showVehicles"
             class="flex items-center mb-1 cursor-pointer"
           >
