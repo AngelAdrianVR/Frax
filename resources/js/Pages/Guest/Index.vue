@@ -2,7 +2,7 @@
   <AppLayout title="Visitantes">
     <!-- ------------- tabs section starts ------------- -->
     <div class="border-y-2 border-[#D9D9D9] items-center py-2">
-      <div class="flex lg:ml-20">
+      <div class="flex lg:ml-20 w-full overflow-x-auto">
         <Tab
           @click="currentTab = index + 1"
           :label="tab"
@@ -16,13 +16,14 @@
 
     <!-- ------------- tab 1 section visitas programadas starts ------------- -->
     <div class="p-4" v-if="currentTab == 1">
-      <div class="flex justify-between lg:mx-12">
-        <h2 class="font-bold">Visitas agendadas</h2>
-        <PrimaryButton @click="$inertia.get(route('guests.create'))">Programar visita</PrimaryButton>
+      <div class="flex justify-between items-center lg:mx-12 mb-10">
+        <h2 class="font-bold">Tus visitas programadas</h2>
+        <PrimaryButton class="hidden md:block" @click="$inertia.get(route('guests.create'))">Programar visita</PrimaryButton>
+        <PrimaryButton class="lg:hidden" @click="$inertia.get(route('guests.create'))"><i class="fa-solid fa-plus"></i></PrimaryButton>
       </div>
       <div class="mt-4 lg:mx-12">
-        <div v-if="guests.data" class="grid grid-cols-3 gap-5">
-          <GuestCard @guestDeleted="handleGuestDeleted" v-for="guest in guests.data" :key="guest" :guest="guest" />
+        <div v-if="guests.data?.length > 0" class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5">
+          <GuestCard class="mt-4 lg:mt-0" @guestDeleted="handleGuestDeleted" v-for="guest in guests.data" :key="guest" :guest="guest" />
         </div>
         <p class="text-xs text-gray-400 text-center" v-else>No hay visitas registradas</p>
       </div>
@@ -32,18 +33,91 @@
 
     <!-- ------------- tab 2 section visitas frecuentes starts ------------- -->
     <div class="p-4" v-if="currentTab == 2">
-      <div class="flex justify-between lg:mx-12">
-        <h2 class="font-bold">Visitas frecuentes</h2>
-        <PrimaryButton @click="$inertia.get(route('favorite-guests.create'))">Agregar visita frecuente</PrimaryButton>
+      <div class="flex justify-between items-center lg:mx-12 mb-10">
+        <h2 class="font-bold">Tus visitas frecuentes</h2>
+        <PrimaryButton class="hidden md:block" @click="$inertia.get(route('favorite-guests.create'))">Agregar visita frecuente</PrimaryButton>
+        <PrimaryButton class="lg:hidden" @click="$inertia.get(route('favorite-guests.create'))"><i class="fa-solid fa-plus"></i></PrimaryButton>
       </div>
       <div class="mt-4 lg:mx-12">
-        <div v-if="favoriteGuests" class="grid grid-cols-3 gap-5">
-          <FavoriteGuestCard @favoriteGuestDeleted="handleFavoriteGuestDeleted" v-for="favoriteGuest in favoriteGuests" :key="favoriteGuest" :favoriteGuest="favoriteGuest" />
+        <div v-if="favoriteGuests?.length > 0" class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5">
+          <FavoriteGuestCard class="mt-4 lg:mt-0" @favoriteGuestDeleted="handleFavoriteGuestDeleted" v-for="favoriteGuest in favoriteGuests" :key="favoriteGuest" :favoriteGuest="favoriteGuest" />
         </div>
         <p class="text-xs text-gray-400 text-center" v-else>No tienes visitantes frecuentes registrados</p>
       </div>
     </div>
     <!-- ------------- tab 2 section visitas frecuentes ends ------------- -->
+
+    <!-- ------------- tab 3 section hidtorial de visitas starts ------------- -->
+    <div class="p-4" v-if="currentTab == 3">
+      <div class="flex justify-between items-center lg:mx-12 mb-10">
+        <h2 class="font-bold">Historial de visitas</h2>
+      </div>
+       <table v-if="guestHistories?.length > 0" class="w-full mx-auto text-sm mt-5">
+                <thead>
+                    <tr class="text-center">
+                        <th class="font-bold pb-1 pl-2 text-left border-b border-primary">
+                        ID
+                        </th>
+                        <th class="font-bold pb-1 text-left border-b border-primary">
+                        Nombre
+                        </th>
+                        <th class="font-bold pb-1 text-left border-b border-primary">
+                        Fecha de visita
+                        </th>
+                        <th class="font-bold pb-1 text-left border-b border-primary">
+                        Hora
+                        </th>
+                        <th class="font-bold pb-1 text-left border-b border-primary">
+                        Tipo de acceso
+                        </th>
+                        <th class="font-bold pb-1 text-left border-b border-primary">
+                        Ingreso
+                        </th>
+                        <th class="font-bold pb-1 text-left border-b border-primary">
+                        Salida
+                        </th>
+                        <th class="font-bold pb-1 text-left border-b border-primary">
+                        Estatus
+                        </th>
+                        <th class="font-bold pb-3 text-left border-b border-primary">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(history, index) in guestHistories" :key="index"
+                        class="mb-4 rounded-full"
+                        :class="{ 'bg-[#F2F2F2]': index % 2 == 0 }"
+                    >
+                        <td class="py-2 pl-2 rounded-l-full">
+                        {{ history.id}}
+                        </td>
+                        <td class="py-2">
+                            <span :title="history.name" class="truncate">{{ history.name }}</span>
+                        </td>
+                        <td class="py-2">
+                            {{ history.date }}
+                        </td>
+                        <td class="py-2">
+                            {{ history.time ?? '---' }}
+                        </td>
+                        <td class="py-2">
+                            {{ history.type_access }}
+                        </td>
+                        <td class="py-2">
+                            {{ history.arrived_at }}
+                        </td>
+                        <td class="py-2">
+                            {{ history.leaved_at }}
+                        </td>
+                        <td class="py-2 rounded-r-full">
+                            {{ history.status }}
+                        </td>
+                    </tr>
+                </tbody>
+         </table>
+         <p class="text-xs text-gray-400 text-center" v-else>No tienes historial de visitas</p>
+    </div>
+    <!-- ------------- tab 3 section hidtorial de visitas ends ------------- -->
   </AppLayout>
 </template>
 
@@ -61,7 +135,7 @@ export default {
     return {
       currentTab: 1,
       favoriteGuests: null,
-      guestHistory: null,
+      guestHistories: null,
       tabs: ["Visitas programadas", "Visitas frecuentes", "Historial"],
     };
   },
@@ -104,6 +178,16 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    async fetchGuestHistories(){
+      try {
+          const response = await axios.get(route('guest-histories.get-all'));
+          if (response.status === 200) {
+            this.guestHistories = response.data.items;
+          }
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
   watch:{
@@ -113,9 +197,9 @@ export default {
         this.fetchFavoriteGuests();
 
         } 
-      if (newVal == 3 && this.guestHistory === null) {
+      if (newVal == 3 && this.guestHistories === null) {
         //recupera la información de visitas frecuentes
-        // this.fetchGuestHistory();
+        this.fetchGuestHistories();
         } 
 
         // Agrega la variable currentTab=newVal a la URL para mejorar la navegacion al actalizar o cambiar de pagina
