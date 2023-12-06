@@ -1,10 +1,7 @@
 <template>
-    <AppLayout title="Mantenimientos">
+    <AppLayout title="Detalles de mantenimiento">
         <header class="flex items-center justify-between mb-2 mt-12 mx-20">
             <h1 class="font-bold text-sm">Reporte de problemáticas</h1>
-            <Link :href="route('maintenances.create')">
-                <PrimaryButton>Hacer reporte</PrimaryButton>
-            </Link>
         </header>
         <p class="mx-20 text-sm">En este apartado se puede reportar algun problema que se presente en alguna área
             común, en caso de que ya se haya echo el reporte, ver el estatus en el que se encuentra </p>
