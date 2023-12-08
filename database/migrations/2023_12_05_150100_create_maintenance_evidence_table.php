@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('maintenance_evidence', function (Blueprint $table) {
             $table->id();
             $table->text('description');
-            $table->foreignId('manteinance_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('maintenance_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

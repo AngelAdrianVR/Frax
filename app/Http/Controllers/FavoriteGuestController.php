@@ -42,18 +42,21 @@ class FavoriteGuestController extends Controller
                 ->toMediaCollection('guest_image');
         }
 
-        foreach ($request->vehicle_details as $vehicle) {
-            if (isset($vehicle['image'])) {
-                // Subir y asociar la imagen del vehículo a la colección 'vehicle_images'
-                $vehicleImagePath = $vehicle['image']->store('vehicle_images', 'public');
-                
-                // Asegúrate de asociar la imagen al vehículo actual
-                $favorite_guest->addMedia(storage_path('app/public/' . $vehicleImagePath))
+        if (isset($request->vehicle_details)) {
+
+            foreach ($request->vehicle_details as $vehicle) {
+                if (isset($vehicle['image'])) {
+                    // Subir y asociar la imagen del vehículo a la colección 'vehicle_images'
+                    $vehicleImagePath = $vehicle['image']->store('vehicle_images', 'public');
+                    
+                    // Asegúrate de asociar la imagen al vehículo actual
+                    $favorite_guest->addMedia(storage_path('app/public/' . $vehicleImagePath))
                     ->toMediaCollection('vehicle_images');
-                
+                    
+                }
             }
         }
-
+            
         return to_route('guests.index', ['currentTab' => 2]);
     }
 
@@ -140,7 +143,7 @@ class FavoriteGuestController extends Controller
 
     public function getAll()
     {
-        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::where('user_id', auth()->id())->get());
+        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::with('media')->where('user_id', auth()->id())->get());
 
         return response()->json(['items' => $favorite_guests]);
     }

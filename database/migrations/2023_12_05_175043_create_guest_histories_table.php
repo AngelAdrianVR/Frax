@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('type_access');
             $table->timestamp('arrived_at')->nullable();
             $table->timestamp('leaved_at')->nullable();
-            $table->string('qr_code');
+            $table->string('qr_code')->nullable();
             $table->string('notes')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

@@ -14,6 +14,13 @@ class GuestHistoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $status = 'Pendiente';
+        if ($this->arrived_at !== null) {
+            $status = 'Ingresado';
+        } else if ($this->arrived_at == null && $this->date < now()) {
+            $status = 'Expirado';
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -24,6 +31,7 @@ class GuestHistoryResource extends JsonResource
             'leaved_at' => $this->leaved_at?->isoFormat('h:mm A'),
             'notes' => $this->notes,
             'qr_code' => $this->qr_code,
+            'status' => $status,
             'user' => $this->whenLoaded('user'),
             'created_at' => $this->created_at?->isoFormat('DD MMMM YYYY, h:mm A'),
             'updated_at' => $this->updated_at?->isoFormat('DD MMMM YYYY, h:mm A'),
