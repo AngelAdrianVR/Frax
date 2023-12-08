@@ -46,7 +46,7 @@ export default {
             menus: [
                 {
                     label: 'Inicio',
-                    icon: '<i class="fa-solid fa-house text-xs"></i>',
+                    icon: '<i class="fa-solid fa-house text-xs mr-2"></i>',
                     route: route('dashboard'),
                     active: route().current('dashboard'),
                     options: [],
@@ -55,7 +55,7 @@ export default {
                 },
                 {
                     label: 'Gestion de pagos',
-                    icon: '<i class="fa-solid fa-dollar-sign"></i>',
+                    icon: '<i class="fa-solid fa-dollar-sign mr-2"></i>',
                     route: route('payments.index'),
                     active: route().current('payments.*'),
                     options: [],
@@ -64,7 +64,7 @@ export default {
                 },
                 {
                     label: 'Visitas',
-                    icon: '<i class="fa-solid fa-users text-sm"></i>',
+                    icon: '<i class="fa-solid fa-users text-sm mr-2"></i>',
                     route: route('guests.index'),
                     active: route().current('guests.*'),
                     options: [],
@@ -73,7 +73,7 @@ export default {
                 },
                 {
                     label: 'Reservación de áreas',
-                    icon: '<i class="fa-solid fa-leaf text-sm"></i>',
+                    icon: '<i class="fa-solid fa-leaf text-sm mr-2"></i>',
                     route: route('common-areas-users.index'),
                     active: route().current('common-areas-users.*'),
                     options: [],
@@ -82,9 +82,27 @@ export default {
                 },
                 {
                     label: 'Mantenimiento',
-                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm"></i>',
+                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm mr-2"></i>',
                     route: route('maintenances.index'),
                     active: route().current('maintenances.*'),
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
+                {
+                    label: 'Comunidad',
+                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm mr-2"></i>',
+                    route: route('dashboard'),
+                    active: route().current('dashboard.*'),
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
+                {
+                    label: 'Normativas',
+                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm mr-2"></i>',
+                    route: route('dashboard'),
+                    active: route().current('dashboard.*'),
                     options: [],
                     dropdown: false,
                     show: true

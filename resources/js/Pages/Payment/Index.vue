@@ -20,11 +20,11 @@
                 </div>
             </div>
             <div class="mt-7">
-                <div class="grid grid-cols-3 gap-5">
+                <div class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5">
                     <PaymentCard class="self-start" v-for="payment in payments.data" :key="payment" :payment="payment" />
                 </div>
             </div>
-        <div class="text-right lg:mr-9">
+        <div class="text-right mt-5 lg:mr-9">
             <ThirthButton @click="$inertia.get(route('dashboard'))">Envía tus comentarios</ThirthButton>
         </div>
         </div>
