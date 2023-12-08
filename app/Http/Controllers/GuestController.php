@@ -6,6 +6,7 @@ use App\Http\Resources\FavoriteGuestResource;
 use App\Http\Resources\GuestResource;
 use App\Models\FavoriteGuest;
 use App\Models\Guest;
+use App\Models\GuestHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -15,7 +16,7 @@ class GuestController extends Controller
     
     public function index()
     {
-        $guests = GuestResource::collection(Guest::with('media')->latest()->get());
+        $guests = GuestResource::collection(Guest::with('media')->latest()->where('user_id', auth()->id())->get());
 
         // return $guests;
 
@@ -70,6 +71,17 @@ class GuestController extends Controller
             $guest->addMedia(storage_path('app/public/' . $vehicleImagePath))
                 ->toMediaCollection('vehicle_images');
         }
+
+        //historial de visitas
+        GuestHistory::create([
+            'name' => $guest->name,
+            'date' => $guest->visit_date,
+            'time' => $guest->time,
+            'type_access' => $request->guest_type, //tomado del request porque el tipo de acceso no se guarda en la tabla de guets
+            'qr_code' => $guest->qr_code,
+            'notes' => $guest->notes,
+            'user_id' => auth()->id(),
+        ]);
 
         //si se selecciona como visita frecuente
         if ($request->is_favorite_guest) {
