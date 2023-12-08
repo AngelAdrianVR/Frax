@@ -35,29 +35,29 @@
                         class="mb-4 rounded-full"
                         :class="{ 'bg-[#F2F2F2]': index % 2 == 0 }"
                     >
-                        <td class="py-2 pl-2 rounded-l-full">
+                        <td class="py-2 pl-3 rounded-l-full">
                         {{ history.id}}
                         </td>
-                        <td class="py-2">
+                        <td class="py-2 pr-2">
                             <span :title="history.name" class="truncate">{{ history.name }}</span>
                         </td>
-                        <td class="py-2">
-                            {{ history.date }}
+                        <td class="py-2 pr-2">
+                            <p class="w-32">{{ history.date }}</p>
                         </td>
-                        <td class="py-2">
-                            {{ history.time ?? '---' }}
+                        <td class="py-2 pr-2">
+                            <p class="w-20">{{ history.time ?? '---' }}</p>
                         </td>
-                        <td class="py-2">
+                        <td class="py-2 pr-2">
                             {{ history.type_access }}
                         </td>
-                        <td class="py-2">
-                            {{ history.arrived_at }}
+                        <td class="py-2 pr-2">
+                            <p class="w-20">{{ history.arrived_at }}</p>
                         </td>
-                        <td class="py-2">
-                            {{ history.leaved_at }}
+                        <td class="py-2 pr-2">
+                            <p class="w-20">{{ history.leaved_at }}</p>
                         </td>
                         <td class="py-2 rounded-r-full">
-                            <p :class="statusColor(history.status)"> {{ history.status }} </p>
+                            <p class="pr-2" :class="statusColor(history.status)"> {{ history.status }} </p>
                         </td>
                     </tr>
                 </tbody>

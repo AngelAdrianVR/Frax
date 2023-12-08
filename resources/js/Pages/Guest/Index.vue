@@ -54,8 +54,16 @@
         <div class="flex justify-between items-center lg:mx-12 mb-10">
           <h2 class="font-bold">Historial de visitas</h2>
         </div>
-        <GuestHistoryTable v-if="guestHistories?.length > 0" :guestHistories="guestHistories" />
-          <p class="text-xs text-gray-400 text-center" v-else>No tienes historial de visitas</p>
+        
+        <div class="overflow-auto">
+          <GuestHistoryTable v-if="guestHistories?.length > 0" :guestHistories="guestHistories" />
+            <p class="text-xs text-gray-400 text-center" v-else>No tienes historial de visitas</p>
+        </div>
+
+        <!-- --- pagination --- -->
+        <div class="mt-4">
+          <Pagination :pagination="guestHistories" />
+        </div>
       </div>
       <!-- ------------- tab 3 section hidtorial de visitas ends ------------- -->
   </div>
