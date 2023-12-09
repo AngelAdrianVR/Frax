@@ -100,9 +100,9 @@ export default {
                 },
                 {
                     label: 'Normativas',
-                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm mr-2"></i>',
-                    route: route('dashboard'),
-                    active: route().current('dashboard.*'),
+                    icon: '<i class="fa-solid fa-sheet-plastic text-sm mr-2"></i>',
+                    route: route('norms.index'),
+                    active: route().current('norms.*'),
                     options: [],
                     dropdown: false,
                     show: true
