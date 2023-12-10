@@ -463,7 +463,6 @@ methods: {
       },
     });
   } else if ((this.guestForm.type == 'Evento')) {
-    console.log('Evento');
     this.eventForm.post(route("events.store"), {
       onSuccess: () => {
         this.$notify({

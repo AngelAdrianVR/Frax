@@ -1,10 +1,12 @@
 <template>
-    <div class="rounded-md border border-gray4 h-80 cursor-pointer transition ease-in-out duration-200">
-        <figure class="bg-gray3 m-4 rounded-md h-48">
-            <img src="" alt="">
+    <div @click="$inertia.get(route('norms.show', norm.id))" class="rounded-md border border-gray4 h-80 cursor-pointer shadow-md transition ease-in-out duration-100 active:scale-95">
+        <figure v-if="norm.image_cover?.length > 0" class="bg-gray3 m-4 rounded-md h-48">
+            <img class="h-48 w-full rounded-lg" :src="norm.image_cover[0]?.original_url" alt="Sin imagen" >
         </figure>
-        <p class="pl-3 py-3 bg-primarylight">{{ 'Áreas comunes' }}</p>
-        <p class="text-xs text-right pr-2 mt-4">Actualizado el 23 oct 2023, 04:05 pm</p>
+        <div v-else class="bg-gray3 m-4 rounded-md h-48"></div>
+        <p class="pl-3 py-3 bg-primarylight">{{ norm.title }}</p>
+        <p v-if="norm.updated_at == null" class="text-xs text-right pr-2 mt-4">Creado el {{ norm.created_at }}</p>
+        <p v-if="norm.updated_at" class="text-xs text-right pr-2 mt-4">Actualizado el {{ norm.updated_at }}</p>
     </div>
 </template>
 
@@ -19,7 +21,7 @@ components:{
 
 },
 props:{
-
+norm: Object
 },
 methods:{
 

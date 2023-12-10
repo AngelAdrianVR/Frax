@@ -13,7 +13,9 @@ class NormController extends Controller
     {
         $frax_id = auth()->user()->frax_id;
 
-        $norms = NormResource::collection(Norm::where('frax_id', $frax_id)->get());
+        $norms = NormResource::collection(Norm::with('media')->where('frax_id', $frax_id)->get());
+
+        // return $norms;
 
         return inertia('Norm/Index', compact('norms'));
     }
@@ -21,19 +23,38 @@ class NormController extends Controller
     
     public function create()
     {
-        //
+        return inertia('Norm/Create');
     }
 
     
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:50',
+            'description' => 'required|string',
+        ]);
+
+       $norm = Norm::create($request->except('imageCover') + ['frax_id' => auth()->user()->frax_id]);
+       
+       // Actualizar el campo 'updated_at' a null
+       $norm->updated_at = null;
+       $norm->save();
+       
+       // Subir y asociar la imagen de la normativa a la colección 'imageCover'
+       if ($request->hasFile('imageCover')) {
+           $normImagePath = $request->file('imageCover')->store('imageCover', 'public');
+           $norm->addMedia(storage_path('app/public/' . $normImagePath))
+           ->toMediaCollection('imageCover');
+        }
+        
+
+       return to_route('norms.index');
     }
 
     
     public function show(Norm $norm)
     {
-        //
+        return inertia('Norm/Show', compact('norm'));
     }
 
     
