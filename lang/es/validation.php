@@ -144,5 +144,6 @@ return [
         'guests' => 'invitados',
         'event_date' => 'fecha del evento',
         'guests_quantity' => 'cantidad de invitados',
+        'description' => 'descripción',
     ],
 ];
