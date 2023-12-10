@@ -107,6 +107,15 @@ export default {
                     dropdown: false,
                     show: true
                 },
+                {
+                    label: 'Soporte técnico',
+                    icon: '<i class="fa-solid fa-headset text-sm mr-2"></i>',
+                    route: route('supports.create'), //si es residente manda a create, si es administrador manda a index
+                    active: route().current('supports.*'),
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
             ],
         }
     },

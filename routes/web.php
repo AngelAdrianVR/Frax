@@ -11,6 +11,7 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\NormController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentTicketController;
+use App\Http\Controllers\SupportController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -99,3 +100,8 @@ Route::resource('maintenances', MaintenanceController::class)->middleware('auth'
 //norms routes-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('norms', NormController::class)->middleware('auth');
+
+
+//supports routes-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('supports', SupportController::class)->middleware('auth');
