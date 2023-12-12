@@ -91,7 +91,7 @@ export default {
                 },
                 {
                     label: 'Comunidad',
-                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm mr-2"></i>',
+                    icon: '<i class="fa-solid fa-people-roof text-sm mr-2"></i>',
                     route: route('dashboard'),
                     active: route().current('dashboard.*'),
                     options: [],
@@ -100,9 +100,18 @@ export default {
                 },
                 {
                     label: 'Normativas',
-                    icon: '<i class="fa-solid fa-screwdriver-wrench text-sm mr-2"></i>',
-                    route: route('dashboard'),
-                    active: route().current('dashboard.*'),
+                    icon: '<i class="fa-solid fa-sheet-plastic text-sm mr-2"></i>',
+                    route: route('norms.index'),
+                    active: route().current('norms.*'),
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
+                {
+                    label: 'Soporte técnico',
+                    icon: '<i class="fa-solid fa-headset text-sm mr-2"></i>',
+                    route: route('supports.create'), //si es residente manda a create, si es administrador manda a index
+                    active: route().current('supports.*'),
                     options: [],
                     dropdown: false,
                     show: true
