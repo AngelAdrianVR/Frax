@@ -25,7 +25,18 @@ class MaintenanceController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:400',
+            'location' => 'required|string|max:255',
+            'is_anonymous_report' => 'boolean'
+        ]);
+
+        $maintenance = Maintenance::create($validated + ['user_id' => auth()->id()]);
+        // Subir y asociar la imagen
+        $maintenance->addAllMediaFromRequest()->each(fn ($file) => $file->toMediaCollection());
+
+        return to_route('maintenances.index');
     }
 
     public function show(Maintenance $maintenance)
