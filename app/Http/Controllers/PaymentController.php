@@ -16,17 +16,8 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = PaymentResource::collection(Payment::latest()->where('user_id', auth()->id())->get());
-        
-        $payment_tickets = PaymentTicketResource::collection(
-            PaymentTicket::with('payment')->whereHas('payment', function ($query) {
-                $query->where('user_id', auth()->id());
-            })->latest()->get()
-        );
 
-        $payment_histories = PaymentHistoryResource::collection(PaymentHistory::latest()->where('user_id', auth()->id())->get());
-
-        // return $payment_histories;
-        return inertia('Payment/Index', compact('payments', 'payment_tickets', 'payment_histories'));
+        return inertia('Payment/Index', compact('payments'));
     }
 
     
@@ -71,5 +62,11 @@ class PaymentController extends Controller
         $payment = PaymentResource::make(Payment::find($payment_id));
         
         return inertia('Payment/Pay', compact('payment'));
+    }
+
+
+    public function feedback()
+    {     
+        return inertia('Payment/Feedback');
     }
 }

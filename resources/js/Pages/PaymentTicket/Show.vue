@@ -1,6 +1,7 @@
 <template>
     <AppLayout title="Transacciones">
         <div class="lg:py-4 lg:px-12">
+            <Back />
             <div class="flex justify-between mt-5">
                 <div class="flex items-center">
                     <p class="font-bold">Transacciones</p>
@@ -10,7 +11,6 @@
                     <i class="fa-solid fa-circle-exclamation mr-2"></i>
                     <p class=" text-sm text-right">Es importante pagar los montos si ya ha pasado la fecha de vencimiento para evitar cargos adicionales</p>
                 </div>
-                <Back />
             </div>
             <div class="w-1/3 grid grid-cols-2 mt-6 text-sm">
                 <div class="text-[#9A9A9A] space-y-2">
@@ -70,7 +70,10 @@
                 </div>
             </div>
                 <p class="font-bold mt-5">Factura</p>
-                <p class="text-sm">En proceso...</p>
+                <div class="flex items-center space-x-5">
+                    <p class="text-sm">En proceso...</p>
+                    <ThirthButton @click="$inertia.get(route('payment-feedbacks.create'))">Solicitar aclaración</ThirthButton>
+                </div>
         </div>
             
     </AppLayout>
@@ -81,6 +84,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Back from '@/Components/MyComponents/Back.vue';
+import ThirthButton from "@/Components/ThirthButton.vue";
 import { Link } from '@inertiajs/vue3';
 
 export default {
@@ -92,6 +96,7 @@ data() {
 components:{
 AppLayout,
 PrimaryButton,
+ThirthButton,
 Back,
 Link,
 },

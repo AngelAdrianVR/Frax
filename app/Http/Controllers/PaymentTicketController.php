@@ -52,4 +52,15 @@ class PaymentTicketController extends Controller
     {
         //
     }
+
+    public function getAll()
+    {
+        $payment_tickets = PaymentTicketResource::collection(
+            PaymentTicket::with('payment')->whereHas('payment', function ($query) {
+                $query->where('user_id', auth()->id());
+            })->latest()->get()
+        );
+
+        return response()->json(['items' => $payment_tickets]);
+    }
 }

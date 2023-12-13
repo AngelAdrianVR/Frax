@@ -7,7 +7,6 @@
             <i class="fa-regular fa-face-smile-beam text-lg text-green-500 absolute top-4 right-7"></i>
         </el-tooltip>
         <div class="flex items-center my-1">
-            <i class="fa-solid fa-calendar-days text-gray-300 mr-2"></i>
             <p class="font-bold">{{ payment.name }}</p>
         </div>
         <div class="flex items-center my-1">
@@ -17,9 +16,9 @@
         <div @click="showDetails = !showDetails" class="flex justify-between items-center cursor-pointer mt-4">
             <div class="flex items-center">
                 <i class="fa-solid fa-angles-right text-gray-300 mr-2"></i>
-                <p class="text-primary font-bold">Desgloce</p>
+                <p class="font-bold">Desgloce</p>
             </div>
-            <i class="fa-solid fa-angle-up transform origin-center text-primary transition duration-200 ease-out"
+            <i class="fa-solid fa-angle-up transform origin-center transition duration-200 ease-out"
             :class="{ '!rotate-180': showDetails }"></i>
         </div>
         <!-- Desgloce-------------------->
