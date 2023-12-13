@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payment_feedback', function (Blueprint $table) {
             $table->id();
-            $table->string('feddback_type');
+            $table->string('feedback_type');
             $table->text('description');
             $table->string('answer_contact');
             $table->string('urgency_level');

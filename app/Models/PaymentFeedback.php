@@ -13,7 +13,7 @@ class PaymentFeedback extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
-        'feddback_type',
+        'feedback_type',
         'description',
         'answer_contact',
         'urgency_level',

@@ -10,6 +10,7 @@ use App\Http\Controllers\GuestHistoryController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\NormController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentFeedbackController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PaymentTicketController;
 use App\Http\Controllers\SupportController;
@@ -63,7 +64,12 @@ Route::get('payment-tickets-get-all', [PaymentTicketController::class, 'getAll']
 //-------------------------------------------------------------------------------------------------
 Route::resource('payment-histories', PaymentHistoryController::class)->middleware('auth');
 Route::get('payment-histories-get-all', [PaymentHistoryController::class, 'getAll'])->name('payment-histories.get-all')->middleware('auth');
-Route::get('payments-feedback', [PaymentController::class, 'feedback'])->name('payments.feedback')->middleware('auth');
+Route::get('payment-feedback', [PaymentController::class, 'feedback'])->name('payments.feedback')->middleware('auth');
+
+
+//Payment-feedback routes---------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('payment-feedbacks', PaymentFeedbackController::class)->middleware('auth');
 
 
 //Guests routes------------------------------------------------------------------------------------

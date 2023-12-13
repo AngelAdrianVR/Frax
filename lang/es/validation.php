@@ -145,5 +145,8 @@ return [
         'event_date' => 'fecha del evento',
         'guests_quantity' => 'cantidad de invitados',
         'description' => 'descripción',
+        'feedback_type' => 'tipo de comentario',
+        'answer_contact' => 'contacto de respuesta',
+        'urgency_level' => 'nivel de urgencia',
     ],
 ];

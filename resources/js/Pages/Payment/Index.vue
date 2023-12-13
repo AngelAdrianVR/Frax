@@ -28,7 +28,7 @@
                 </div>
             </div>
         <div class="text-right mt-5 lg:mr-9">
-            <ThirthButton @click="$inertia.get(route('payments.feedback'))">Envía tus comentarios</ThirthButton>
+            <ThirthButton @click="$inertia.get(route('payment-feedbacks.create'))">Envía tus comentarios</ThirthButton>
         </div>
         </div>
         <!-- ------------- tab 1 section pagos pendientes ends ------------- -->

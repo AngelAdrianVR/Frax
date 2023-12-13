@@ -7,58 +7,55 @@ use Illuminate\Http\Request;
 
 class PaymentFeedbackController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        //
+        return inertia('PaymentFeedback/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'feedback_type' => 'required|string',
+            'description' => 'required|string',
+            'answer_contact' => 'required|string|max:40',
+            'urgency_level' => 'required|string',
+        ]);
+
+       $payment_feedback = PaymentFeedback::create($request->except('media') + ['user_id' => auth()->id()]);
+
+        $payment_feedback->addAllMediaFromRequest()->each(fn ($file) => $file->toMediaCollection());
+
+        return to_route('payments.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(PaymentFeedback $paymentFeedback)
+    
+    public function show(PaymentFeedback $payment_feedback)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PaymentFeedback $paymentFeedback)
+    
+    public function edit(PaymentFeedback $payment_feedback)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PaymentFeedback $paymentFeedback)
+    
+    public function update(Request $request, PaymentFeedback $payment_feedback)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PaymentFeedback $paymentFeedback)
+    
+    public function destroy(PaymentFeedback $payment_feedback)
     {
         //
     }
