@@ -1,7 +1,9 @@
 <template>
+<!-- Envoltorio de AppLaout para estado de carga en toda la pantalla -->
+<div class="relative h-full"> 
+  <LoadingState :loading="loading" />
+  
   <AppLayout title="Visitantes">
-    <div class="relative">
-      <div v-if="loading" class="absolute w-full h-full inset-0 bg-gray-400 opacity-25"></div>
       <!-- ------------- tabs section starts ------------- -->
       <div class="border-y-2 border-[#D9D9D9] items-center py-2">
         <div class="flex lg:ml-20 w-full overflow-x-auto">
@@ -66,8 +68,8 @@
         </div>
       </div>
       <!-- ------------- tab 3 section hidtorial de visitas ends ------------- -->
-  </div>
   </AppLayout>
+</div>
 </template>
 
 <script>
@@ -78,6 +80,7 @@ import Tab from "@/Components/MyComponents/Tab.vue";
 import GuestCard from "@/Components/MyComponents/Guest/GuestCard.vue";
 import FavoriteGuestCard from "@/Components/MyComponents/Guest/FavoriteGuestCard.vue";
 import GuestHistoryTable from "@/Components/MyComponents/Guest/GuestHistoryTable.vue";
+import LoadingState from "@/Components/MyComponents/LoadingState.vue";
 import axios from 'axios';
 
 export default {
@@ -93,6 +96,7 @@ export default {
   components: {
     AppLayout,
     PrimaryButton,
+    LoadingState,
     FavoriteGuestCard,
     GuestCard,
     GuestHistoryTable,

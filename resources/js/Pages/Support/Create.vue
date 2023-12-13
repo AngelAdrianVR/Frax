@@ -3,7 +3,7 @@
     <div class="py-8 px-3 lg:px-12">
       <p>Soporte técnico</p>
       <form @submit.prevent="store" class="mx-8 mt-9 md:grid grid-cols-3 md:gap-9 md:p-4">
-        <!-- Primera parte del grid (izquierda) -->
+        <!-- Primera parte del grid (izquierda) 2 partes del grid -->
         <section class="col-span-2">
           <h1 class="font-bold mb-5">Reporta tu problema</h1>
           <div class="mt-3">
