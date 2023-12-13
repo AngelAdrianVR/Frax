@@ -10,6 +10,7 @@ use App\Http\Controllers\GuestHistoryController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\NormController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PaymentTicketController;
 use App\Http\Controllers\SupportController;
 use Illuminate\Foundation\Application;
@@ -55,6 +56,14 @@ Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name
 //Payment-tickets routes---------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('payment-tickets', PaymentTicketController::class)->middleware('auth');
+Route::get('payment-tickets-get-all', [PaymentTicketController::class, 'getAll'])->name('payment-tickets.get-all')->middleware('auth');
+
+
+//Payment-history routes---------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('payment-histories', PaymentHistoryController::class)->middleware('auth');
+Route::get('payment-histories-get-all', [PaymentHistoryController::class, 'getAll'])->name('payment-histories.get-all')->middleware('auth');
+Route::get('payments-feedback', [PaymentController::class, 'feedback'])->name('payments.feedback')->middleware('auth');
 
 
 //Guests routes------------------------------------------------------------------------------------
