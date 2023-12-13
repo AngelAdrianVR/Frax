@@ -10,7 +10,7 @@
                     <form @submit.prevent="store" class="mt-1 text-sm">
                         <div class="flex items-center justify-end">
                             <label class="flex space-x-2">
-                                <Checkbox v-model:checked="form.is_anonymous_report" name="is_anonymous_report" required />
+                                <Checkbox v-model:checked="form.is_anonymous_report" name="is_anonymous_report" />
                                 <span class="mr-2 text-sm text-gray-600 flex items-center">
                                     <span class="mr-2">Anónimo</span>
                                     <el-tooltip content="No se mostrá tun nombre en los detalles del reporte"
@@ -59,15 +59,11 @@
                                     </div>
                                 </el-tooltip>
                             </p>
-                            <div class="flex space-x-2">
-                                <InputFilePreview @imagen="saveImage" />
-                                <InputFilePreview v-for="image in form.images.length" :key="image"
-                                    @cleared="imageDeleted(image)" />
-                                </div>
+                            <InputFilePreview @imagen="saveImage" />
                             <InputError :message="form.errors.location" />
                         </div>
                         <div class="flex justify-end mt-7">
-                            <PrimaryButton :disabled="!form.name || !form.description || !form.location">
+                            <PrimaryButton :disabled="!form.name || !form.description || !form.location || form.processing">
                                 Enviar reporte
                             </PrimaryButton>
                         </div>
@@ -96,12 +92,11 @@ export default {
             name: null,
             description: null,
             location: null,
-            images: [],
+            image: null,
             is_anonymous_report: false,
         });
         return {
             form,
-            currentImageIndex: 1,
         };
     },
     components: {
@@ -117,23 +112,20 @@ export default {
     props: {
     },
     methods: {
+        store() {
+            this.form.post(route("maintenances.store"), {
+                onSuccess: () => {
+                    this.$notify({
+                        title: "Correcto",
+                        message: "Se ha registrado el reporte. Espera respuesta pronto",
+                        type: "success",
+                    });
+                },
+            });
+        },
         saveImage(image) {
-            this.form.images.push(image);
-            this.currentImageIndex++;
+            this.form.image = image;
         },
-        imageDeleted(index) {
-            this.form.images.splice(index, 1);
-
-            // Reorganizar el arreglo después de eliminar una imagen
-            this.reorganizeImages();
-        },
-        reorganizeImages() {
-            // Eliminar elementos nulos o indefinidos del arreglo
-            this.form.images = this.form.images.filter(Boolean);
-
-            // Actualizar currentImageIndex según la longitud del arreglo
-            this.currentImageIndex = this.form.images.length + 1;
-        }
     }
 };
 </script>
