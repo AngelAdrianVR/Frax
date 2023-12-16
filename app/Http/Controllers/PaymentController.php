@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PaymentHistoryResource;
 use App\Http\Resources\PaymentResource;
-use App\Http\Resources\PaymentTicketResource;
 use App\Models\Payment;
-use App\Models\PaymentHistory;
-use App\Models\PaymentTicket;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -21,9 +17,17 @@ class PaymentController extends Controller
     }
 
     
+    public function adminIndex()
+    {
+        $payments = PaymentResource::collection(Payment::latest()->where('frax_id', auth()->user()->frax_id)->get());
+
+        return inertia('Payment/AdminIndex', compact('payments'));
+    }
+
+    
     public function create()
     {
-        //
+        return inertia('Payment/Create');
     }
 
     

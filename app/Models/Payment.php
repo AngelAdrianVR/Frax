@@ -17,6 +17,7 @@ class Payment extends Model
         'paid_at',
         'bills',
         'user_id',
+        'frax_id',
     ];
 
     protected $casts = [
@@ -29,6 +30,11 @@ class Payment extends Model
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function frax():BelongsTo
+    {
+        return $this->belongsTo(Frax::class);
     }
 
     public function paymentTicket():HasOne

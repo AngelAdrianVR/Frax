@@ -52,6 +52,7 @@ Route::middleware([
 //------------------------------------------------------------------------------------------
 Route::resource('payments', PaymentController::class)->middleware('auth');
 Route::get('payments/{payment_id}/pay', [PaymentController::class, 'pay'])->name('payments.pay')->middleware('auth');
+Route::get('payments-admin-index', [PaymentController::class, 'adminIndex'])->name('payments.admin-index')->middleware('auth');
 
 
 //Payment-tickets routes---------------------------------------------------------------------------

@@ -29,6 +29,7 @@ class PaymentResource extends JsonResource
             'bills' => $this->bills,
             'total' => $total,
             'user' => $this->whenLoaded('user'),
+            'frax' => $this->whenLoaded('frax'),
             'created_at' => $this->created_at?->isoFormat('DD MMMM YYYY, h:mm A'),
             'updated_at' => $this->updated_at?->isoFormat('DD MMMM YYYY, h:mm A'),
         ];
