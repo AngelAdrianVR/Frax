@@ -13,6 +13,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentFeedbackController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PaymentTicketController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\SupportController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -111,6 +112,11 @@ Route::resource('common-areas-users', CommonAreaUserController::class)->middlewa
 //maintenances routes------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('maintenances', MaintenanceController::class)->middleware('auth');
+
+
+//community routes------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('posts', PostController::class)->middleware('auth');
 
 
 //norms routes-------------------------------------------------------------------------------------

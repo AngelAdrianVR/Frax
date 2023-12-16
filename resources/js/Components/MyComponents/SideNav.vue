@@ -92,8 +92,8 @@ export default {
                 {
                     label: 'Comunidad',
                     icon: '<i class="fa-solid fa-people-roof text-sm mr-2"></i>',
-                    route: route('dashboard'),
-                    active: route().current('dashboard.*'),
+                    route: route('posts.index'),
+                    active: route().current('posts.*'),
                     options: [],
                     dropdown: false,
                     show: true
