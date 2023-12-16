@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('bills')->nullable();
             // $table->unsignedFloat('total')->nullable(); //calculated in PaymentResource
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('frax_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
