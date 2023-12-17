@@ -1,9 +1,9 @@
 <template>
     <div class="border border-gray4 rounded-[5px] group pt-4 bg-transparent h-[300px]">
-        <figure class="rounded-[5px] w-full h-[60%] px-4">
-            <img src="" alt="">
+        <figure class="rounded-[5px] h-[60%] mx-3">
+            <img :src="maintenance.media[0]?.original_url" class="rounded-[5px] h-full mx-auto">
         </figure>
-        <div class="flex justify-between items-center font-bold h-[8%] px-4 text-sm">
+        <div class="flex justify-between items-center font-bold h-[11%] px-4 text-sm">
             <h2 class="font-bold">
                 <i class="fa-solid fa-leaf mr-1 text-gray1"></i>
                 {{ maintenance.name }}
@@ -13,7 +13,7 @@
                 {{ maintenance.comments_count }}
             </span>
         </div>
-        <div class="h-[20%] w-1/3 pt-4 mx-auto">
+        <div class="h-[17%] w-1/3 pt-4 mx-auto">
             <el-steps :active="maintenance.status" finish-status="success">
                 <el-tooltip placement="top">
                     <template #content>
