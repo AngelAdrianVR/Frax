@@ -41,7 +41,7 @@ class MaintenanceController extends Controller
 
     public function show(Maintenance $maintenance)
     {
-        return $maintenance;
+        $maintenance = $maintenance->load(['media', 'user']);
         return inertia('Maintenance/Show', compact('maintenance'));
     }
 
