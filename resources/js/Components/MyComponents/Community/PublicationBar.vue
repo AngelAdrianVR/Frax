@@ -1,12 +1,12 @@
 <template>
     <div @click="showPublication = true" class="mt-5 border border-gray4 rounded-sm shadow-sm flex items-center py-2 px-7 cursor-pointer hover:shadow-md transition ease-in-out duration-300 hover:-translate-y-2">
         <div class="w-2/3 flex space-x-2">
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm rounded-full w-12">
-                <img class="h-10 w-10 rounded-full object-cover" :src="user.profile_photo_url"
-                :alt="user.name" />
+            <div v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm rounded-full w-full items-center">
+                <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url"
+                :alt="$page.props.auth.user.name" />
                 <p class="text-gray3 ml-4">Publica un anuncio</p>
             </div>
-            <div class="flex items-center" v-else figurestyle="float: left">
+            <div class="flex items-center w-full" v-else figurestyle="float: left">
                 <i class="fa-solid fa-circle-user text-blue-200 text-4xl"></i>
                 <p class="text-gray3 ml-4">Publica un anuncio</p>
             </div>
@@ -68,14 +68,15 @@ props:{
 
 },
 methods:{
-    store() {
+    storePublication() {
     this.form.post(route("posts.store"), {
       onSuccess: () => {
         this.$notify({
           title: "Correcto",
-          message: "M",
+          message: "Se ha creado tu publicación",
           type: "success",
         });
+        location.reload();
       },
     });
 

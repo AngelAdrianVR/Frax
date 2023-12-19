@@ -16,6 +16,7 @@ class Post extends Model implements HasMedia
         'title',
         'body',
         'views',
+        'likes',
         'user_id',
         'frax_id',
     ];

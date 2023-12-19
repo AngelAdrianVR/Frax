@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('body');
-            $table->unsignedDouble('views')->default(0);
+            $table->unsignedInteger('views')->default(0);
+            $table->unsignedInteger('likes')->default(0);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('frax_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

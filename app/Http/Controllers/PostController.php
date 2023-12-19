@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,11 @@ class PostController extends Controller
     
     public function index()
     {
-        return inertia('Community/Index');
+        $posts = PostResource::collection(Post::latest()->where('frax_id', auth()->user()->frax_id)->get());
+
+        // return $posts;
+
+        return inertia('Community/Index', compact('posts'));
     }
 
     
