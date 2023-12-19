@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->string('title')->nullable();
+            $table->text('body');
+            $table->unsignedInteger('views')->default(0);
+            $table->unsignedInteger('likes')->default(0);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('frax_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
