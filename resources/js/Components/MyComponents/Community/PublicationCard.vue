@@ -1,6 +1,6 @@
 <template>
   <!-- post component ------ -->
-    <div class="border border-gray4 rounded-md lg:p-8 p-5 my-3">
+    <div @click="optionsDropdown = false" class="border border-gray4 rounded-md lg:p-8 p-5 my-3">
         <div class="flex justify-between items-center">
             <div v-if="$page.props.jetstream.managesProfilePhotos">
                 <div class="flex text-sm items-center rounded-full w-5/6 lg:w-full">
@@ -17,7 +17,14 @@
                 </div>
                     <p class="text-gray-600 text-xs ml-[52px] lg:-mt-2 -mt-1">{{ post.created_at }}</p>
             </div>
-            <i class="fa-solid fa-ellipsis text-primary cursor-pointer p-2 hover:bg-gray5  rounded-full"></i>
+            <div class="relative">
+                <i @click.stop="optionsDropdown = !optionsDropdown" class="fa-solid fa-ellipsis text-primary cursor-pointer p-1 hover:bg-gray5 rounded-full"></i>
+                <div v-if="optionsDropdown" class="border border-gray5 flex flex-col space-y-1 rounded-md p-1 absolute w-28 h-auto top-7 -right-1 text-sm z-50 bg-white">
+                    <p class="hover:bg-gray5 rounded-full cursor-pointer text-center px-2">Reportar</p>
+                    <p class="hover:bg-gray5 rounded-full cursor-pointer text-center px-2">Eliminar</p>
+                    <p class="hover:bg-gray5 rounded-full cursor-pointer text-center px-2">Otro</p>
+                </div>
+            </div>
         </div>
 
         <!-- Imagen --------- -->
@@ -33,7 +40,7 @@
         <div class="border-b border-gray5"></div>
         <div class="flex justify-between items-center my-2 mx-7">
             <div class="flex items-center">
-                <i class="fa-solid fa-heart text-red-500 mr-2"></i>
+                <i class="fa-solid fa-heart text-red-500 mr-2 cursor-pointer P-1 hover:animate-bounce"></i>
                 <span class="text-xs">{{ post.likes  }}</span>
             </div>
             <div class="flex items-center">
@@ -45,22 +52,21 @@
 
         <!-- Comentarios ----------->
         <div class="my-5">
-            <!-- coments component --------->
-            
+            <MakeComment />
         </div>
     </div>
 </template>
 
 <script>
-
+import MakeComment from "@/Components/MyComponents/MakeComment.vue";
 export default {
 data(){
     return {
-
+        optionsDropdown: false,
     }
 },
 components:{
-
+MakeComment,
 },
 props:{
 post: Object
