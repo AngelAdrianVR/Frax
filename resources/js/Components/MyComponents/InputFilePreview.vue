@@ -44,6 +44,7 @@ export default {
     clearImage() {
       this.image = null;
       this.formData.file = null;
+      this.$emit("cleared");
     },
   },
 };

@@ -10,7 +10,7 @@
                     <form @submit.prevent="store" class="mt-1 text-sm">
                         <div class="flex items-center justify-end">
                             <label class="flex space-x-2">
-                                <Checkbox v-model:checked="form.is_anonymous_report" name="is_anonymous_report" required />
+                                <Checkbox v-model:checked="form.is_anonymous_report" name="is_anonymous_report" />
                                 <span class="mr-2 text-sm text-gray-600 flex items-center">
                                     <span class="mr-2">Anónimo</span>
                                     <el-tooltip content="No se mostrá tun nombre en los detalles del reporte"
@@ -31,34 +31,39 @@
                         <div class="mt-2">
                             <p class="flex items-center space-x-2">
                                 <InputLabel value="Ubicación del reporte*" class="ml-3 mb-1" />
-                                <el-tooltip content="Proporciona la ubicación específica donde se requiere el mantenimeinto" placement="top">
-                                    <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                                <el-tooltip content="Proporciona la ubicación específica donde se requiere el mantenimeinto"
+                                    placement="top">
+                                    <div
+                                        class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
                                         <i class="fa-solid fa-info text-primary text-[7px]"></i>
                                     </div>
                                 </el-tooltip>
                             </p>
-                            <input v-model="form.location" placeholder="Escriba la ubicación" class="input" type="text" required />
+                            <input v-model="form.location" placeholder="Escriba la ubicación" class="input" type="text"
+                                required />
                             <InputError :message="form.errors.location" />
                         </div>
                         <div class="mt-2">
                             <InputLabel value="Descripción*" class="ml-3 mb-1" />
-                            <textarea v-model="form.description" placeholder="Escriba la descripción" class="textarea" required ></textarea>
+                            <textarea v-model="form.description" placeholder="Escriba la descripción" class="textarea"
+                                required></textarea>
                             <InputError :message="form.errors.description" />
                         </div>
                         <div class="mt-2">
                             <p class="flex items-center space-x-2">
                                 <InputLabel value="Agregar fotografías*" class="ml-3 mb-1" />
                                 <el-tooltip content="Añade fotografías para complementar el reporte " placement="top">
-                                    <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                                    <div
+                                        class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
                                         <i class="fa-solid fa-info text-primary text-[7px]"></i>
                                     </div>
                                 </el-tooltip>
                             </p>
-                            <input v-model="form.location" placeholder="Escriba la ubicación" class="input" type="text" required />
+                            <InputFilePreview @imagen="saveImage" />
                             <InputError :message="form.errors.location" />
                         </div>
                         <div class="flex justify-end mt-7">
-                            <PrimaryButton :disabled="!form.name || !form.description || !form.location">
+                            <PrimaryButton :disabled="!form.name || !form.description || !form.location || form.processing">
                                 Enviar reporte
                             </PrimaryButton>
                         </div>
@@ -77,6 +82,7 @@ import Back from '@/Components/MyComponents/Back.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Checkbox from "@/Components/Checkbox.vue";
+import InputFilePreview from "@/Components/MyComponents/InputFilePreview.vue";
 import { useForm, Link } from "@inertiajs/vue3";
 import axios from "axios";
 
@@ -86,6 +92,7 @@ export default {
             name: null,
             description: null,
             location: null,
+            image: null,
             is_anonymous_report: false,
         });
         return {
@@ -100,11 +107,25 @@ export default {
         Checkbox,
         Back,
         Link,
+        InputFilePreview,
     },
     props: {
     },
     methods: {
-
+        store() {
+            this.form.post(route("maintenances.store"), {
+                onSuccess: () => {
+                    this.$notify({
+                        title: "Correcto",
+                        message: "Se ha registrado el reporte. Espera respuesta pronto",
+                        type: "success",
+                    });
+                },
+            });
+        },
+        saveImage(image) {
+            this.form.image = image;
+        },
     }
 };
 </script>
