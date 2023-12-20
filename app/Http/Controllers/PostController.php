@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -11,11 +12,12 @@ class PostController extends Controller
     
     public function index()
     {
-        $posts = PostResource::collection(Post::latest()->where('frax_id', auth()->user()->frax_id)->get());
+        $posts = PostResource::collection(Post::with('user')->latest()->where('frax_id', auth()->user()->frax_id)->get());
+        $users = User::where('frax_id', auth()->user()->frax_id)->get(['id','name']);
 
-        // return $posts;
+        // return $users;
 
-        return inertia('Community/Index', compact('posts'));
+        return inertia('Community/Index', compact('posts', 'users'));
     }
 
     
@@ -56,5 +58,13 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+    }
+
+
+    public function incrementViews($postId)
+    {
+        $post = Post::findOrFail($postId);
+        $post->increment('views'); // Incrementa la variable 'views' en 1
+        return response()->json(['success' => true]);
     }
 }

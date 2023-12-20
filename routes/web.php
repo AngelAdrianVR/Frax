@@ -117,6 +117,7 @@ Route::resource('maintenances', MaintenanceController::class)->middleware('auth'
 //community routes------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('posts', PostController::class)->middleware('auth');
+Route::post('/posts/increment-views/{postId}', [PostController::class, 'incrementViews'])->name('posts.view')->middleware('auth');
 
 
 //norms routes-------------------------------------------------------------------------------------
