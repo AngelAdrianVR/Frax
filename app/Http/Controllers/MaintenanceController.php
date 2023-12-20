@@ -41,18 +41,28 @@ class MaintenanceController extends Controller
 
     public function show(Maintenance $maintenance)
     {
-        $maintenance = $maintenance->load(['media', 'user']);
+        $maintenance = $maintenance->load(['media', 'user', 'evidence']);
         return inertia('Maintenance/Show', compact('maintenance'));
     }
 
     public function edit(Maintenance $maintenance)
     {
-        //
+        return inertia('Maintenance/Edit', compact('maintenance'));
     }
 
     public function update(Request $request, Maintenance $maintenance)
     {
-        //
+        // return $request->all();
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:400',
+            'location' => 'required|string|max:255',
+            'is_anonymous_report' => 'boolean'
+        ]);
+
+        $maintenance->update($validated);
+
+        return to_route('maintenances.index');
     }
 
     public function destroy(Maintenance $maintenance)
