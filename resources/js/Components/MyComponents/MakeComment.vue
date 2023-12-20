@@ -7,7 +7,6 @@
         <div class="relative w-full">
             <input type="text" class="input pr-8 mr-3" placeholder="Escribe un comentario">
             <button :disabled="true" class="absolute right-3 top-[10px] disabled:cursor-not-allowed disabled:text-gray-400 text-primary">
-                <!-- <i class="fa-solid fa-share text-sm text-primary"></i> -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-send rotate-45" viewBox="0 0 16 16">
                     <path

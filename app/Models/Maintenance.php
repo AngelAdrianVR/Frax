@@ -36,4 +36,9 @@ class Maintenance extends Model implements HasMedia
     {
         return $this->belongsTo(User::class);
     }
+
+    public function evidence()
+    {
+        return $this->hasMany(MaintenanceEvidence::class);
+    }
 }

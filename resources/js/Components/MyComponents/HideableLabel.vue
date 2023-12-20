@@ -1,37 +1,42 @@
 <template>
-  <div>
-    <div class="notification-tab" @click="toggleNotification">
-        <i :class="iconClass"></i>
-        <p v-if="showNotification" class="text-sm ml-3">{{ buttonText }}</p>
+  <div class="text-secondary font-bold text-xs">
+    <div class="flex space-x-3 rounded-tl-[5px] rounded-bl-[5px] cursor-pointer p-2 items-start bg-primarylight"
+      @click="toggleNotification">
+      <!-- <p v-if="showNotification" class="ml-3">{{ buttonText }}</p> -->
+      <div class="rounded-full border-2 border-secondary w-4 h-4 flex items-center justify-center">
+        <i :class="iconClass" class="mt-[2px] text-[7px]"></i>
+      </div>
+      <p v-if="showNotification">
+        <slot />
+      </p>
     </div>
-    <transition name="fade">
+    <!-- <transition name="fade">
       <div v-if="showNotification" class="notification-content">
         <p class="font-bold">{{ notificationTitle }}</p>
-        <p class="text-sm">{{ notificationText }}</p>
       </div>
-    </transition>
+    </transition> -->
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    buttonText: {
-      type: String,
-      default: 'Click me',
-    },
+    // buttonText: {
+    //   type: String,
+    //   default: 'Click me',
+    // },
     iconClass: {
       type: String,
-      default: 'fa-solid fa-circle-exclamation',
+      default: 'fa-solid fa-info',
     },
-    notificationTitle: {
-      type: String,
-      default: 'Notification Title',
-    },
-    notificationText: {
-      type: String,
-      default: 'Notification text goes here.',
-    },
+    // notificationTitle: {
+    //   type: String,
+    //   default: 'Notification Title',
+    // },
+    // notificationText: {
+    //   type: String,
+    //   default: 'Notification text goes here.',
+    // },
   },
   data() {
     return {
@@ -51,20 +56,21 @@ export default {
   cursor: pointer;
   display: flex;
   align-items: center;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #dddddd;
-  border-top-left-radius: 10px; /* Redondeo en la esquina superior izquierda */
-  border-bottom-left-radius: 10px; /* Redondeo en la esquina inferior izquierda */
+  background-color: #C9FDE4;
+  padding: 10px;
+  border-top-left-radius: 10px;
+  /* Redondeo en la esquina superior izquierda */
+  border-bottom-left-radius: 10px;
+  /* Redondeo en la esquina inferior izquierda */
 }
 
 .notification-content {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-top-left-radius: 5px; /* Redondeo en la esquina superior izquierda */
-  border-bottom-left-radius: 5px; /* Redondeo en la esquina inferior izquierda */
+  background-color: #C9FDE4;
+  border-top-left-radius: 3px;
+  /* Redondeo en la esquina superior izquierda */
+  border-bottom-left-radius: 3px;
+  /* Redondeo en la esquina inferior izquierda */
   padding: 10px;
-  margin-top: 5px;
 }
 
 .fade-enter-active,
@@ -73,11 +79,14 @@ export default {
 }
 
 .fade-enter,
-.fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+.fade-leave-to
+
+/* .fade-leave-active in <2.1.8 */
+  {
   opacity: 0;
 }
 
-.fade-enter, .fade-enter-active {
+.fade-enter,
+.fade-enter-active {
   opacity: 1;
-}
-</style>
+}</style>
