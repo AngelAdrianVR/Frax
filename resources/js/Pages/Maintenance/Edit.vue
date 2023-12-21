@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Registrar problema de mantenimiento">
+    <AppLayout title="Editar problema de mantenimiento">
         <div class="lg:py-7 lg:px-10">
             <HideableLabel class="absolute right-0 top-28 z-50" iconClass="fa-solid fa-info">
                 <p>
@@ -11,12 +11,12 @@
 
             <h1 class="font-bold mx-28 mt-5 flex items-center space-x-2">
                 <i class="fa-solid fa-face-grin-wide"></i>
-                <span>Hacer reporte</span>
+                <span>Editar reporte</span>
             </h1>
             <div class="grid grid-cols-2 gap-x-32 gap-y-1 mx-28 mt-5">
                 <!-- columna izquierda -->
                 <div>
-                    <form @submit.prevent="store" class="mt-1 text-sm">
+                    <form @submit.prevent="update" class="mt-1 text-sm">
                         <div class="flex items-center justify-end">
                             <label class="flex space-x-2">
                                 <Checkbox v-model:checked="form.is_anonymous_report" name="is_anonymous_report" />
@@ -73,7 +73,7 @@
                         </div>
                         <div class="flex justify-end mt-7">
                             <PrimaryButton :disabled="!form.name || !form.description || !form.location || form.processing">
-                                Enviar reporte
+                                Guardar cambios
                             </PrimaryButton>
                         </div>
                     </form>
@@ -94,16 +94,15 @@ import InputError from "@/Components/InputError.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import InputFilePreview from "@/Components/MyComponents/InputFilePreview.vue";
 import { useForm, Link } from "@inertiajs/vue3";
-import axios from "axios";
 
 export default {
     data() {
         const form = useForm({
-            name: null,
-            description: null,
-            location: null,
+            name: this.maintenance.name,
+            description: this.maintenance.description,
+            location: this.maintenance.location,
             image: null,
-            is_anonymous_report: false,
+            is_anonymous_report: Boolean(this.maintenance.is_anonymous_report),
         });
         return {
             form,
@@ -121,14 +120,15 @@ export default {
         HideableLabel,
     },
     props: {
+        maintenance: Object,
     },
     methods: {
-        store() {
-            this.form.post(route("maintenances.store"), {
+        update() {
+            this.form.put(route("maintenances.update", this.maintenance), {
                 onSuccess: () => {
                     this.$notify({
                         title: "Correcto",
-                        message: "Se ha registrado el reporte. Espera respuesta pronto",
+                        message: "Se ha actualizado el reporte. Espera respuesta pronto",
                         type: "success",
                     });
                 },

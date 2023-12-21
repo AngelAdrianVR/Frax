@@ -1,6 +1,6 @@
 <template>
   <div>
-    <figure @click="triggerImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
+    <figure @click="triggerImageInput" class="flex items-center justify-center rounded-md border border-dashed border-gray3 w-48 h-36 cursor-pointer relative">
       <i v-if="image" @click.stop="clearImage" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
       <i v-if="!image" class="fa-solid fa-camera text-gray-400 text-xl"></i>
       <img v-if="image" :src="image" :alt="alt" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />

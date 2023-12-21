@@ -17,12 +17,11 @@
                 <p class="font-bold">Pagos</p>
                 <PrimaryButton class="hidden md:block" @click="$inertia.get(route('payments.create'))">Agregar pago</PrimaryButton>
                 <PrimaryButton class="lg:hidden" @click="$inertia.get(route('payments.create'))"><i class="fa-solid fa-plus"></i></PrimaryButton>
-                <HideableLabel class="absolute right-0 top-32 z-50"
-                    buttonText="ATENCIÓN"
-                    iconClass="fa-solid fa-info-circle"
-                    notificationTitle="Importante"
-                    notificationText="Es importante pagar los montos si ya ha pasado la fecha de vencimiento para evitar cargos adicionales"
-                />
+                <HideableLabel class="absolute right-0 top-32 z-50" iconClass="fa-solid fa-info">
+                    <p>
+                        Es importante pagar los montos si ya ha pasado la fecha de vencimiento para evitar cargos adicionales
+                    </p>
+                </HideableLabel>
             </div>
 
         </div>
