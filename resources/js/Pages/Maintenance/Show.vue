@@ -9,7 +9,8 @@
                     <h1 class="font-bold">{{ maintenance.name }}</h1>
                     <div class="grid grid-cols-4 gap-x-10 gap-y-3 mt-5">
                         <span>Creado por</span>
-                        <span class="col-span-3">{{ maintenance.is_anonymous_report ? 'Anónimo' : maintenance.user.name }}</span>
+                        <span class="col-span-3">{{ maintenance.is_anonymous_report ? 'Anónimo' : maintenance.user.name
+                        }}</span>
                         <span>Fecha de reporte</span>
                         <span class="col-span-3">{{ maintenance.created_at }}</span>
                         <span>Ubicación</span>
@@ -61,7 +62,8 @@
                     </div>
                 </article>
                 <article>
-                    <div v-if="maintenance.status == 0 && maintenance.user_id == $page.props.auth.user.id" class="flex justify-end mb-3 space-x-1">
+                    <div v-if="maintenance.status == 0 && maintenance.user_id == $page.props.auth.user.id"
+                        class="flex justify-end mb-3 space-x-1">
                         <el-popconfirm confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537"
                             title="¿Continuar?" @confirm="true">
                             <template #reference>
@@ -69,7 +71,8 @@
                                         class="fa-regular fa-trash-can"></i></button>
                             </template>
                         </el-popconfirm>
-                        <button @click="$inertia.get(route('maintenances.edit', maintenance))" class="rounded-full bg-gray5 flex justify-center items-center w-7 h-7 text-xs"><i
+                        <button @click="$inertia.get(route('maintenances.edit', maintenance))"
+                            class="rounded-full bg-gray5 flex justify-center items-center w-7 h-7 text-xs"><i
                                 class="fa-solid fa-pencil"></i></button>
                     </div>
                     <article>
@@ -122,16 +125,15 @@
                     <span class="text-gray1">({{ '0' }})</span>
                 </h1>
                 <article class="mt-6">
-                    <div class="flex items-start space-x-8 mb-5">
-                        <figure class="flex text-sm border-2 rounded-full w-12">
-                            <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url"
-                                :alt="$page.props.auth.user.name">
+                    <div v-for="comment in maintenance.comments" :key="comment.id" class="flex items-start space-x-8 mb-5">
+                        <figure class="flex text-sm border-2 rounded-full">
+                            <img class="size-8 rounded-full object-cover" :src="comment.user?.profile_photo_url"
+                                :alt="comment.user?.name">
                         </figure>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel odio dolorum qui culpa ullam quasi
-                            eaque nulla voluptatum! Doloremque dicta neque laborum perferendis doloribus et esse quidem odit
-                            alias. Ut!</p>
+                        <p class="mt-1">{{ comment.content }}</p>
                     </div>
-                    <MakeComment />
+                    <MakeComment :storeEndpoint="route('maintenances.store-comment', { maintenance: maintenance.id })"
+                        @comment-sent="addNewComment($event)" />
                 </article>
             </section>
         </main>
@@ -169,7 +171,9 @@ export default {
         maintenance: Object,
     },
     methods: {
-
+        addNewComment(comment) {
+            this.maintenance.comments.push(comment);
+        }
     },
 };
 </script>

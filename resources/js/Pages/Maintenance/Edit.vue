@@ -3,7 +3,8 @@
         <div class="lg:py-7 lg:px-10">
             <HideableLabel class="absolute right-0 top-28 z-50" iconClass="fa-solid fa-info">
                 <p>
-                    El tiempo de respuesta depende de la problemática, ya que en algunos casos puede tomar más tiempo por <br>
+                    El tiempo de respuesta depende de la problemática, ya que en algunos casos puede tomar más tiempo por
+                    <br>
                     situaciones que se encuentran fuera de nuestro alcance
                 </p>
             </HideableLabel>
@@ -124,15 +125,27 @@ export default {
     },
     methods: {
         update() {
-            this.form.put(route("maintenances.update", this.maintenance), {
-                onSuccess: () => {
-                    this.$notify({
-                        title: "Correcto",
-                        message: "Se ha actualizado el reporte. Espera respuesta pronto",
-                        type: "success",
-                    });
-                },
-            });
+            if (this.form.image) {
+                this.form.post(route("maintenances.update-with-media", this.maintenance), {
+                    onSuccess: () => {
+                        this.$notify({
+                            title: "Correcto",
+                            message: "Se ha actualizado el reporte. Espera respuesta pronto",
+                            type: "success",
+                        });
+                    },
+                });
+            } else {
+                this.form.put(route("maintenances.update", this.maintenance), {
+                    onSuccess: () => {
+                        this.$notify({
+                            title: "Correcto",
+                            message: "Se ha actualizado el reporte. Espera respuesta pronto",
+                            type: "success",
+                        });
+                    },
+                });
+            }
         },
         saveImage(image) {
             this.form.image = image;

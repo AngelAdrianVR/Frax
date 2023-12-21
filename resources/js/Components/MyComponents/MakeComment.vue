@@ -5,8 +5,9 @@
                 :alt="$page.props.auth.user.name">
         </figure>
         <div class="relative w-full">
-            <input type="text" class="input pr-8 mr-3" placeholder="Escribe un comentario">
-            <button :disabled="true" class="absolute right-3 top-[10px] disabled:cursor-not-allowed disabled:text-gray-400 text-primary">
+            <input v-model="comment" type="text" class="input pr-8 mr-3" placeholder="Escribe un comentario">
+            <button @click="sendComment" :disabled="!comment || loading"
+                class="absolute right-3 top-[10px] disabled:cursor-not-allowed disabled:text-gray-400 text-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-send rotate-45" viewBox="0 0 16 16">
                     <path
@@ -17,20 +18,45 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
-data(){
-    return {
+    data() {
+        return {
+            comment: null,
+            loading: false,
+        }
+    },
+    emits: ['commentSent'],
+    props: {
+        storeEndpoint: String,
+    },
+    methods: {
+        async sendComment() {
+            this.loading = true;
+            try {
+                const response = await axios.post(this.storeEndpoint, { comment: this.comment });
 
+                if (response.status === 200) {
+                    this.$emit('commentSent', response.data.item);
+                    // this.$notify({
+                    //     title: "Correcto",
+                    //     message: "Se ha guardado el comentario",
+                    //     type: "success",
+                    // });
+                    this.comment = null;
+                }
+            } catch (error) {
+                console.log('log', error);
+                this.$notify({
+                    title: "Algo inesperado sucedió",
+                    message: "El servior no pudo completar el envío del comentario. Favo de intentar más tarde.",
+                    type: "error",
+                });
+            } finally {
+                this.loading = false;
+            }
+        }
     }
-},
-components:{
-
-},
-props:{
-
-},
-methods:{
-
-}
 }
 </script>

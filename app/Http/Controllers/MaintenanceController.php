@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Maintenance;
 use Illuminate\Http\Request;
 
@@ -41,7 +42,7 @@ class MaintenanceController extends Controller
 
     public function show(Maintenance $maintenance)
     {
-        $maintenance = $maintenance->load(['media', 'user', 'evidence']);
+        $maintenance = $maintenance->load(['media', 'user', 'evidence', 'comments.user']);
         return inertia('Maintenance/Show', compact('maintenance'));
     }
 
@@ -62,11 +63,41 @@ class MaintenanceController extends Controller
 
         $maintenance->update($validated);
 
-        return to_route('maintenances.index');
+        return to_route('maintenances.show', $maintenance);
+    }
+
+    public function updateWithMedia(Request $request, Maintenance $maintenance)
+    {
+        // return $request->all();
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:400',
+            'location' => 'required|string|max:255',
+            'is_anonymous_report' => 'boolean'
+        ]);
+
+        $maintenance->update($validated);
+
+        // Subir y asociar la imagen
+        $maintenance->clearMediaCollection();
+        $maintenance->addAllMediaFromRequest()->each(fn ($file) => $file->toMediaCollection());
+
+        return to_route('maintenances.show', $maintenance);
     }
 
     public function destroy(Maintenance $maintenance)
     {
         //
+    }
+
+    public function storeComment(Maintenance $maintenance, Request $request)
+    {
+        $comment = new Comment([
+            'content' => $request->comment,
+            'user_id' => auth()->id(),
+        ]);
+        $maintenance->comments()->save($comment);
+
+        return response()->json(['item' => $comment->fresh()->load('user')]);
     }
 }

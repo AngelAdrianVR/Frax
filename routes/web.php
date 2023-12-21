@@ -112,6 +112,8 @@ Route::resource('common-areas-users', CommonAreaUserController::class)->middlewa
 //maintenances routes------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('maintenances', MaintenanceController::class)->middleware('auth');
+Route::post('maintenances/{maintenance}/update-with-media', [MaintenanceController::class, 'updateWithMedia'])->name('maintenances.update-with-media')->middleware('auth');
+Route::post('maintenances/{maintenance}/store-comment', [MaintenanceController::class, 'storeComment'])->name('maintenances.store-comment')->middleware('auth');
 
 
 //community routes------------------------------------------------------------------------------
