@@ -87,7 +87,9 @@ class MaintenanceController extends Controller
 
     public function destroy(Maintenance $maintenance)
     {
-        //
+        $maintenance->delete();
+
+        return to_route('maintenances.index');
     }
 
     public function storeComment(Maintenance $maintenance, Request $request)

@@ -6,13 +6,16 @@
         <main class="lg:mx-48 text-sm pb-6">
             <section class="grid grid-cols-3 gap-x-14 gap-y-2 border-b border-dashed pb-10 border-gray4">
                 <article class="col-span-2">
-                    <h1 class="font-bold">{{ maintenance.name }}</h1>
+                    <h1 class="font-bold text-secondary">
+                        <i class="mr-2" :class="problemTypes.find(item => item.label == maintenance.name)?.icon"></i>
+                        {{ maintenance.name }}
+                    </h1>
                     <div class="grid grid-cols-4 gap-x-10 gap-y-3 mt-5">
                         <span>Creado por</span>
                         <span class="col-span-3">{{ maintenance.is_anonymous_report ? 'Anónimo' : maintenance.user.name
                         }}</span>
                         <span>Fecha de reporte</span>
-                        <span class="col-span-3">{{ maintenance.created_at }}</span>
+                        <span class="col-span-3">{{ formatDate(maintenance.created_at) }}</span>
                         <span>Ubicación</span>
                         <span class="col-span-3">{{ maintenance.location }}</span>
                         <span>Descripción</span>
@@ -65,7 +68,7 @@
                     <div v-if="maintenance.status == 0 && maintenance.user_id == $page.props.auth.user.id"
                         class="flex justify-end mb-3 space-x-1">
                         <el-popconfirm confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537"
-                            title="¿Continuar?" @confirm="true">
+                            title="¿Continuar?" @confirm="deleteMaintenance">
                             <template #reference>
                                 <button class="rounded-full bg-gray5 flex justify-center items-center w-7 h-7 text-xs"><i
                                         class="fa-regular fa-trash-can"></i></button>
@@ -122,7 +125,7 @@
                 <h1 class="flex items-center space-x-3 font-bold text-secondary">
                     <i class="fa-regular fa-comment"></i>
                     <span>Comentarios</span>
-                    <span class="text-gray1">({{ '0' }})</span>
+                    <span class="text-gray1">({{ maintenance.comments.length }})</span>
                 </h1>
                 <article class="mt-6">
                     <div v-for="comment in maintenance.comments" :key="comment.id" class="flex items-start space-x-8 mb-5">
@@ -149,12 +152,56 @@ import Back from "@/Components/MyComponents/Back.vue";
 import { Link } from "@inertiajs/vue3";
 import { Carousel, Slide } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export default {
     data() {
         return {
             currentManteinanceMedia: 0,
             currentEvidenceMedia: 0,
+            problemTypes: [
+                {
+                    label: "Áreas verdes",
+                    help: "(césped, arbustos, plantas, etc)",
+                    icon: 'fa-solid fa-leaf'
+                },
+                {
+                    label: "Iluminación",
+                    help: "(Farolas, luces, etc)",
+                    icon: 'fa-solid fa-lightbulb'
+                },
+                {
+                    label: "Seguridad",
+                    help: "(camáras de seguridad, etc)",
+                    icon: 'fa-solid fa-shield-halved'
+                },
+                {
+                    label: "Instalaciones deportivas",
+                    help: "(cancha de fut-bol, etc)",
+                    icon: 'fa-solid fa-person-running'
+                },
+                {
+                    label: "Áreas de juego",
+                    help: "(parques infantiles, etc)",
+                    icon: 'fa-solid fa-puzzle-piece'
+                },
+                {
+                    label: "Residuos",
+                    help: "(contenedores de basura, etc)",
+                    icon: 'fa-solid fa-recycle'
+                },
+                {
+                    label: "Infraestructura del fraccionamiento",
+                    help: "(calles, aceras, etc)",
+                    icon: 'fa-solid fa-trowel-bricks'
+                },
+                {
+                    label: "Áreas comunes",
+                    help: "(salón de eventos, área de golf, etc) ",
+                    icon: 'fa-solid fa-map'
+                },
+            ],
         };
     },
     components: {
@@ -171,8 +218,16 @@ export default {
         maintenance: Object,
     },
     methods: {
+        formatDate(date) {
+            const dateObject = new Date(date);
+            return format(dateObject, 'dd MMMM yyyy, hh:mm a', { locale: es });
+
+        },
         addNewComment(comment) {
             this.maintenance.comments.push(comment);
+        },
+        deleteMaintenance() {
+            this.$inertia.delete(route('maintenance.destroy', this.maintenance));
         }
     },
 };
