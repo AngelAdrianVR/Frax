@@ -5,7 +5,7 @@
         </figure>
         <div class="flex justify-between items-center font-bold h-[11%] px-4 text-sm">
             <h2 class="font-bold">
-                <i class="fa-solid fa-leaf mr-1 text-gray1"></i>
+                <i class="mr-1 text-gray1" :class="problemTypes.find(item => item.label == maintenance.name)?.icon"></i>
                 {{ maintenance.name }}
             </h2>
             <span class="text-gray1">
@@ -57,7 +57,48 @@ import { Link } from "@inertiajs/vue3";
 export default {
     data() {
         return {
-
+            problemTypes: [
+                {
+                    label: "Áreas verdes",
+                    help: "(césped, arbustos, plantas, etc)",
+                    icon: 'fa-solid fa-leaf'
+                },
+                {
+                    label: "Iluminación",
+                    help: "(Farolas, luces, etc)",
+                    icon: 'fa-solid fa-lightbulb'
+                },
+                {
+                    label: "Seguridad",
+                    help: "(camáras de seguridad, etc)",
+                    icon: 'fa-solid fa-shield-halved'
+                },
+                {
+                    label: "Instalaciones deportivas",
+                    help: "(cancha de fut-bol, etc)",
+                    icon: 'fa-solid fa-person-running'
+                },
+                {
+                    label: "Áreas de juego",
+                    help: "(parques infantiles, etc)",
+                    icon: 'fa-solid fa-puzzle-piece'
+                },
+                {
+                    label: "Residuos",
+                    help: "(contenedores de basura, etc)",
+                    icon: 'fa-solid fa-recycle'
+                },
+                {
+                    label: "Infraestructura del fraccionamiento",
+                    help: "(calles, aceras, etc)",
+                    icon: 'fa-solid fa-trowel-bricks'
+                },
+                {
+                    label: "Áreas comunes",
+                    help: "(salón de eventos, área de golf, etc) ",
+                    icon: 'fa-solid fa-map'
+                },
+            ],
         };
     },
     components: {

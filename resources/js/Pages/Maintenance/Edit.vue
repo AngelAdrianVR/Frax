@@ -3,14 +3,20 @@
         <div class="lg:py-7 lg:px-10">
             <HideableLabel class="absolute right-0 top-28 z-50" iconClass="fa-solid fa-info">
                 <p>
-                    El tiempo de respuesta depende de la problemática, ya que en algunos casos puede tomar más tiempo por <br>
+                    El tiempo de respuesta depende de la problemática, ya que en algunos casos puede tomar más tiempo por
+                    <br>
                     situaciones que se encuentran fuera de nuestro alcance
                 </p>
             </HideableLabel>
             <Back />
 
             <h1 class="font-bold mx-28 mt-5 flex items-center space-x-2">
-                <i class="fa-solid fa-face-grin-wide"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21.75 6.75a4.5 4.5 0 0 1-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 1 1-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 0 1 6.336-4.486l-3.276 3.276a3.004 3.004 0 0 0 2.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.867 19.125h.008v.008h-.008v-.008Z" />
+                </svg>
                 <span>Editar reporte</span>
             </h1>
             <div class="grid grid-cols-2 gap-x-32 gap-y-1 mx-28 mt-5">
@@ -34,7 +40,13 @@
                         </div>
                         <div class="mt-2">
                             <InputLabel value="Problemática*" class="ml-3 mb-1" />
-                            <input v-model="form.name" placeholder="Seleccione" class="input" type="text" required />
+                            <el-select v-model="form.name" placeholder="Seleccione" class="w-full">
+                                <el-option v-for="item in problemTypes" :key="item.label" :label="item.label"
+                                    :value="item.label" class="flex items-center justify-between">
+                                    <span>{{ item.label }}</span>
+                                    <span class="text-[11px] text-gray1">{{ item.help }}</span>
+                                </el-option>
+                            </el-select>
                             <InputError :message="form.errors.name" />
                         </div>
                         <div class="mt-2">
@@ -106,6 +118,40 @@ export default {
         });
         return {
             form,
+            problemTypes: [
+                {
+                    label: "Áreas verdes",
+                    help: "(césped, arbustos, plantas, etc)"
+                },
+                {
+                    label: "Iluminación",
+                    help: "(Farolas, luces, etc)"
+                },
+                {
+                    label: "Seguridad",
+                    help: "(camáras de seguridad, etc)"
+                },
+                {
+                    label: "Instalaciones deportivas",
+                    help: "(cancha de fut-bol, etc)"
+                },
+                {
+                    label: "Áreas de juego",
+                    help: "(parques infantiles, etc)"
+                },
+                {
+                    label: "Residuos",
+                    help: "(contenedores de basura, etc)"
+                },
+                {
+                    label: "Infraestructura del fraccionamiento",
+                    help: "(calles, aceras, etc)"
+                },
+                {
+                    label: "Áreas comunes",
+                    help: "(salón de eventos, área de golf, etc) "
+                },
+            ],
         };
     },
     components: {
@@ -124,15 +170,27 @@ export default {
     },
     methods: {
         update() {
-            this.form.put(route("maintenances.update", this.maintenance), {
-                onSuccess: () => {
-                    this.$notify({
-                        title: "Correcto",
-                        message: "Se ha actualizado el reporte. Espera respuesta pronto",
-                        type: "success",
-                    });
-                },
-            });
+            if (this.form.image) {
+                this.form.post(route("maintenances.update-with-media", this.maintenance), {
+                    onSuccess: () => {
+                        this.$notify({
+                            title: "Correcto",
+                            message: "Se ha actualizado el reporte. Espera respuesta pronto",
+                            type: "success",
+                        });
+                    },
+                });
+            } else {
+                this.form.put(route("maintenances.update", this.maintenance), {
+                    onSuccess: () => {
+                        this.$notify({
+                            title: "Correcto",
+                            message: "Se ha actualizado el reporte. Espera respuesta pronto",
+                            type: "success",
+                        });
+                    },
+                });
+            }
         },
         saveImage(image) {
             this.form.image = image;

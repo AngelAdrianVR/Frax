@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <figure @click="triggerImageInput" class="flex items-center justify-center rounded-md border border-dashed border-gray3 w-48 h-36 cursor-pointer relative">
+  <div class="inline">
+    <figure @click="triggerImageInput"
+      class="flex items-center justify-center rounded-md border border-dashed border-gray3 w-48 h-36 cursor-pointer relative">
       <i v-if="image" @click.stop="clearImage" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
       <i v-if="!image" class="fa-solid fa-camera text-gray-400 text-xl"></i>
       <img v-if="image" :src="image" :alt="alt" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
@@ -11,12 +12,6 @@
 
 <script>
 export default {
-  props: {
-    alt: {
-      type: String,
-      default: "Vista previa no disponible",
-    },
-  },
   data() {
     return {
       image: null,
@@ -25,6 +20,13 @@ export default {
       },
     };
   },
+  props: {
+    alt: {
+      type: String,
+      default: "Vista previa no disponible",
+    },
+  },
+  emits: ['imagen', 'cleared'],
   methods: {
     triggerImageInput() {
       this.$refs.fileInput.click();
@@ -39,7 +41,7 @@ export default {
       }
 
       // Emitir evento al componente padre con la imagen
-        this.$emit("imagen", file);
+      this.$emit("imagen", file);
     },
     clearImage() {
       this.image = null;
