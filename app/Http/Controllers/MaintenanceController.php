@@ -33,9 +33,14 @@ class MaintenanceController extends Controller
             'is_anonymous_report' => 'boolean'
         ]);
 
+        // eliminar ultimo elemento en arreglo imagenes, ya que está vacío
+        $images = $request->images;
+        $last_index = count($images) - 1;
+        unset($images[$last_index]);
+
         $maintenance = Maintenance::create($validated + ['user_id' => auth()->id()]);
         // Subir y asociar la imagen
-        $maintenance->addAllMediaFromRequest()->each(fn ($file) => $file->toMediaCollection());
+        $maintenance->addAllMediaFromRequest('images')->each(fn ($file) => $file->toMediaCollection());
 
         return to_route('maintenances.index');
     }
