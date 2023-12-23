@@ -28,6 +28,12 @@ class Post extends Model implements HasMedia
     }
 
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+
     public function frax(): BelongsTo
     {
         return $this->belongsTo(Frax::class);

@@ -9,11 +9,11 @@
         <div class="flex text-sm items-center rounded-full w-5/6 lg:w-full">
           <img
             class="h-10 w-10 rounded-full object-cover"
-            :src="user?.profile_photo_url"
-            :alt="user?.name"
+            :src="post.user?.profile_photo_url"
+            :alt="post.user?.name"
           />
           <p class="ml-4">
-            <strong class="text-primary mr-2">{{ user?.name }}</strong> ha compartido una
+            <strong class="text-primary mr-2">{{ post.user?.name }}</strong> ha compartido una
             publicación
           </p>
         </div>
@@ -23,7 +23,7 @@
         <div class="flex items-center w-full" figurestyle="float: left">
           <i class="fa-solid fa-circle-user text-blue-200 text-4xl"></i>
           <p class="ml-4">
-            <strong class="text-primary mr-2">{{ user?.name }}</strong> ha compartido una
+            <strong class="text-primary mr-2">{{ post.user?.name }}</strong> ha compartido una
             publicación
           </p>
         </div>
@@ -41,21 +41,21 @@
           class="border border-gray5 flex flex-col space-y-1 rounded-md p-1 absolute w-28 h-auto top-7 -right-1 text-sm z-50 bg-white"
         >
           <p
-            v-if="user.id !== $page.props.auth.user.id"
+            v-if="post.user.id !== $page.props.auth.user.id"
             class="hover:bg-gray5 cursor-pointer text-center px-2"
           >
             Reportar
           </p>
           <p
             @click="editPublication = true"
-            v-if="user.id == $page.props.auth.user.id"
+            v-if="post.user.id == $page.props.auth.user.id"
             class="hover:bg-gray5 cursor-pointer text-center px-2"
           >
             Editar
           </p>
           <p
             @click="confirmDelete = true"
-            v-if="user.id == $page.props.auth.user.id"
+            v-if="post.user.id == $page.props.auth.user.id"
             class="hover:bg-gray5 cursor-pointer text-center px-2"
           >
             Eliminar
@@ -110,10 +110,14 @@
     </div>
     <div class="border-b border-gray5"></div>
 
-    <!-- Comentarios ----------->
+    <!-- Comentar ----------->
     <div class="my-5">
-      <MakeComment />
+      <MakeComment :storeEndpoint="route('posts.store-comment', { postId: this.post.id })"
+      @comment-sent="addNewComment($event)" />
     </div>
+
+    <!-- Comentarios de post ------->
+    <PostComment v-for="comment in post.comments" :key="comment" :comment="comment" />
   </div>
 
   <!-- Confirmation modal --------->
@@ -121,8 +125,8 @@
     <template #title> ¿Continuar con la eliminación? </template>
     <template #content> Si eliminas la publicación no podrás recuperarla. </template>
     <template #footer>
-      <PrimaryButton @click="deletePost" class="!bg-red-500 mr-2">Eliminar</PrimaryButton>
       <CancelButton @click="confirmDelete = false">Cancelar</CancelButton>
+      <PrimaryButton @click="deletePost" class="!bg-red-500 ml-2">Eliminar</PrimaryButton>
     </template>
   </ConfirmationModal>
 
@@ -170,6 +174,7 @@
 
 <script>
 import MakeComment from "@/Components/MyComponents/MakeComment.vue";
+import PostComment from "@/Components/MyComponents/Community/PostComment.vue";
 import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CancelButton from "@/Components/MyComponents/CancelButton.vue";
@@ -191,7 +196,6 @@ export default {
       editPublication: false,
       confirmDelete: false,
       truncated: true, // Inicialmente asumimos que el texto está truncado
-      user: this.users.find((item) => item.id === this.post.user.id),
     };
   },
   components: {
@@ -200,11 +204,11 @@ export default {
     PrimaryButton,
     CancelButton,
     InputFilePreview,
+    PostComment,
     Modal,
   },
   props: {
     post: Object,
-    users: Array,
   },
   emits: ["delete-post"], // Declaración del evento delete-post
   methods: {
@@ -240,6 +244,9 @@ export default {
         window.open(urlImagen, '_blank');
     }
   },
+    addNewComment(comment) {
+        this.post.comments.push(comment);
+    },
     updatePublication() {
       if (this.form.media.length > 0) {
         this.form.post(route("posts.update-with-media", this.post.id), {

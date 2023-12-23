@@ -39,11 +39,6 @@ export default {
 
                 if (response.status === 200) {
                     this.$emit('commentSent', response.data.item);
-                    // this.$notify({
-                    //     title: "Correcto",
-                    //     message: "Se ha guardado el comentario",
-                    //     type: "success",
-                    // });
                     this.comment = null;
                 }
             } catch (error) {

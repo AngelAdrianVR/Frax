@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,12 +13,11 @@ class PostController extends Controller
     
     public function index()
     {
-        $posts = PostResource::collection(Post::with('user', 'media')->latest()->where('frax_id', auth()->user()->frax_id)->get());
-        $users = User::where('frax_id', auth()->user()->frax_id)->get(['id','name']);
+        $posts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->get());
 
         // return $posts;
 
-        return inertia('Community/Index', compact('posts', 'users'));
+        return inertia('Community/Index', compact('posts'));
     }
 
     
@@ -80,5 +80,18 @@ class PostController extends Controller
         $post = Post::findOrFail($postId);
         $post->increment('views'); // Incrementa la variable 'views' en 1
         return response()->json(['success' => true]);
+    }
+
+
+    public function storeComment($postId, Request $request)
+    {
+        $post = Post::find($postId);
+        $comment = new Comment([
+            'content' => $request->comment,
+            'user_id' => auth()->id(),
+        ]);
+        $post->comments()->save($comment);
+
+        return response()->json(['item' => $comment->fresh()->load('user')]);
     }
 }

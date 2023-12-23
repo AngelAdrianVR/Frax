@@ -21,6 +21,7 @@ class PostResource extends JsonResource
             'views' => $this->views,
             'likes' => $this->likes,
             'media' => $this->getMedia()->all(),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'user' => $this->whenLoaded('user'),
             'frax' => $this->whenLoaded('frax'),
             'created_at' => $this->created_at?->isoFormat('DD MMMM YYYY, h:mm A'),

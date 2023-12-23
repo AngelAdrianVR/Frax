@@ -121,6 +121,8 @@ Route::post('maintenances/{maintenance}/store-comment', [MaintenanceController::
 Route::resource('posts', PostController::class)->middleware('auth');
 Route::post('/posts/increment-views/{postId}', [PostController::class, 'incrementViews'])->name('posts.view')->middleware('auth');
 Route::post('posts/update-with-media/{postId}', [PostController::class, 'updateWithMedia'])->name('posts.update-with-media')->middleware('auth');
+Route::post('posts/{postId}/store-comment', [PostController::class, 'storeComment'])->name('posts.store-comment')->middleware('auth');
+
 
 
 
