@@ -118,6 +118,8 @@ Route::resource('maintenances', MaintenanceController::class)->middleware('auth'
 //-------------------------------------------------------------------------------------------------
 Route::resource('posts', PostController::class)->middleware('auth');
 Route::post('/posts/increment-views/{postId}', [PostController::class, 'incrementViews'])->name('posts.view')->middleware('auth');
+Route::post('posts/update-with-media/{postId}', [PostController::class, 'updateWithMedia'])->name('posts.update-with-media')->middleware('auth');
+
 
 
 //norms routes-------------------------------------------------------------------------------------

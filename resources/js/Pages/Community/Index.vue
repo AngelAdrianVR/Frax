@@ -14,7 +14,7 @@
                 <!-- Tab 1 publicaciones stars ------------------------------->
                 <div v-if="currentTab == 1">
                     
-                    <PublicationCard v-for="post in posts.data" :key="post" :post="post" :users="users" />
+                    <PublicationCard @delete-post="deletePost" v-for="post in posts.data" :key="post" :post="post" :users="users" />
                 </div>
                 <!-- Tab 1 publicaciones ends ------------------------------->
 
@@ -31,6 +31,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CancelButton from "@/Components/MyComponents/CancelButton.vue";
 import PublicationBar from "@/Components/MyComponents/Community/PublicationBar.vue";
 import PublicationCard from "@/Components/MyComponents/Community/PublicationCard.vue";
+import axios from 'axios';
 
 export default {
 data(){
@@ -51,7 +52,30 @@ posts: Object,
 users: Array,
 },
 methods:{
-
+async deletePost(postId) {
+        try {
+            const response = await axios.delete(route('posts.destroy', postId));
+            if (response.status === 200) {
+            // Eliminar el post del arreglo local
+            const index = this.posts.data.findIndex(post => post.id === postId);
+            if (index !== -1) {
+                this.posts.data.splice(index, 1);
+            }
+            this.$notify({
+                title: "Correcto",
+                message: "Se ha eliminado tu publicación",
+                type: "success",
+            });
+        }
+        } catch (error) {
+            console.log(error);
+            this.$notify({
+                title: "Error",
+                message: "No se pudo eliminar tu publicación. Refresca la página e intenta de nuevo.",
+                type: "error",
+            });
+        }
+    },
 }
 }
 </script>

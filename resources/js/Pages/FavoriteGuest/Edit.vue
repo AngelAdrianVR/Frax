@@ -193,7 +193,7 @@ export default {
                 onSuccess: () => {
                   this.$notify({
                   title: "Correcto",
-                  message: "Se ha editado la visita",
+                  message: "Se ha editado tu visita frecuente",
                   type: "success",
                       });
                   },

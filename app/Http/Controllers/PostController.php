@@ -12,10 +12,10 @@ class PostController extends Controller
     
     public function index()
     {
-        $posts = PostResource::collection(Post::with('user')->latest()->where('frax_id', auth()->user()->frax_id)->get());
+        $posts = PostResource::collection(Post::with('user', 'media')->latest()->where('frax_id', auth()->user()->frax_id)->get());
         $users = User::where('frax_id', auth()->user()->frax_id)->get(['id','name']);
 
-        // return $users;
+        // return $posts;
 
         return inertia('Community/Index', compact('posts', 'users'));
     }
@@ -51,13 +51,27 @@ class PostController extends Controller
     
     public function update(Request $request, Post $post)
     {
-        //
+        $post->update($request->except('media'));
+    }
+
+
+    public function updateWithMedia(Request $request, $postId)
+    {
+        $post = Post::find($postId);
+
+        $post->update($request->except('media'));
+
+        //clear media
+        $post->clearMediaCollection();
+
+        // Subir imagen
+        $post->addAllMediaFromRequest()->each(fn ($file) => $file->toMediaCollection());
     }
 
     
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
     }
 
 
