@@ -82,8 +82,9 @@
                             </p>
                             <!-- <InputFilePreview @imagen="saveImage" /> -->
                             <div class="flex flex-wrap">
-                                <InputFilePreview v-for="(file, index) in form.images" :key="index" :alt="file.alt"
-                                    @imagen="saveImage($event, index)" @cleared="handleCleared(index)" class="my-2 mr-4" />
+                                <InputFilePreview v-for="(file, index) in form.images" :key="index"
+                                    :canDelete="index == (form.images.length - 2)" @imagen="saveImage($event, index)" @cleared="handleCleared(index)"
+                                    class="my-2 mr-4" />
                             </div>
                             <InputError :message="form.errors.location" />
                         </div>
