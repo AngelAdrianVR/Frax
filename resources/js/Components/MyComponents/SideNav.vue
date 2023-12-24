@@ -92,10 +92,26 @@ export default {
                 {
                     label: 'Comunidad',
                     icon: '<i class="fa-solid fa-people-roof text-sm mr-2"></i>',
-                    route: route('posts.index'),
+                    // route: route('posts.index'),
                     active: route().current('posts.*'),
-                    options: [],
-                    dropdown: false,
+                    options: [
+                        {
+                            label: 'Muro de noticias',
+                            route: route('posts.index'),
+                            show: true,
+                        },
+                        {
+                            label: 'Eventos',
+                            route: route('dashboard'),
+                            show: true,
+                        },
+                        {
+                            label: 'Directorio de vecinos',
+                            route: route('dashboard'),
+                            show: true,
+                        },
+                    ],
+                    dropdown: true,
                     show: true
                 },
                 {

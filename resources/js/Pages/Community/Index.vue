@@ -14,7 +14,7 @@
                 <!-- Tab 1 publicaciones stars ------------------------------->
                 <div v-if="currentTab == 1">
                     
-                    <PublicationCard @delete-post="deletePost" v-for="post in posts.data" :key="post" :post="post" :users="users" />
+                    <PublicationCard @delete-post="deletePost" v-for="post in posts.data" :key="post" :post="post" />
                 </div>
                 <!-- Tab 1 publicaciones ends ------------------------------->
 
@@ -49,7 +49,6 @@ PublicationCard,
 },
 props:{
 posts: Object,
-users: Array,
 },
 methods:{
 async deletePost(postId) {

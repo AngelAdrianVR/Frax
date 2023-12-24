@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
@@ -116,12 +116,12 @@ Route::post('maintenances/{maintenance}/update-with-media', [MaintenanceControll
 Route::post('maintenances/{maintenance}/store-comment', [MaintenanceController::class, 'storeComment'])->name('maintenances.store-comment')->middleware('auth');
 
 
-//community routes------------------------------------------------------------------------------
+//community routes---------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('posts', PostController::class)->middleware('auth');
 Route::post('/posts/increment-views/{postId}', [PostController::class, 'incrementViews'])->name('posts.view')->middleware('auth');
 Route::post('posts/update-with-media/{postId}', [PostController::class, 'updateWithMedia'])->name('posts.update-with-media')->middleware('auth');
-
+Route::post('posts/{postId}/store-comment', [PostController::class, 'storeComment'])->name('posts.store-comment')->middleware('auth');
 
 
 //norms routes-------------------------------------------------------------------------------------
@@ -130,5 +130,10 @@ Route::resource('norms', NormController::class)->middleware('auth');
 
 
 //supports routes-------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 Route::resource('supports', SupportController::class)->middleware('auth');
+
+
+//comments routes-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+Route::resource('comments', CommentController::class)->middleware('auth');

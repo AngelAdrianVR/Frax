@@ -250,7 +250,6 @@
                   </span>
                 </el-option>
             </el-select>
-            <InputError :message="guestForm.errors.guest_type" />
           </div>
 
           <section v-if="selectedFavoriteGuest" class="lg:grid grid-cols-2">
@@ -367,7 +366,7 @@
 
           <div class="flex justify-end space-x-1 pt-5 pb-1">
             <CancelButton @click="guestForm.reset(); favoriteGuestModal = false">Cancelar</CancelButton>  
-            <PrimaryButton :disabled="guestForm.guest_type == 'Vehicular' && !selectedFavoriteGuest?.vehicle_details" @click="store">Continuar</PrimaryButton>
+            <PrimaryButton :disabled="(guestForm.guest_type == 'Vehicular' && !selectedFavoriteGuest?.vehicle_details) || !favoriteGuestId" @click="store">Continuar</PrimaryButton>
           </div>
         </div>
       </Modal>
