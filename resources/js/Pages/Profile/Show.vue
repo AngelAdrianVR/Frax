@@ -83,7 +83,7 @@
                             <InputLabel value="Nombre" class="ml-2" />
                             <input v-model="contact.name" type="text" class="input mt-1"
                                 placeholder="Escribe aqui tu nombre completo" />
-                            <!-- <InputError :message="contact.name" /> -->
+                            <InputError :message="nameErrorMessage" />
                         </div>
                         <div>
                             <InputLabel value="Número de télefono" class="ml-2" />
@@ -98,7 +98,6 @@
                                 <el-option v-for="(item, index) in relationships" :key="index" :label="item"
                                     :value="item" />
                             </el-select>
-                            <!-- <InputError :message="contact.relationship" /> -->
                         </div>
                         <div class="col-span-full flex">
                             <div>
@@ -116,16 +115,17 @@
                         </div>
                         <!-- contact list -->
                         <div ref="contactList" v-if="form.emergency_contacts.length"
-                            class="col-span-full lg:grid grid-cols-3 gap-x-4 gap-y-2 mt-8">
+                            class="col-span-full lg:grid grid-cols-3 gap-x-4 gap-y-2 mt-8 pb-5">
                             <h2 class="col-span-full mb-4">Lista de contactos de emergencia</h2>
                             <div v-for="(item, index) in form.emergency_contacts" :key="index">
                                 <div
-                                    class="border border-gray4 rounded-[3px] p-4 h-52 flex flex-col justify-between text-sm">
+                                    class="border border-gray4 rounded-[3px] p-4 min-h-52 flex flex-col justify-between text-sm">
                                     <div class="flex justify-between">
                                         <figure class="h-1/2">
                                             <img v-if="item.image" class="size-16 rounded-full object-cover"
                                                 :src="getURL(item.image)" :alt="item.name">
-                                            <figure v-else class="flex items-center justify-center text-gray2  border-gray2 rounded-full size-16">
+                                            <figure v-else
+                                                class="flex items-center justify-center text-gray2  border-gray2 rounded-full size-16">
                                                 <i class="fa-solid fa-user text-4xl"></i>
                                             </figure>
                                         </figure>
@@ -195,6 +195,7 @@ export default {
         });
         return {
             form,
+            // contactos de emergencia
             contact: {
                 name: null,
                 phone: null,
@@ -203,7 +204,9 @@ export default {
             },
             selectedProfilePhoto: null,
             phoneErrorMessage: null,
+            nameErrorMessage: null,
             editContactIndex: null,
+            // informacion personal
             genders: [
                 'Masculino',
                 'Femenino',
@@ -249,14 +252,28 @@ export default {
         clearContactImage() {
             this.contact.image = null;
         },
-        addContact() {
-            if (this.contact.phone.length > 14) {
-                this.phoneErrorMessage = "No debe exceder 14 caracteres";
-            } else {
+        isContactFormCorrect() {
+            if (this.contact.name.length > 255) {
                 this.phoneErrorMessage = null;
+                this.nameErrorMessage = "El nombre no debe exceder los 255 caracteres";
+                return false;
+            } else if (this.contact.phone.length < 10 || this.contact.phone.length > 14) {
+                this.phoneErrorMessage = "Debe de ser entre 10 y 14 caracteres";
+                this.nameErrorMessage = null;
+                return false;
+            }
+
+            return true;
+        },
+        addContact() {
+            if (this.isContactFormCorrect()) {
+                // limpiar textos de validacion
+                this.phoneErrorMessage = null;
+                this.nameErrorMessage = null;
+                // agregar contacto
                 this.form.emergency_contacts.push({ ...this.contact });
                 this.resetContact();
-
+    
                 // hacer scroll hasta el final de la pagina
                 this.$nextTick(() => {
                     const scrollTarget = this.$refs.contactList;
@@ -268,9 +285,15 @@ export default {
             }
         },
         updateContact() {
-            this.form.emergency_contacts[this.editContactIndex] = { ...this.contact };
-            this.editContactIndex = null;
-            this.resetContact();
+            if (this.isContactFormCorrect()) {
+                // limpiar textos de validacion
+                this.phoneErrorMessage = null;
+                this.nameErrorMessage = null;
+                // actualizar contacto
+                this.form.emergency_contacts[this.editContactIndex] = { ...this.contact };
+                this.editContactIndex = null;
+                this.resetContact();
+            }
         },
         resetContact() {
             this.contact.name = null;
