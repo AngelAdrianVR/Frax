@@ -80,8 +80,11 @@
                                     </div>
                                 </el-tooltip>
                             </p>
-                            <InputFilePreview @imagen="saveImage" />
-                            <InputError :message="form.errors.location" />
+                            <div class="flex flex-wrap">
+                                <InputFilePreview v-for="(file, index) in form.images" :key="index"
+                                    :canDelete="index == (form.images.length - 2)" @imagen="saveImage" :imageUrl="file.url"
+                                    @cleared="handleCleared(index)" class="my-2 mr-4" />
+                            </div>
                         </div>
                         <div class="flex justify-end mt-7">
                             <PrimaryButton :disabled="!form.name || !form.description || !form.location || form.processing">
@@ -113,7 +116,7 @@ export default {
             name: this.maintenance.name,
             description: this.maintenance.description,
             location: this.maintenance.location,
-            image: null,
+            images: [{ image: null, url: null }],
             is_anonymous_report: Boolean(this.maintenance.is_anonymous_report),
         });
         return {
@@ -170,8 +173,11 @@ export default {
     },
     methods: {
         update() {
-            if (this.form.image) {
-                this.form.post(route("maintenances.update-with-media", this.maintenance), {
+            if (this.form.images.length) {
+                this.form.transform((data) => ({
+                    ...data,
+                    images: data.images.map(item => item.image)
+                })).post(route("maintenances.update-with-media", this.maintenance), {
                     onSuccess: () => {
                         this.$notify({
                             title: "Correcto",
@@ -192,9 +198,32 @@ export default {
                 });
             }
         },
-        saveImage(image) {
-            this.form.image = image;
+        async createFileFromUrl(url, fileName, mimeType = 'image/jpeg') {
+            return await fetch(url)
+                .then(response => response.blob())
+                .then(blob => new File([blob], fileName, { type: mimeType }));
         },
+        async loadImageFromUrl(url, fileName) {
+            const file = await this.createFileFromUrl(url, fileName);
+            // Simular la selección de archivo
+            this.saveImage(file, url);
+            // console.log(this.form.images)
+        },
+        handleCleared(index) {
+            // Eliminar el componente y su información correspondiente cuando se borra la imagen
+            this.form.images.splice(index, 1);
+        },
+        saveImage(image, url = null) {
+            const currentIndex = this.form.images.length - 1;
+            this.form.images[currentIndex] = { image: image, url: url };
+            this.form.images.push({ image: null, url: null });
+        },
+    },
+    mounted() {
+        // cargar las imagenes existentes al formulario
+        this.maintenance.media.forEach(element => {
+            this.loadImageFromUrl(element.original_url, element.file_name);
+        });
     }
 };
 </script>

@@ -88,8 +88,8 @@
                         </figure>
                         <div class="flex justify-center space-x-2 mt-2">
                             <button v-for="image in maintenance.media.length" :key="image"
-                                @click="currentManteinanceMedia = image" class="w-2 h-2 rounded-full"
-                                :class="currentManteinanceMedia == image ? 'bg-secondary' : 'bg-gray4'"></button>
+                                @click="currentManteinanceMedia = image-1" class="size-2 rounded-full"
+                                :class="currentManteinanceMedia == image-1 ? 'bg-secondary' : 'bg-gray4'"></button>
                         </div>
                     </article>
                 </article>
@@ -227,7 +227,7 @@ export default {
             this.maintenance.comments.push(comment);
         },
         deleteMaintenance() {
-            this.$inertia.delete(route('maintenance.destroy', this.maintenance));
+            this.$inertia.delete(route('maintenances.destroy', this.maintenance));
         }
     },
 };

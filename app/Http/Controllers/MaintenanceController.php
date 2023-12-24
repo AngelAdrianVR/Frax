@@ -53,6 +53,8 @@ class MaintenanceController extends Controller
 
     public function edit(Maintenance $maintenance)
     {
+        $maintenance->load('media');
+        
         return inertia('Maintenance/Edit', compact('maintenance'));
     }
 

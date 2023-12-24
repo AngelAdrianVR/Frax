@@ -80,13 +80,10 @@
                                     </div>
                                 </el-tooltip>
                             </p>
-                            <!-- <InputFilePreview @imagen="saveImage" /> -->
                             <div class="flex flex-wrap">
-                                <InputFilePreview v-for="(file, index) in form.images" :key="index"
-                                    :canDelete="index == (form.images.length - 2)" @imagen="saveImage($event, index)" @cleared="handleCleared(index)"
-                                    class="my-2 mr-4" />
+                                <InputFilePreview v-for="(file, index) in form.images" :key="index" :canDelete="index == (form.images.length - 2)"
+                                    @imagen="saveImage" @cleared="handleCleared(index)" class="my-2 mr-4" />
                             </div>
-                            <InputError :message="form.errors.location" />
                         </div>
                         <div class="flex justify-end mt-7">
                             <PrimaryButton :disabled="!form.name || !form.description || !form.location || form.processing">
@@ -111,7 +108,6 @@ import InputError from "@/Components/InputError.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import InputFilePreview from "@/Components/MyComponents/InputFilePreview.vue";
 import { useForm, Link } from "@inertiajs/vue3";
-import axios from "axios";
 
 export default {
     data() {
@@ -119,7 +115,7 @@ export default {
             name: null,
             description: null,
             location: null,
-            images: [{ alt: "Vista previa no disponible" }],
+            images: [null],
             is_anonymous_report: false,
         });
         return {
@@ -188,17 +184,12 @@ export default {
         handleCleared(index) {
             // Eliminar el componente y su información correspondiente cuando se borra la imagen
             this.form.images.splice(index, 1);
-            console.log(this.form.images)
         },
-        saveImage(image, index) {
+        saveImage(image) {
             const currentIndex = this.form.images.length - 1;
-            this.form.images[currentIndex].image = image;
-            this.form.images[currentIndex].alt = String(index);
-            this.form.images.push({ alt: "Vista previa no disponible" });
+            this.form.images[currentIndex] = image;
+            this.form.images.push(null);
         },
-        // saveImage(image) {
-        //     this.form.image = image;
-        // },
     }
 };
 </script>
