@@ -111,13 +111,26 @@
     <div class="border-b border-gray5"></div>
 
     <!-- Comentar ----------->
-    <div class="my-5">
+    <div v-if="showComments" class="my-4">
       <MakeComment :storeEndpoint="route('posts.store-comment', { postId: this.post.id })"
       @comment-sent="addNewComment($event)" />
     </div>
 
     <!-- Comentarios de post ------->
-    <PostComment v-for="comment in post.comments" :key="comment" :comment="comment" />
+    <div v-if="showComments">
+        <PostComment @delete-comment="deleteComment" v-for="comment in post.comments" :key="comment" :comment="comment" />
+    </div>
+
+    <div @click="showComments = false" class="hover-3dbuttom mt-5 border border-gray4 rounded-full px-3 py-1 flex items-center text-gray3 justify-center w-1/2 mx-auto cursor-pointer" v-if="showComments">
+        <i class="fa-regular fa-comments"></i>
+        <p class="text-sm ml-2">Ocultar comentarios</p>
+    </div>
+
+    <div @click="showComments = true" class="hover-3dbuttom mt-5 border border-gray4 rounded-full px-3 py-1 flex items-center text-gray3 justify-center w-1/2 mx-auto cursor-pointer" v-else>
+        <i class="fa-regular fa-comments"></i>
+        <p class="text-sm ml-2">Comentar</p>
+    </div>
+
   </div>
 
   <!-- Confirmation modal --------->
@@ -194,6 +207,7 @@ export default {
       form,
       optionsDropdown: false,
       editPublication: false,
+      showComments: false,
       confirmDelete: false,
       truncated: true, // Inicialmente asumimos que el texto está truncado
     };
@@ -246,6 +260,30 @@ export default {
   },
     addNewComment(comment) {
         this.post.comments.push(comment);
+    },
+    async deleteComment(commentId) {
+        try {
+            const response = await axios.delete(route('comments.destroy', commentId));
+            if (response.status === 200) {
+            // Eliminar el post del arreglo local
+            const index = this.post.comments?.findIndex(comment => comment.id === commentId);
+            if (index !== -1) {
+                this.post.comments?.splice(index, 1);
+            }
+            this.$notify({
+                title: "Correcto",
+                message: "Se ha eliminado tu comentario",
+                type: "success",
+            });
+        }
+        } catch (error) {
+            console.log(error);
+            this.$notify({
+                title: "Error",
+                message: "No se pudo eliminar tu comentario. Refresca la página e intenta de nuevo.",
+                type: "error",
+            });
+        }
     },
     updatePublication() {
       if (this.form.media.length > 0) {

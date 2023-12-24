@@ -1,6 +1,6 @@
 <template>
-  <div class="relative mt-4 mb-2 p-2 rounded-md border border-transparent hover:border-primary transition ease-in-out duration-300 group">
-        <i @click="commentDropdown = !commentDropdown" class="fa-solid fa-ellipsis-vertical px-[10px] py-1 rounded-full cursor-pointer hover:bg-gray5 text-xs text-primary absolute right-1 top-2 hidden group-hover:block transition ease-in-out duration-300"></i>
+  <div @click="commentDropdown = false" class="relative my-1 p-2 rounded-md border border-transparent hover:border-primary transition ease-in-out duration-300 group">
+        <i @click.stop="commentDropdown = !commentDropdown" class="fa-solid fa-ellipsis-vertical px-[10px] py-1 rounded-full cursor-pointer hover:bg-gray5 text-xs text-primary absolute right-1 top-2 hidden group-hover:block transition ease-in-out duration-300"></i>
         <div class="flex items-center">
             <figure class="flex text-sm mr-6">
                 <img class="h-8 w-8 rounded-full object-cover" :src="comment?.user.profile_photo_url"
@@ -26,12 +26,17 @@
           >
             Editar
           </p>
+          <el-popconfirm v-if="comment.user.id == $page.props.auth.user.id" confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537" title="¿Eliminar?"
+          @confirm="deleteComment">
+          <template #reference>
           <p
-            v-if="comment.user.id == $page.props.auth.user.id"
             class="hover:bg-gray5 cursor-pointer text-center px-2"
+             @click.stop=""
           >
             Eliminar
           </p>
+          </template>
+        </el-popconfirm>
         </div>
     </div>
 </template>
@@ -50,8 +55,11 @@ components:{
 props:{
 comment: Object
 },
+emits:['delete-comment'],
 methods:{
-
+    deleteComment() {
+        this.$emit('delete-comment', this.comment.id);
+    }
 }
 }
 </script>

@@ -46,6 +46,8 @@ body {
         @apply block mb-2 text-sm font-medium text-gray-600;
     }
     
-    
-    
+    .hover-3dbuttom{
+        @apply hover:shadow-md transition ease-in-out duration-300 hover:-translate-y-2;
+    }
+      
 }

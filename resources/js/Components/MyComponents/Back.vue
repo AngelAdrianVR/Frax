@@ -1,5 +1,5 @@
 <template>
-  <button @click="goBack" class="back-button1 flex justify-center items-center rounded-full hover:bg-gray51 py-[9px] px-3 focus:outline-none hover:shadow-md transition ease-in-out duration-300 hover:-translate-y-2">
+  <button @click="goBack" class="flex justify-center items-center rounded-full py-[9px] px-3 focus:outline-none hover-3dbuttom">
         <i class="fa-solid fa-angle-left"></i>
   </button>
 </template>
@@ -15,9 +15,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.back-button {
-  transition: background-color 0.3s ease-out; /* Transición de color de fondo */
-}
-</style>
