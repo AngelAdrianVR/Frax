@@ -39,9 +39,8 @@
                     <div class="col-span-4 lg:grid grid-cols-2 gap-x-4 gap-y-2 self-start">
                         <h2 class="font-bold col-span-full">Información personal </h2>
                         <div>
-                            <InputLabel value="Nombre *" class="ml-2" />
-                            <input v-model="form.name" type="text" class="input mt-1"
-                                placeholder="Escribe aqui tu nombre completo" required />
+                            <InputLabel value="Nombre *" class="ml-2 mb-1" />
+                            <el-input v-model="form.name" placeholder="Escribe aqui tu nombre completo" clearable />
                             <InputError :message="form.errors.name" />
                         </div>
                         <div>
@@ -51,44 +50,45 @@
                             <InputError :message="form.errors['resident_properties.birthdate']" />
                         </div>
                         <div>
-                            <InputLabel value="Género" class="ml-2" />
-                            <el-select v-model="form.resident_properties.gender" placeholder="Selecciona"
-                                class="w-full mt-1" no-data-text="No hay opciones para mostrar"
-                                no-match-text="No se encontraron coincidencias">
+                            <InputLabel value="Género" class="ml-2 mb-1" />
+                            <el-select v-model="form.resident_properties.gender" placeholder="Selecciona" class="w-full"
+                                no-data-text="No hay opciones para mostrar" no-match-text="No se encontraron coincidencias">
                                 <el-option v-for="(item, index) in genders" :key="index" :label="item" :value="item" />
                             </el-select>
                             <InputError :message="form.errors['resident_properties.gender']" />
                         </div>
                         <h2 class="font-bold col-span-full mt-7">Datos de contacto</h2>
                         <div>
-                            <InputLabel value="Número de télefono *" class="ml-2" />
-                            <input v-model="form.resident_properties.phone" type="text" class="input mt-1"
-                                placeholder="Escribe aqui tu número" required />
+                            <InputLabel value="Número de télefono *" class="ml-2 mb-1" />
+                            <el-input v-model="form.resident_properties.phone" placeholder="Escribe aqui tu número"
+                                :formatter="(value) => `${value}`.replace(/(\d{2})(\d{4})(\d{4})/, '$1 $2 $3')"
+                                :parser="(value) => value.replace(/\D/g, '')" maxlength="10" clearable />
                             <InputError :message="form.errors['resident_properties.phone']" />
                         </div>
                         <div>
-                            <InputLabel value="Correo electrónico *" class="ml-2" />
-                            <input v-model="form.email" type="email" class="input mt-1" placeholder="Escribe tu correo"
-                                required />
+                            <InputLabel value="Correo electrónico *" class="ml-2 mb-1" />
+                            <el-input v-model="form.email" placeholder="Escribe aqui tu correo" maxlength="255" type="email"
+                                clearable />
                             <InputError :message="form.errors.email" />
                         </div>
                         <div>
-                            <InputLabel value="Dirección de vivienda en el fraccionamiento *" class="ml-2" />
-                            <input v-model="form.address" type="text" class="input mt-1" placeholder="Escribe tu dirección"
-                                required />
+                            <InputLabel value="Dirección de vivienda en el fraccionamiento *" class="ml-2 mb-1" />
+                            <el-input v-model="form.address" placeholder="Escribe la calle y el número de casa"
+                                maxlength="255" clearable />
                             <InputError :message="form.errors.address" />
                         </div>
+                        <!-- contactos de emergencia -->
                         <h2 class="font-bold col-span-full mt-7">Información de contacto de emergencia</h2>
                         <div>
-                            <InputLabel value="Nombre" class="ml-2" />
-                            <input v-model="contact.name" type="text" class="input mt-1"
-                                placeholder="Escribe aqui tu nombre completo" />
+                            <InputLabel value="Nombre" class="ml-2 mb-1" />
+                            <el-input v-model="contact.name" placeholder="Escribe aqui el nombre completo" clearable />
                             <InputError :message="nameErrorMessage" />
                         </div>
                         <div>
-                            <InputLabel value="Número de télefono" class="ml-2" />
-                            <input v-model="contact.phone" type="text" class="input mt-1"
-                                placeholder="Escribe aqui el número" />
+                            <InputLabel value="Número de télefono" class="ml-2 mb-1" />
+                            <el-input v-model="contact.phone" placeholder="Escribe el número del contacto"
+                                :formatter="(value) => `${value}`.replace(/(\d{2})(\d{4})(\d{4})/, '$1 $2 $3')"
+                                :parser="(value) => value.replace(/\D/g, '')" maxlength="10" clearable />
                             <InputError :message="phoneErrorMessage" />
                         </div>
                         <div>
@@ -106,7 +106,7 @@
                             </div>
                             <ThirthButton v-if="editContactIndex !== null" @click="updateContact" type="button"
                                 class="self-end ml-10 !rounded-full" :disabled="!isContactCompleted">
-                                Actualizar de contactos de emergencia
+                                Actualizar contacto
                             </ThirthButton>
                             <ThirthButton v-else @click="addContact" type="button" class="self-end ml-10 !rounded-full"
                                 :disabled="!isContactCompleted">
@@ -161,6 +161,75 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Vehiculos -->
+                        <h2 class="font-bold col-span-full mt-7">Vehículos</h2>
+                        <div>
+                            <InputLabel value="Marca del vehículo" class="ml-2 mb-1" />
+                            <el-select v-model="vehicle.brand" placeholder="Selecciona" class="w-full"
+                                no-data-text="No hay opciones para mostrar" no-match-text="No se encontraron coincidencias">
+                                <el-option v-for="(item, index) in vehicleBrands" :key="index" :label="item"
+                                    :value="item" />
+                            </el-select>
+                        </div>
+                        <div class="col-span-full flex">
+                            <div>
+                                <InputLabel value="Foto" class="ml-2" />
+                                <InputFilePreview ref="vehicletImage" @imagen="saveImage" @cleared="clearVehicleImage" />
+                            </div>
+                            <ThirthButton v-if="editVehicleIndex !== null" @click="updateVehicle" type="button"
+                                class="self-end ml-10 !rounded-full" :disabled="!isVehicleCompleted">
+                                Actualizar vehículo
+                            </ThirthButton>
+                            <ThirthButton v-else @click="addVehicle" type="button" class="self-end ml-10 !rounded-full"
+                                :disabled="!isVehicleCompleted">
+                                Agregar a lista de vehículos
+                            </ThirthButton>
+                        </div>
+                        <!-- vehicles list -->
+                        <div ref="vehicleList" v-if="form.vehicles.length"
+                            class="col-span-full lg:grid grid-cols-3 gap-x-4 gap-y-2 mt-8 pb-5">
+                            <h2 class="col-span-full mb-4">Lista de vehiculos</h2>
+                            <div v-for="(item, index) in form.vehicles" :key="index">
+                                <div
+                                    class="border border-gray4 rounded-[3px] p-4 min-h-52 flex flex-col justify-between text-sm">
+                                    <div class="flex justify-between">
+                                        <figure class="h-1/2">
+                                            <img v-if="item.image" class="size-16 rounded-full object-cover"
+                                                :src="getURL(item.image)" :alt="item.name">
+                                            <figure v-else
+                                                class="flex items-center justify-center text-gray2  border-gray2 rounded-full size-16">
+                                                <i class="fa-solid fa-user text-4xl"></i>
+                                            </figure>
+                                        </figure>
+                                        <div class="flex space-x-1 items-center self-start">
+                                            <el-popconfirm v-if="editVehicleIndex != index" confirm-button-text="Si"
+                                                cancel-button-text="No" icon-color="#D90537" title="¿Continuar?"
+                                                @confirm="deleteVehicle(index)">
+                                                <template #reference>
+                                                    <button type="button"
+                                                        class="rounded-full bg-gray5 flex justify-center items-center size-7 text-xs"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </template>
+                                            </el-popconfirm>
+                                            <button type="button" v-if="editVehicleIndex != index"
+                                                @click="editVehicle(index)"
+                                                class="rounded-full bg-gray5 flex justify-center items-center size-7 text-xs"><i
+                                                    class="fa-solid fa-pencil"></i></button>
+                                            <el-tag v-else effect="light" size="small" closable
+                                                @close="cancelVehicleEdition" type="info">
+                                                En edición
+                                                <i class="fa-solid fa-arrow-up ml-2"></i>
+                                            </el-tag>
+                                        </div>
+                                    </div>
+                                    <div class="h-1/2 grid grid-cols-3 gap-x-2 gap-y-1">
+                                        <b>Marca</b>
+                                        <span class="col-span-2">{{ item.brand }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </form>
@@ -187,6 +256,7 @@ export default {
             email: null,
             photo: null,
             emergency_contacts: [],
+            vehicles: [],
             resident_properties: {
                 gender: null,
                 phone: null,
@@ -202,11 +272,11 @@ export default {
                 relationship: null,
                 image: null,
             },
-            selectedProfilePhoto: null,
             phoneErrorMessage: null,
             nameErrorMessage: null,
             editContactIndex: null,
             // informacion personal
+            selectedProfilePhoto: null,
             genders: [
                 'Masculino',
                 'Femenino',
@@ -219,6 +289,34 @@ export default {
                 'Hermano (a)',
                 'Pareja',
                 'Otro',
+            ],
+            // vechiculos
+            vehicle: {
+                brand: null,
+                image: null,
+            },
+            editVehicleIndex: null,
+            vehicleBrands: [
+                'Alfa romeo',
+                'Audi',
+                'BMW',
+                'Cupra',
+                'Ferrari',
+                'Fiat',
+                'Honda',
+                'Kia',
+                'Lamborghini',
+                'Lexus',
+                'Mazda',
+                'Mercedes-benz',
+                'Mitsubishi',
+                'Renault',
+                'Seat',
+                'Subaru',
+                'Tesla',
+                'Toyota',
+                'Volkswagen',
+                'Volkswagen',
             ],
         }
     },
@@ -273,7 +371,7 @@ export default {
                 // agregar contacto
                 this.form.emergency_contacts.push({ ...this.contact });
                 this.resetContact();
-    
+
                 // hacer scroll hasta el final de la pagina
                 this.$nextTick(() => {
                     const scrollTarget = this.$refs.contactList;
