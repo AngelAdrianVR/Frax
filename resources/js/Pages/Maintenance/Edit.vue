@@ -43,7 +43,10 @@
                             <el-select v-model="form.name" placeholder="Seleccione" class="w-full">
                                 <el-option v-for="item in problemTypes" :key="item.label" :label="item.label"
                                     :value="item.label" class="flex items-center justify-between">
-                                    <span>{{ item.label }}</span>
+                                    <span>
+                                        <i class="mr-2" :class="item.icon"></i>
+                                        {{ item.label }}
+                                    </span>
                                     <span class="text-[11px] text-gray1">{{ item.help }}</span>
                                 </el-option>
                             </el-select>
@@ -124,35 +127,43 @@ export default {
             problemTypes: [
                 {
                     label: "Áreas verdes",
-                    help: "(césped, arbustos, plantas, etc)"
+                    help: "(césped, arbustos, plantas, etc)",
+                    icon: 'fa-solid fa-leaf'
                 },
                 {
                     label: "Iluminación",
-                    help: "(Farolas, luces, etc)"
+                    help: "(Farolas, luces, etc)",
+                    icon: 'fa-solid fa-lightbulb'
                 },
                 {
                     label: "Seguridad",
-                    help: "(camáras de seguridad, etc)"
+                    help: "(camáras de seguridad, etc)",
+                    icon: 'fa-solid fa-shield-halved'
                 },
                 {
                     label: "Instalaciones deportivas",
-                    help: "(cancha de fut-bol, etc)"
+                    help: "(cancha de fut-bol, etc)",
+                    icon: 'fa-solid fa-person-running'
                 },
                 {
                     label: "Áreas de juego",
-                    help: "(parques infantiles, etc)"
+                    help: "(parques infantiles, etc)",
+                    icon: 'fa-solid fa-puzzle-piece'
                 },
                 {
                     label: "Residuos",
-                    help: "(contenedores de basura, etc)"
+                    help: "(contenedores de basura, etc)",
+                    icon: 'fa-solid fa-recycle'
                 },
                 {
                     label: "Infraestructura del fraccionamiento",
-                    help: "(calles, aceras, etc)"
+                    help: "(calles, aceras, etc)",
+                    icon: 'fa-solid fa-trowel-bricks'
                 },
                 {
                     label: "Áreas comunes",
-                    help: "(salón de eventos, área de golf, etc) "
+                    help: "(salón de eventos, área de golf, etc) ",
+                    icon: 'fa-solid fa-map'
                 },
             ],
         };
