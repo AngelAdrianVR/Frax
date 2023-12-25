@@ -13,7 +13,49 @@ class PostController extends Controller
     
     public function index()
     {
-        $posts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->get());
+        //Optimizacion para rapidez. No carga todos los datos, sólo los siguientes para hacer la busqueda y mostrar la tabla en index
+        $pre_posts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->get());    
+        
+        $posts = $pre_posts->map(function ($post) {
+
+            $media = $post->media->map(function ($media_file) {
+                return [
+                    'id' =>$media_file->id,
+                    'original_url' =>$media_file->original_url,
+                ];
+            });
+
+            $comments = $post->comments->map(function ($comment) {
+                return [
+                    'id' =>$comment->id,
+                    'content' =>$comment->content,
+                    'user' => [
+                        'id' => $comment->user->id,
+                        'name' => $comment->user->name,
+                        'profile_photo_path' => $comment->user->profile_photo_path,
+                        'profile_photo_url' => $comment->user->profile_photo_url,
+                    ],
+                    'created_at' =>$comment->created_at?->diffForHumans(),
+                ];
+            });
+
+            return [
+                'id' => $post->id,
+                'title' => $post->title,
+                'body' => $post->body,
+                'views' => $post->views,
+                'likes' => $post->likes,
+                'media' => $media,
+                'comments' => $comments,
+                'user' => [
+                    'id' => $post->user->id,
+                    'name' => $post->user->name,
+                    'profile_photo_path' => $post->user->profile_photo_path,
+                    'profile_photo_url' => $post->user->profile_photo_url,
+                ],
+                'created_at' => $post->created_at->isoFormat('DD MMM, YYYY h:mm A'),
+            ];
+        });
 
         // return $posts;
 
@@ -79,7 +121,14 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($postId);
         $post->increment('views'); // Incrementa la variable 'views' en 1
-        return response()->json(['success' => true]);
+    }
+
+
+    public function incrementLikes($postId)
+    {
+        $post = Post::findOrFail($postId);
+        $post->increment('likes'); // Incrementa la variable 'likes' en 1
+        return response()->json(['item' => $post->fresh()]);
     }
 
 

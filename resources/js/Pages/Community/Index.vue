@@ -14,7 +14,7 @@
                 <!-- Tab 1 publicaciones stars ------------------------------->
                 <div v-if="currentTab == 1">
                     
-                    <PublicationCard @delete-post="deletePost" v-for="post in posts.data" :key="post" :post="post" />
+                    <PublicationCard @delete-post="deletePost" v-for="post in posts" :key="post" :post="post" />
                 </div>
                 <!-- Tab 1 publicaciones ends ------------------------------->
 
@@ -56,9 +56,9 @@ async deletePost(postId) {
             const response = await axios.delete(route('posts.destroy', postId));
             if (response.status === 200) {
             // Eliminar el post del arreglo local
-            const index = this.posts.data.findIndex(post => post.id === postId);
+            const index = this.posts.findIndex(post => post.id === postId);
             if (index !== -1) {
-                this.posts.data.splice(index, 1);
+                this.posts.splice(index, 1);
             }
             this.$notify({
                 title: "Correcto",
