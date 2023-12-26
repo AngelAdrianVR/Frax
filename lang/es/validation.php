@@ -150,5 +150,7 @@ return [
         'urgency_level' => 'nivel de urgencia',
         'date' => 'fecha',
         'participants' => 'participantes',
+        'password' => 'contraseña nueva',
+        'current_password' => 'contraseña actual',
     ],
 ];
