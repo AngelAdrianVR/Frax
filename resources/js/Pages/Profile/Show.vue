@@ -4,7 +4,7 @@
             <h1 class="font-bold text-lg">Mi perfil</h1>
         </header>
         <main class="px-20">
-            <el-tabs v-model="activeTab" class="demo-tabs">
+            <el-tabs v-model="activeTab" @tab-click="handleClick">
                 <el-tab-pane name="1">
                     <template #label>
                         <div class="flex items-center">
@@ -79,6 +79,20 @@ export default {
         Security,
     },
     methods: {
-    }
+        handleClick(tab) {
+            // Agrega la variable currentTab=tab.props.name a la URL para mejorar la navegacion al actalizar o cambiar de pagina
+            const currentURL = new URL(window.location.href);
+            currentURL.searchParams.set('currentTab', tab.props.name);
+            // Actualiza la URL
+            window.history.replaceState({}, document.title, currentURL.href);
+        }
+    },
+    mounted() {
+        // Obtener la URL actual
+        const currentURL = new URL(window.location.href);
+        // Extraer el valor de 'currentTab' de los parámetros de búsqueda
+        const currentTabFromURL = currentURL.searchParams.get('currentTab');
+        this.activeTab = currentTabFromURL;
+    },
 }
 </script>
