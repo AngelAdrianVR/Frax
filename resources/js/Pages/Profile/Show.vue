@@ -92,7 +92,10 @@ export default {
         const currentURL = new URL(window.location.href);
         // Extraer el valor de 'currentTab' de los parámetros de búsqueda
         const currentTabFromURL = currentURL.searchParams.get('currentTab');
-        this.activeTab = currentTabFromURL;
+
+        if (currentTabFromURL) {
+            this.activeTab = currentTabFromURL;
+        }
     },
 }
 </script>
