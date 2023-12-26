@@ -5,6 +5,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
 use App\Http\Controllers\CommonAreaUserController;
+use App\Http\Controllers\CommunityEventController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\GuestHistoryController;
 use App\Http\Controllers\MaintenanceController;
@@ -129,6 +130,11 @@ Route::post('posts/{postId}/store-comment', [PostController::class, 'storeCommen
 //reports routes---------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('reports', ReportController::class)->middleware('auth');
+
+
+//community-events routes---------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('community-events', CommunityEventController::class)->middleware('auth');
 
 
 //norms routes-------------------------------------------------------------------------------------

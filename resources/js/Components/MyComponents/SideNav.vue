@@ -93,7 +93,7 @@ export default {
                     label: 'Comunidad',
                     icon: '<i class="fa-solid fa-people-roof text-sm mr-2"></i>',
                     // route: route('posts.index'),
-                    active: route().current('posts.*'),
+                    active: route().current('posts.*') || route().current('community-events.*'),
                     options: [
                         {
                             label: 'Muro de noticias',
@@ -102,7 +102,7 @@ export default {
                         },
                         {
                             label: 'Eventos',
-                            route: route('dashboard'),
+                            route: route('community-events.index'),
                             show: true,
                         },
                         {

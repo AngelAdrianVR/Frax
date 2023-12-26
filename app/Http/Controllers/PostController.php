@@ -62,6 +62,13 @@ class PostController extends Controller
         return inertia('Community/Index', compact('posts'));
     }
 
+
+    public function loadPosts($start, $limit) 
+    {
+        $posts = Post::skip($start)->take($limit)->get();
+        return response()->json($posts);
+    }
+
     
     public function create()
     {
