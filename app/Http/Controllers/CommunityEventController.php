@@ -42,41 +42,88 @@ class CommunityEventController extends Controller
         $extra_data = [
             "frax_id" => auth()->user()->frax_id,
             "time" => $time,
-            "qr_code" => $request->qr_code //generado en el mounted de la vista.
            ];
 
         $community_event = CommunityEvent::create($request->except('imageCover', 'time') + $extra_data);
 
-        // Subir y asociar la imagen de la normativa a la colección 'imageCover'
+        // Subir y asociar la imagen del evento a la colección 'imageCover'
        if ($request->hasFile('imageCover')) {
         $communityEventImagePath = $request->file('imageCover')->store('imageCover', 'public');
         $community_event->addMedia(storage_path('app/public/' . $communityEventImagePath))
         ->toMediaCollection('imageCover');
         }
+
         return to_route('community-events.index');
     }
 
     
-    public function show(CommunityEvent $communityEvent)
+    public function show($community_event_id)
     {
-        //
+        $community_event = CommunityEventResource::make(CommunityEvent::with('media')->find($community_event_id));
+
+        // return $community_event;
+
+        return inertia('CommunityEvent/Show', compact('community_event'));
     }
 
     
-    public function edit(CommunityEvent $communityEvent)
+    public function edit(CommunityEvent $community_event)
     {
-        //
+        return inertia('CommunityEvent/Edit', compact('community_event'));
     }
 
     
-    public function update(Request $request, CommunityEvent $communityEvent)
+    public function update(Request $request, CommunityEvent $community_event)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:60',
+            'date' => 'required|date|after:yesterday',
+            'time' => 'nullable',
+            'participants' => 'required|string',
+            'description' => 'required|string',
+        ]);
+
+         // Convierte el campo 'time' a un objeto Carbon y resta 6 horas
+         $time = Carbon::parse($request->time)->subHours(6);
+
+        $community_event->update($request->except('imageCover', 'time') + ['time' => $time]);
+
+        return to_route('community-events.index');
+    }
+
+
+    public function updateWithMedia(Request $request, CommunityEvent $community_event)
+    {
+        $request->validate([
+            'name' => 'required|string|max:60',
+            'date' => 'required|date|after:yesterday',
+            'time' => 'nullable',
+            'participants' => 'required|string',
+            'description' => 'required|string',
+        ]);
+
+         // Convierte el campo 'time' a un objeto Carbon y resta 6 horas
+        $time = Carbon::parse($request->time)->subHours(6);
+
+        $community_event->update($request->except('imageCover', 'time') + ['time' => $time]);
+
+        // media
+         $community_event->clearMediaCollection('imageCover');
+
+         // Subir y asociar la imagen del evento a la colección 'imageCover'
+       if ($request->hasFile('imageCover')) {
+        $communityEventImagePath = $request->file('imageCover')->store('imageCover', 'public');
+        $community_event->addMedia(storage_path('app/public/' . $communityEventImagePath))
+        ->toMediaCollection('imageCover');
+        }
+                
+        return to_route('community-events.index');
     }
 
     
-    public function destroy(CommunityEvent $communityEvent)
+    public function destroy(CommunityEvent $community_event)
     {
-        //
+        $community_event->delete();
+
     }
 }

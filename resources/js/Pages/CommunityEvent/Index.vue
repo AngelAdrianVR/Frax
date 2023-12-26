@@ -8,7 +8,7 @@
           </div>
           
             <div class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5" v-if="community_events.data.length > 0">
-              <CommunityEventCard v-for="communityEvent in community_events.data" :key="communityEvent" :communityEvent="communityEvent" />
+              <CommunityEventCard @delete-community-event="deleteCommunityEvent" v-for="communityEvent in community_events.data" :key="communityEvent" :communityEvent="communityEvent" />
             </div>
             <p class="text-xs text-gray-400 text-center" v-else>No hay eventos próximos</p>
             
@@ -39,7 +39,34 @@ props:{
 community_events: Object
 },
 methods:{
+async deleteCommunityEvent(communityEventId) {
+  try {
+    const response = await axios.delete(route('community-events.destroy', communityEventId));
 
+    if (response.status === 200) {
+      const deletedItemIndex = this.community_events.data.findIndex(item => item.id === communityEventId);
+
+      // Elimina el objeto localmente
+      if (deletedItemIndex !== -1) {
+        this.community_events.data.splice(deletedItemIndex, 1);
+      }
+
+      this.$notify({
+          title: "Correcto",
+          message: "Se ha eliminado el evento",
+          type: "success",
+        });
+    }
+
+  } catch (error) {
+    console.log(error);
+    this.$notify({
+          title: "Error de servidor",
+          message: "No se pudo eliminar el evento. Intenta más tarde",
+          type: "error",
+        });
+  }
+}
 }
 }
 </script>
