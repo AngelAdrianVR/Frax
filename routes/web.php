@@ -17,6 +17,7 @@ use App\Http\Controllers\PaymentTicketController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -136,6 +137,11 @@ Route::resource('reports', ReportController::class)->middleware('auth');
 //-------------------------------------------------------------------------------------------------
 Route::resource('community-events', CommunityEventController::class)->middleware('auth');
 Route::post('community-events/{community_event}/update-with-media', [CommunityEventController::class, 'updateWithMedia'])->name('community-events.update-with-media')->middleware('auth');
+
+
+//neighbors routes--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('neighbors', UserController::class)->middleware('auth');
 
 
 //norms routes-------------------------------------------------------------------------------------
