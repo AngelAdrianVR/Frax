@@ -40,60 +40,49 @@ const updatePassword = () => {
 <template>
     <FormSection @submitted="updatePassword">
         <template #title>
-            Update Password
+            Actualizar contraseña
         </template>
 
         <template #description>
-            Ensure your account is using a long, random password to stay secure.
+            Asegurate de usar una contraseña larga y aleatoria para que tu cuenta permanezca segura.
         </template>
 
         <template #form>
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="current_password" value="Current Password" />
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
-                    v-model="form.current_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="current-password"
-                />
-                <InputError :message="form.errors.current_password" class="mt-2" />
+                <InputLabel for="current_password" value="Contraseña actual" class="ml-2 mb-1" />
+                <el-input v-model="form.current_password" type="password" placeholder="Ingresa tu contraseña actual"
+                    maxlength="255" id="current_password" ref="currentPasswordInput" autocomplete="current-password" show-password />
+                <!-- <TextInput id="current_password" ref="currentPasswordInput" v-model="form.current_password" type="password"
+                    class="mt-1 block w-full" autocomplete="current-password" /> -->
+                <InputError :message="form.errors.current_password" />
             </div>
 
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password" value="New Password" />
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-                <InputError :message="form.errors.password" class="mt-2" />
+                <InputLabel for="password" value="Contraseña nueva" class="ml-2 mb-1" />
+                <el-input v-model="form.password" type="password" placeholder="Ingresa la nueva contraseña"
+                    maxlength="255" id="password" ref="passwordInput" autocomplete="new-password" show-password />
+                <!-- <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
+                    class="mt-1 block w-full" autocomplete="new-password" /> -->
+                <InputError :message="form.errors.password" />
             </div>
 
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-                <InputError :message="form.errors.password_confirmation" class="mt-2" />
+                <InputLabel for="password_confirmation" value="Confirmar contraseña" class="ml-2 mb-1" />
+                <el-input v-model="form.password_confirmation" type="password" placeholder="Vuelve a ingresar la nueva contraseña"
+                    maxlength="255" id="password_confirmation" autocomplete="new-password" show-password />
+                <!-- <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
+                    class="mt-1 block w-full" autocomplete="new-password" /> -->
+                <InputError :message="form.errors.password_confirmation" />
             </div>
         </template>
 
         <template #actions>
             <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Saved.
+                Guardado <i class="fa-solid fa-check"></i>
             </ActionMessage>
 
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Guardar
             </PrimaryButton>
         </template>
     </FormSection>
