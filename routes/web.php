@@ -62,7 +62,7 @@ Route::get('payment-feedback', [PaymentController::class, 'feedback'])->name('pa
 
 
 //Payment-feedback routes---------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 Route::resource('payment-feedbacks', PaymentFeedbackController::class)->middleware('auth');
 
 
@@ -117,14 +117,15 @@ Route::post('posts/update-with-media/{postId}', [PostController::class, 'updateW
 Route::post('posts/{postId}/store-comment', [PostController::class, 'storeComment'])->name('posts.store-comment')->middleware('auth');
 
 
-//reports routes---------------------------------------------------------------------------------
+//reports routes-----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('reports', ReportController::class)->middleware('auth');
 
 
-//community-events routes---------------------------------------------------------------------------------
+//community-events routes--------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('community-events', CommunityEventController::class)->middleware('auth');
+Route::post('community-events/{community_event}/update-with-media', [CommunityEventController::class, 'updateWithMedia'])->name('community-events.update-with-media')->middleware('auth');
 
 
 //norms routes-------------------------------------------------------------------------------------
