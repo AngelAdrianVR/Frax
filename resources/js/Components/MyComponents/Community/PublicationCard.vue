@@ -33,7 +33,7 @@
       </div>
       <div class="relative">
         <i
-          @click.stop="optionsDropdown = !optionsDropdown"
+          @click.stop="optionsDropdown = !optionsDropdown; incrementViews(post.id)"
           class="fa-solid fa-ellipsis text-primary cursor-pointer p-1 hover:bg-gray5 rounded-full"
         ></i>
         <div
@@ -41,9 +41,11 @@
           class="border border-gray5 flex flex-col space-y-1 rounded-md p-1 absolute w-28 h-auto top-7 -right-1 text-sm z-50 bg-white"
         >
           <p
+            @click="showReportModal = true"
             v-if="post.user.id !== $page.props.auth.user.id"
             class="hover:bg-gray5 cursor-pointer text-center px-2"
           >
+            <i class="fa-regular fa-flag mr-1"></i>
             Reportar
           </p>
           <p
@@ -51,6 +53,7 @@
             v-if="post.user.id == $page.props.auth.user.id"
             class="hover:bg-gray5 cursor-pointer text-center px-2"
           >
+          <i class="fa-solid fa-pencil mr-1 text-xs"></i>
             Editar
           </p>
           <p
@@ -58,6 +61,7 @@
             v-if="post.user.id == $page.props.auth.user.id"
             class="hover:bg-gray5 cursor-pointer text-center px-2"
           >
+            <i class="fa-regular fa-trash-can text-xs mr-1"></i>
             Eliminar
           </p>
         </div>
@@ -110,15 +114,15 @@
     </div>
     <div class="border-b border-gray5"></div>
 
+    <!-- Comentarios de post ------->
+    <div :class="{ 'overflow-hidden': !showComments }" class="mt-5 transition-all duration-700 ease-linear" :style="{ maxHeight: showComments ? '1000px' : '0' }">
+      <PostComment @report-comment="reportComment" @delete-comment="deleteComment" v-for="comment in post.comments" :key="comment" :comment="comment" />
+    </div>
+
     <!-- Comentar ----------->
     <div v-if="showComments" class="my-4">
       <MakeComment :storeEndpoint="route('posts.store-comment', { postId: this.post.id })"
       @comment-sent="addNewComment($event)" />
-    </div>
-
-    <!-- Comentarios de post ------->
-    <div v-if="showComments">
-        <PostComment @delete-comment="deleteComment" v-for="comment in post.comments" :key="comment" :comment="comment" />
     </div>
 
     <div @click="showComments = false" class="hover-3dbuttom mt-5 border border-gray4 rounded-full px-3 py-1 flex items-center text-gray3 justify-center w-1/2 mx-auto cursor-pointer" v-if="showComments">
@@ -144,11 +148,12 @@
   </ConfirmationModal>
 
   <!-------------- Publication Modal -------------->
-  <Modal :maxWidth="'xl'" :show="editPublication" @close="editPublication = false">
+  <Modal :maxWidth="'xl'" :show="editPublication || showReportModal" @close="editPublication = false; showReportModal = false">
     <div class="mx-7 my-4 space-y-4 relative">
       <div
         @click="
           editPublication = false;
+          showReportModal = false;
           form.reset();
         "
         class="cursor-pointer w-5 h-5 rounded-full border-2 border-black flex items-center justify-center absolute top-0 -right-2"
@@ -156,31 +161,54 @@
         <i class="fa-solid fa-xmark"></i>
       </div>
 
-      <h1 class="text-lg border-b pb-2 px-3">Editar publicación</h1>
+      <!-- edit post section  -->
+      <section v-if="editPublication">
+        <h1 class="text-lg border-b pb-2 px-3">Editar publicación</h1>
 
-      <input
-        v-model="form.title"
-        class="input"
-        type="text"
-        placeholder="Escribe un título a tu publicación (opcional)"
-      />
+        <input
+          v-model="form.title"
+          class="input"
+          type="text"
+          placeholder="Escribe un título a tu publicación (opcional)"
+        />
 
-      <textarea
-        v-model="form.body"
-        class="w-full textarea !border-transparent"
-        rows="3"
-        placeholder="Escribe el contenido de tu publicación"
-      ></textarea>
+        <textarea
+          v-model="form.body"
+          class="w-full textarea !border-transparent"
+          rows="3"
+          placeholder="Escribe el contenido de tu publicación"
+        ></textarea>
 
-      <div class="flex justify-center py-9">
-        <InputFilePreview class="scale-150" @imagen="saveImage" />
-      </div>
+        <div class="flex justify-center py-9">
+          <InputFilePreview class="scale-150" @imagen="saveImage" />
+        </div>
 
-      <div class="flex justify-center space-x-1 pt-5 pb-1">
-        <PrimaryButton class="px-16" :disabled="!form.body" @click="updatePublication"
-          >Guardar cambios</PrimaryButton
-        >
-      </div>
+        <div class="flex justify-center space-x-1 pt-5 pb-1">
+          <PrimaryButton class="px-16" :disabled="!form.body" @click="updatePublication"
+            >Guardar cambios</PrimaryButton
+          >
+        </div>
+      </section>
+      <!-------------------------------->
+
+      <!-- comment or post report section  -->
+      <section v-if="showReportModal">
+        <h1 class="text-lg border-b pb-2 px-3">Reportar</h1>
+
+        <textarea
+          v-model="reportForm.description"
+          class="w-full textarea !border-transparent"
+          rows="3"
+          placeholder="Explica el motivo de tu reporte"
+        ></textarea>
+
+        <div class="flex justify-center space-x-1 pt-5 pb-1">
+          <PrimaryButton class="px-16" :disabled="!reportForm.description" @click="storeReport"
+            >Reportar</PrimaryButton
+          >
+        </div>
+      </section>
+      <!----------------------------------------->
     </div>
   </Modal>
 </template>
@@ -203,11 +231,21 @@ export default {
       body: this.post.body,
       media: [],
     });
+
+    const reportForm = useForm({
+      description: null,
+      post_id: this.post.id,
+      comment_id: null,
+    });
     return {
       form,
-      optionsDropdown: false,
-      editPublication: false,
-      showComments: false,
+      reportForm,
+      postLiked: false, //bandera para saber si ya se dió like al post
+      postSeen: false, //bandera para saber si ya se vió el post
+      optionsDropdown: false, //dropdown de opciones de post
+      editPublication: false, //modal para editar publicación
+      showComments: false, //Mostras comentarios de post
+      showReportModal: false, //Modal de reporte de post o comentario.
       confirmDelete: false,
       truncated: true, // Inicialmente asumimos que el texto está truncado
     };
@@ -234,12 +272,18 @@ export default {
       this.incrementViews(this.post.id);
     },
     incrementViews(postId) {
-      // Realizar una solicitud al servidor para incrementar las vistas
-      try {
-        const response = axios.post(route("posts.view", postId));
-      } catch (error) {
-        console.log(error);
-      }
+      if (!this.postSeen && this.post.user.id != this.$page.props.auth.user.id) { //Si no se ha visto el post y el usuario no es el creador del post, aumenta el contador.
+            // Realizar una solicitud al servidor para incrementar las vistas
+          try {
+            const response = axios.post(route("posts.view", postId));
+          } catch (error) {
+            console.log(error);
+          } finally {
+            this.postSeen = true
+          }
+        } else {
+          return;
+        }
     },
     checkIfTruncated() {
       // Verifica si el texto se está truncando
@@ -251,7 +295,11 @@ export default {
       this.confirmDelete = false;
       this.$emit("delete-post", this.post.id);
     },
-     openImage() {
+    reportComment(commentId) {
+      this.reportForm.comment_id = commentId;
+      this.showReportModal = true;
+    },
+    openImage() {
         this.incrementViews(this.post.id); //incrementa la vista en uno
         const urlImagen = this.post.media[0]?.original_url;
         if (urlImagen) {
@@ -311,6 +359,18 @@ export default {
         });
       }
     },
+    storeReport() {
+      this.reportForm.post(route("reports.store"), {
+      onSuccess: () => {
+        this.$notify({
+          title: "Correcto",
+          message: "Se ha enviado tu reporte. Se revisará y te daremos respuesta pronto",
+          type: "success",
+        });
+        this.showReportModal = false;
+      },
+    });
+    }
   },
   watch: {
     "post.body": "checkIfTruncated", // Observa cambios en el texto y ejecuta checkIfTruncated

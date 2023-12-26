@@ -148,6 +148,8 @@ return [
         'feedback_type' => 'tipo de comentario',
         'answer_contact' => 'contacto de respuesta',
         'urgency_level' => 'nivel de urgencia',
+        'date' => 'fecha',
+        'participants' => 'participantes',
         'password' => 'contraseña nueva',
         'current_password' => 'contraseña actual',
     ],

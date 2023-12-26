@@ -49,7 +49,7 @@ const updatePassword = () => {
 
         <template #form>
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="current_password" value="Contraseña actual" />
+                <InputLabel for="current_password" value="Contraseña actual" class="ml-2 mb-1" />
                 <el-input v-model="form.current_password" type="password" placeholder="Ingresa tu contraseña actual"
                     maxlength="255" id="current_password" ref="currentPasswordInput" autocomplete="current-password" show-password />
                 <!-- <TextInput id="current_password" ref="currentPasswordInput" v-model="form.current_password" type="password"
@@ -58,7 +58,7 @@ const updatePassword = () => {
             </div>
 
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password" value="Contraseña nueva" />
+                <InputLabel for="password" value="Contraseña nueva" class="ml-2 mb-1" />
                 <el-input v-model="form.password" type="password" placeholder="Ingresa la nueva contraseña"
                     maxlength="255" id="password" ref="passwordInput" autocomplete="new-password" show-password />
                 <!-- <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
@@ -67,7 +67,7 @@ const updatePassword = () => {
             </div>
 
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password_confirmation" value="Confirmar contraseña" />
+                <InputLabel for="password_confirmation" value="Confirmar contraseña" class="ml-2 mb-1" />
                 <el-input v-model="form.password_confirmation" type="password" placeholder="Vuelve a ingresar la nueva contraseña"
                     maxlength="255" id="password_confirmation" autocomplete="new-password" show-password />
                 <!-- <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"

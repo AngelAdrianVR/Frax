@@ -5,6 +5,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
 use App\Http\Controllers\CommonAreaUserController;
+use App\Http\Controllers\CommunityEventController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\GuestHistoryController;
 use App\Http\Controllers\MaintenanceController;
@@ -14,21 +15,12 @@ use App\Http\Controllers\PaymentFeedbackController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PaymentTicketController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -70,7 +62,7 @@ Route::get('payment-feedback', [PaymentController::class, 'feedback'])->name('pa
 
 
 //Payment-feedback routes---------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 Route::resource('payment-feedbacks', PaymentFeedbackController::class)->middleware('auth');
 
 
@@ -120,8 +112,20 @@ Route::post('maintenances/{maintenance}/store-comment', [MaintenanceController::
 //-------------------------------------------------------------------------------------------------
 Route::resource('posts', PostController::class)->middleware('auth');
 Route::post('/posts/increment-views/{postId}', [PostController::class, 'incrementViews'])->name('posts.view')->middleware('auth');
+Route::post('/posts/increment-likes/{postId}', [PostController::class, 'incrementLikes'])->name('posts.like')->middleware('auth');
 Route::post('posts/update-with-media/{postId}', [PostController::class, 'updateWithMedia'])->name('posts.update-with-media')->middleware('auth');
 Route::post('posts/{postId}/store-comment', [PostController::class, 'storeComment'])->name('posts.store-comment')->middleware('auth');
+
+
+//reports routes-----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('reports', ReportController::class)->middleware('auth');
+
+
+//community-events routes--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('community-events', CommunityEventController::class)->middleware('auth');
+Route::post('community-events/{community_event}/update-with-media', [CommunityEventController::class, 'updateWithMedia'])->name('community-events.update-with-media')->middleware('auth');
 
 
 //norms routes-------------------------------------------------------------------------------------
@@ -137,3 +141,8 @@ Route::resource('supports', SupportController::class)->middleware('auth');
 //comments routes-------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 Route::resource('comments', CommentController::class)->middleware('auth');
+
+
+//profile routes-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+Route::post('users/{user}/update-personal', [UserController::class, 'updatePersonal'])->middleware('auth')->name('users.profile.update-personal');
