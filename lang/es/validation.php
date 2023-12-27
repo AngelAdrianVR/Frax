@@ -152,5 +152,6 @@ return [
         'participants' => 'participantes',
         'password' => 'contraseña nueva',
         'current_password' => 'contraseña actual',
+        'phone' => 'teléfono',
     ],
 ];
