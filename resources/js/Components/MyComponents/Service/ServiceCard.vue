@@ -8,11 +8,19 @@
         class="bg-gray-100 font-sans w-full flex flex-row justify-center items-center"
       >
         <div class="w-96 mx-auto bg-white shadow-xl hover:shadow">
-          <img
+          <figure class="size-32 mx-auto" v-if="service.image_cover?.length > 0">
+            <img
+              :class="service.is_active ? 'border-gray-200' : 'border-red-400'"
+              class="mx-auto rounded-full -mt-20 border-4 size-32"
+              :src="service.image_cover[0]?.original_url"
+              alt=""
+            />
+          </figure>
+          <img v-else
             :class="service.is_active ? 'border-gray-200' : 'border-red-400'"
             class="w-32 mx-auto rounded-full -mt-20 border-4"
             src="https://avatars.githubusercontent.com/u/67946056?v=4"
-            alt=""
+            alt="Imagen no disponible"
           />
           <div class="text-center mt-1 text-2xl font-medium">{{service.name}}</div>
           <div class="text-center font-normal text-sm my-3"><i class="fa-solid fa-phone text-gray-600"></i><i class="fa-brands fa-whatsapp ml-1 text-green-600"></i> {{service.phone}}</div>
@@ -24,7 +32,7 @@
           <div class="mx-2 pb-1 rounded-lg border text-gray-700">
             <p v-if="service.social_networks != null" class="text-center pt-1 mt-2 text-gray-800 font-bold">Redes sociales</p>
             <p v-if="service.social_networks == null" class="text-center pt-1 mt-2 text-gray-800 font-bold">Sin redes sociales</p>
-            <div v-if="service.social_networks?.website" class="text-center mt-1 font-light text-sm"><i class="fa-solid fa-earth-americas text-gray-500"></i> <a target="blank" class="inline-block py-1" :href="service.social_networks?.website"> {{service.social_networks?.website}}</a></div>
+            <div v-if="service.social_networks?.website" class="text-center mt-1 font-light text-sm"><i class="fa-solid fa-earth-americas text-gray-500"></i> <a target="blank" class="inline-block py-1" href="7holamundo"> {{service.social_networks?.website}}</a></div>
             <div v-if="service.social_networks?.facebook" class="text-center mt-1 font-light text-sm"><i class="fa-brands fa-facebook text-blue-600"></i> <a target="blank" class="inline-block py-1" :href="service.social_networks?.facebook"> {{service.social_networks?.facebook}}</a></div>
             <div v-if="service.social_networks?.instagram" class="text-center mt-1 font-light text-sm"><i class="fa-brands fa-instagram bg-gradient-to-tl from-orange-400 to-violet-500 text-gray-200"></i> <a target="blank" class="inline-block py-1" :href="service.social_networks?.facebook"> {{service.social_networks?.instagram}}</a></div>
             <div v-if="service.social_networks?.tiktok" class="text-center mt-1 font-light text-sm"><i class="fa-brands fa-tiktok"></i> <a target="blank" class="inline-block py-1" :href="service.social_networks?.facebook"> {{service.social_networks?.tiktok}}</a></div>

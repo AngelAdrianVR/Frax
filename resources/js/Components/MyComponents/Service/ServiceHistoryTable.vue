@@ -49,7 +49,7 @@
                                             class="fa-regular fa-trash-can"></i></button>
                                 </template>
                             </el-popconfirm>
-                            <button @click="$inertia.get(route('community-events.edit', communityEvent))"
+                            <button @click="$inertia.get(route('services.edit', history.id))"
                                     class="rounded-full flex justify-center items-center w-7 h-7 text-xs"><i
                                     class="fa-solid fa-pencil"></i>
                             </button>

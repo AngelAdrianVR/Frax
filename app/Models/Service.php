@@ -16,6 +16,7 @@ class Service extends Model implements HasMedia
         'name',
         'description',
         'phone',
+        'address',
         'is_internal',
         'is_active',
         'social_networks',

@@ -157,6 +157,7 @@ Route::resource('comments', CommentController::class)->middleware('auth');
 Route::resource('services', ServiceController::class)->middleware('auth');
 Route::get('services-get-external-services', [ServiceController::class, 'getExternalServices'])->name('services.get-external-services')->middleware('auth');
 Route::get('services-get-services-history', [ServiceController::class, 'getServicesHistory'])->name('services.get-services-history')->middleware('auth');
+Route::post('services/{service}/update-with-media', [ServiceController::class, 'updateWithMedia'])->name('services.update-with-media')->middleware('auth');
 
 
 //contacts routes-------------------------------------------------------------------------------------
