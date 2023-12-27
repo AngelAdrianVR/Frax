@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NotificationResource;
 use App\Models\User;
 use App\Models\EmergencyContact;
 use Illuminate\Http\Request;
@@ -95,5 +96,27 @@ class UserController extends Controller
                 'profile_photo_path' => null,
             ]);
         }
+    }
+
+    public function getNotifications()
+    {
+        $items = NotificationResource::collection(auth()->user()->notifications);
+
+        return response()->json(compact('items'));
+    }
+
+    public function deleteNotifications()
+    {
+        auth()->user()->notifications()->delete();
+
+        return response()->json(['message' => "Se han eliminado todas las notificaciones"]);
+    }
+
+    public function readNotifications()
+    {
+        $unread = auth()->user()->unreadNotifications->count();
+        auth()->user()->notifications->markAsRead();
+
+        return response()->json(compact('unread'));
     }
 }

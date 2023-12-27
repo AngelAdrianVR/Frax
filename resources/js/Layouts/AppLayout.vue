@@ -8,6 +8,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import SideNav from '@/Components/MyComponents/SideNav.vue';
+import NotificationsCenter from '@/Components/MyComponents/NotificationsCenter.vue';
 import axios from 'axios';
 
 defineProps({
@@ -56,7 +57,7 @@ const logout = () => {
 
                             <div class="hidden sm:flex sm:items-center sm:ml-6 items-center">
                                 <!-- calendar -->
-                                <!-- <div class="relative mt-2">
+                                <div class="relative mt-2">
                                     <el-tooltip content="Calendario">
                                         <Link :href="route('calendars.index')">
                                         <button :class="route().current('calendars.*') ? 'text-primary' : 'text-[#97989A]'">
@@ -75,10 +76,10 @@ const logout = () => {
                                     })"
                                         class="bg-primary w-[10px] h-[10px] border border-white rounded-full absolute -top-1 -right-2">
                                     </div>
-                                </div> -->
+                                </div>
 
                                 <!-- notifications -->
-                                <!-- <NotificationsCenter /> -->
+                                <NotificationsCenter />
 
                                 <!-- Settings Dropdown -->
                                 <div class="ml-3 relative">
