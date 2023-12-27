@@ -32,10 +32,14 @@ class Frax extends Model implements HasMedia
         return $this->hasMany(User::class);
     }
 
-
     public function communityEvents() :HasMany
     {
         return $this->hasMany(CommunityEvent::class);
+    }
+
+    public function services() :HasMany
+    {
+        return $this->hasMany(Service::class);
     }
 
 }

@@ -124,6 +124,15 @@ export default {
                     show: true
                 },
                 {
+                    label: 'Servicios',
+                    icon: '<i class="fa-solid fa-briefcase text-sm mr-2"></i>',
+                    route: route('services.index'),
+                    active: route().current('services.*'),
+                    options: [],
+                    dropdown: false,
+                    show: true
+                },
+                {
                     label: 'Soporte técnico',
                     icon: '<i class="fa-solid fa-headset text-sm mr-2"></i>',
                     route: route('supports.create'), //si es residente manda a create, si es administrador manda a index
@@ -132,6 +141,7 @@ export default {
                     dropdown: false,
                     show: true
                 },
+                
             ],
         }
     },

@@ -16,6 +16,7 @@ use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PaymentTicketController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -139,7 +140,7 @@ Route::resource('community-events', CommunityEventController::class)->middleware
 Route::post('community-events/{community_event}/update-with-media', [CommunityEventController::class, 'updateWithMedia'])->name('community-events.update-with-media')->middleware('auth');
 
 
-//neighbors routes--------------------------------------------------------------------------
+//neighbors routes---------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('neighbors', UserController::class)->middleware('auth');
 
@@ -157,3 +158,10 @@ Route::resource('supports', SupportController::class)->middleware('auth');
 //comments routes-------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 Route::resource('comments', CommentController::class)->middleware('auth');
+
+
+//services routes-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+Route::resource('services', ServiceController::class)->middleware('auth');
+Route::get('services-get-external-services', [ServiceController::class, 'getExternalServices'])->name('services.get-external-services')->middleware('auth');
+Route::get('services-get-services-history', [ServiceController::class, 'getServicesHistory'])->name('services.get-services-history')->middleware('auth');
