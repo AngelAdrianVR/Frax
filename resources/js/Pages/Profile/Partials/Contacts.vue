@@ -1,14 +1,16 @@
 <template>
-    <section class="my-6">
+    <LoadingState :loading="loading" />
+    <section v-if="!loading" class="my-6">
         <div class="col-span-4 lg:grid grid-cols-2 gap-x-4 gap-y-2 self-start">
             <!-- lista de contactos -->
-            <div ref="contactList" v-if="contacts.length"
+            <div ref="contactList"
                 class="col-span-full lg:grid grid-cols-3 gap-x-4 gap-y-2 mt-1 pb-5">
                 <h2 class="col-span-full mb-4 flex justify-between items-center font-bold">
                     <p>Contactos de emergencia</p>
                     <PrimaryButton v-if="!showCreateForm" type="button" @click="prepareCreateForm">Crear contacto
                     </PrimaryButton>
                 </h2>
+                <p v-if="!contacts.length" class="text-xs text-gray2">No has registrado ningún contacto</p>
                 <div v-for="(item, index) in contacts" :key="index">
                     <div class="border border-gray4 rounded-[3px] p-4 min-h-52 flex flex-col justify-between text-sm">
                         <div class="flex justify-between">
@@ -78,7 +80,8 @@
                 <div class="col-span-full flex justify-end space-x-2">
                     <CancelButton type="button" @click="showCreateForm = false; editIndex = null; resetForm();">Cancelar
                     </CancelButton>
-                    <PrimaryButton :disabled="loading || !isFormCompleted">{{ editIndex !== null ? 'Guardar cambios' : 'Guardar' }}
+                    <PrimaryButton :disabled="processing || !isFormCompleted">{{ editIndex !== null ? 'Guardar cambios' :
+                        'Guardar' }}
                     </PrimaryButton>
                 </div>
             </form>
@@ -89,12 +92,9 @@
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CancelButton from "@/Components/MyComponents/CancelButton.vue";
-import Back from '@/Components/MyComponents/Back.vue';
+import LoadingState from '@/Components/MyComponents/LoadingState.vue';
 import InputLabel from "@/Components/InputLabel.vue";
-import ThirthButton from "@/Components/ThirthButton.vue";
 import InputFilePreview from "@/Components/MyComponents/InputFilePreview.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import axios from 'axios';
 
@@ -108,6 +108,7 @@ export default {
         });
         return {
             form,
+            processing: false,
             loading: false,
             showCreateForm: false,
             editIndex: null,
@@ -127,12 +128,9 @@ export default {
         InputLabel,
         PrimaryButton,
         CancelButton,
-        Back,
         InputFilePreview,
         Link,
-        ThirthButton,
-        Dropdown,
-        DropdownLink,
+        LoadingState,
     },
     computed: {
         isFormCompleted() {
@@ -143,7 +141,7 @@ export default {
     },
     methods: {
         async store() {
-            this.loading = true;
+            this.processing = true;
             try {
                 const formData = new FormData();
                 formData.append('name', this.form.name);
@@ -177,11 +175,11 @@ export default {
                     type: "error",
                 });
             } finally {
-                this.loading = false;
+                this.processing = false;
             }
         },
         async deleteContact(index) {
-            this.loading = true;
+            this.processing = true;
             try {
                 const response = await axios.delete(route('emergency-contacts.destroy', this.contacts[index].id));
 
@@ -202,11 +200,11 @@ export default {
                     type: "error",
                 });
             } finally {
-                this.loading = false;
+                this.processing = false;
             }
         },
         async updateContact() {
-            this.loading = true;
+            this.processing = true;
             try {
                 const formData = new FormData();
                 formData.append('name', this.form.name);
@@ -241,7 +239,7 @@ export default {
                     type: "error",
                 });
             } finally {
-                this.loading = false;
+                this.processing = false;
             }
         },
         prepareCreateForm() {
@@ -264,42 +262,11 @@ export default {
             } else {
                 this.form.image = null;
             }
-            console.log(this.form);
         },
-        // isContactFormCorrect() {
-        //     return true;
-        // },
-        // addContact() {
-        //     if (this.isContactFormCorrect()) {
-        //         // agregar contacto
-        //         this.contacts.push({ ...this.contact });
-        //         this.resetContact();
-
-        //         // hacer scroll hasta el final de la pagina
-        //         this.$nextTick(() => {
-        //             const scrollTarget = this.$refs.contactList;
-        //             if (scrollTarget) {
-        //                 // Scroll hacia el final de la página
-        //                 scrollTarget.scrollIntoView({ behavior: "smooth", block: "end" });
-        //             }
-        //         });
-        //     }
-        // },
-        // updateContact() {
-        //     if (this.isContactFormCorrect()) {
-        //         // actualizar contacto
-        //         this.contacts[this.editIndex] = { ...this.contact };
-        //         this.editIndex = null;
-        //         this.resetContact();
-        //     }
-        // },
         resetForm() {
             this.form.reset();
             this.$refs.contactImage.image = null;
         },
-        // deleteContact(index) {
-        //     this.contacts.splice(index, 1);
-        // },
         editContact(index) {
             this.showCreateForm = true;
             this.form.name = this.contacts[index].name;
@@ -308,18 +275,38 @@ export default {
             this.form.image = null;
             this.editIndex = index;
             this.$refs.contactImage.image = this.contacts[index].media[0].original_url;
-            console.log(this.form);
+
+            // hacer scroll hasta el final de la pagina
+            this.$nextTick(() => {
+                const scrollTarget = this.$refs.createForm;
+                if (scrollTarget) {
+                    // Scroll hacia el final de la página
+                    scrollTarget.scrollIntoView({ behavior: "smooth", block: "end" });
+                }
+            });
         },
-        // cancelContactEdition() {
-        //     this.resetContact();
-        //     this.editIndex = null;
-        // },
-        getURL(file) {
-            return URL.createObjectURL(file);
+        async fetchContacts() {
+            this.loading = true;
+            try {
+                const response = await axios.get(route('emergency-contacts.index'));
+
+                if (response.status === 200) {
+                    this.contacts = response.data.items;
+                }
+            } catch (error) {
+                console.log(error);
+                this.$notify({
+                    title: "Error de servidor",
+                    message: "No se pudo obtener la lista de contactos por problema con el servidor. Favor de intentar más tarde",
+                    type: "error",
+                });
+            } finally {
+                this.loading = false;
+            }
         },
     },
     mounted() {
-        this.contacts = this.$page.props.auth.user.emergencyContacts;
+        this.fetchContacts();
     }
 }
 </script>

@@ -9,7 +9,9 @@ class EmergencyContactController extends Controller
 {
     public function index()
     {
-        //
+        $contacts = EmergencyContact::with('media')->get();
+
+        return response()->json(['items' => $contacts]);
     }
 
     public function create()

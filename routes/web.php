@@ -15,11 +15,13 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentFeedbackController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PaymentTicketController;
+use App\Http\Controllers\PetController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VehicleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -161,6 +163,18 @@ Route::get('services-get-services-history', [ServiceController::class, 'getServi
 //----------------------------------------------------------------------------------------------------
 Route::resource('emergency-contacts', EmergencyContactController::class)->middleware('auth');
 Route::post('emergency-contacts/{emergencyContact}/update-with-media', [EmergencyContactController::class, 'updateWithMedia'])->middleware('auth')->name('emergency-contacts.update-with-media');
+
+
+//vehicles routes-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+Route::resource('vehicles', VehicleController::class)->middleware('auth');
+Route::post('vehicles/{vehicle}/update-with-media', [VehicleController::class, 'updateWithMedia'])->middleware('auth')->name('vehicles.update-with-media');
+
+
+//pets routes-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+Route::resource('pets', PetController::class)->middleware('auth');
+Route::post('pets/{pet}/update-with-media', [PetController::class, 'updateWithMedia'])->middleware('auth')->name('pets.update-with-media');
 
 
 //profile routes-------------------------------------------------------------------------------------

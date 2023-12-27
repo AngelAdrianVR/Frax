@@ -4,6 +4,7 @@
             <h2 class="font-bold col-span-full mt-7">Seguridad y privacidad</h2>
         </div>
         <UpdatePasswordForm />
+        <!-- <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" /> -->
     </section>
 </template>
 <script>
@@ -15,17 +16,17 @@ import ThirthButton from "@/Components/ThirthButton.vue";
 import InputFilePreview from "@/Components/MyComponents/InputFilePreview.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
-import { useForm, Link } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 import UpdatePasswordForm from "@/Pages/Profile/Partials/UpdatePasswordForm.vue";
+// import LogoutOtherBrowserSessionsForm from "@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue";
 
 export default {
     data() {
-        const form = useForm({
-            vehicles: [],
-        });
         return {
-            form,
         }
+    },
+    props: {
+        sessions: Array
     },
     components: {
         InputError,
@@ -37,75 +38,11 @@ export default {
         ThirthButton,
         Dropdown,
         DropdownLink,
-        UpdatePasswordForm
-    },
-    computed: {
-        isVehicleCompleted() {
-            return this.vehicle.brand &&
-                this.vehicle.plate &&
-                this.vehicle.color;
-        },
+        UpdatePasswordForm,
+        // LogoutOtherBrowserSessionsForm,
     },
     methods: {
-        update() {
 
-        },
-        saveImage(image) {
-            this.vehicle.image = image;
-        },
-        clearVehicleImage() {
-            this.vehicle.image = null;
-        },
-        isVehicleFormCorrect() {
-            return true;
-        },
-        addVehicle() {
-            if (this.isVehicleFormCorrect()) {
-                // agregar vehiculo
-                this.form.vehicles.push({ ...this.vehicle });
-                this.resetVehicle();
-
-                // hacer scroll hasta el final de la pagina
-                this.$nextTick(() => {
-                    const scrollTarget = this.$refs.vehicleList;
-                    if (scrollTarget) {
-                        // Scroll hacia el final de la página
-                        scrollTarget.scrollIntoView({ behavior: "smooth", block: "end" });
-                    }
-                });
-            }
-        },
-        updateVehicle() {
-            if (this.isVehicleFormCorrect()) {
-                // actualizar vehiculo
-                this.form.vehicles[this.editIndex] = { ...this.vehicle };
-                this.editIndex = null;
-                this.resetVehicle();
-            }
-        },
-        resetVehicle() {
-            this.vehicle.brand = null;
-            this.vehicle.plate = null;
-            this.vehicle.color = null;
-            this.vehicle.notes = null;
-            this.vehicle.image = null;
-            this.$refs.vehicleImage.image = null;
-        },
-        deleteVehicle(index) {
-            this.form.vehicles.splice(index, 1);
-        },
-        editVehicle(index) {
-            this.vehicle = { ...this.form.vehicles[index] };
-            this.editIndex = index;
-            this.$refs.vehicleImage.image = this.getURL(this.vehicle.image);
-        },
-        cancelVehicleEdition() {
-            this.resetVehicle();
-            this.editIndex = null;
-        },
-        getURL(file) {
-            return URL.createObjectURL(file);
-        },
     }
 }
 </script>
