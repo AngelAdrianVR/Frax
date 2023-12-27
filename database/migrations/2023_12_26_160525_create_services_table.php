@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('phone');
+            $table->string('address')->nullable();
             $table->boolean('is_internal')->default(false);
             $table->boolean('is_active')->default(false);
             $table->json('social_networks')->nullable();

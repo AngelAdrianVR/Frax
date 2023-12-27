@@ -21,13 +21,34 @@ class ServiceController extends Controller
     
     public function create()
     {
-        //
+        return inertia('Service/Create');
     }
 
     
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:40',
+            'phone' => 'required|string|max:13',
+            'address' => 'nullable|string|max:70',
+            'description' => 'required',
+            'is_internal' => 'boolean',
+        ]);
+
+        $service = Service::create($request->except('imageCover') + ['frax_id' => auth()->user()->frax_id]);
+
+        // Subir y asociar la imagen de portada del servicio a la colección 'imageCover'
+       if ($request->hasFile('imageCover')) {
+        $serviceImagePath = $request->file('imageCover')->store('imageCover', 'public');
+        $service->addMedia(storage_path('app/public/' . $serviceImagePath))
+        ->toMediaCollection('imageCover');
+        }
+
+        if ($request->is_internal) {
+            return to_route('services.index', ['currentTab' => 1]);
+        } else {
+            return to_route('services.index', ['currentTab' => 2]);
+        }
     }
 
     
@@ -39,13 +60,58 @@ class ServiceController extends Controller
     
     public function edit(Service $service)
     {
-        //
+        return inertia('Service/Edit', compact('service'));
     }
 
     
     public function update(Request $request, Service $service)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:40',
+            'phone' => 'required|string|max:13',
+            'address' => 'nullable|string|max:70',
+            'description' => 'required',
+            'is_internal' => 'boolean',
+        ]);
+
+        $service->update($request->except('imageCover'));
+
+        if ($request->is_internal) {
+            return to_route('services.index', ['currentTab' => 1]);
+        } else {
+            return to_route('services.index', ['currentTab' => 2]);
+        }
+    }
+
+
+    public function updateWithMedia(Request $request, Service $service)
+    {
+        $request->validate([
+            'name' => 'required|string|max:40',
+            'phone' => 'required|string|max:13',
+            'address' => 'nullable|string|max:70',
+            'description' => 'required',
+            'is_internal' => 'boolean',
+        ]);
+
+        $service->update($request->except('imageCover'));
+
+        // media
+        $service->clearMediaCollection('imageCover');
+        
+            // Subir y asociar la imagen del evento a la colección 'imageCover'
+        if ($request->hasFile('imageCover')) {
+            $serviceImagePath = $request->file('imageCover')->store('imageCover', 'public');
+            $service->addMedia(storage_path('app/public/' . $serviceImagePath))
+            ->toMediaCollection('imageCover');
+            }
+
+        if ($request->is_internal) {
+            return to_route('services.index', ['currentTab' => 1]);
+        } else {
+            return to_route('services.index', ['currentTab' => 2]);
+        }
+
     }
 
     

@@ -130,10 +130,10 @@ export default {
             photo: null,
             emergency_contacts: [],
             resident_properties: {
-                gender: this.$page.props.auth.user.residentProperties.gender,
-                phone: this.$page.props.auth.user.residentProperties.phone,
-                address: this.$page.props.auth.user.residentProperties.address,
-                birthdate: this.$page.props.auth.user.residentProperties.birthdate,
+                gender: this.$page.props.auth.user.residentProperties?.gender,
+                phone: this.$page.props.auth.user.residentProperties?.phone,
+                address: this.$page.props.auth.user.residentProperties?.address,
+                birthdate: this.$page.props.auth.user.residentProperties?.birthdate,
             }
         });
         return {
