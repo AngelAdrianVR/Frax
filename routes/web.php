@@ -23,17 +23,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -165,3 +154,8 @@ Route::resource('comments', CommentController::class)->middleware('auth');
 Route::resource('services', ServiceController::class)->middleware('auth');
 Route::get('services-get-external-services', [ServiceController::class, 'getExternalServices'])->name('services.get-external-services')->middleware('auth');
 Route::get('services-get-services-history', [ServiceController::class, 'getServicesHistory'])->name('services.get-services-history')->middleware('auth');
+
+
+//profile routes-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+Route::post('users/{user}/update-personal', [UserController::class, 'updatePersonal'])->middleware('auth')->name('users.profile.update-personal');
