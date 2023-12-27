@@ -2,34 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmergencyContact;
 use App\Models\User;
+use App\Models\EmergencyContact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    
     public function index()
     {
-        //
+        $users = User::where('frax_id', auth()->user()->frax_id)->paginate(30, ['id', 'name', 'profile_photo_path']);
+
+        // return $users;
+        return inertia('Neighbors/Index', compact('users'));
     }
+
 
     public function create()
     {
         //
     }
 
+    
     public function store(Request $request)
     {
         //
     }
 
+    
     public function show(User $user)
     {
         //
     }
 
+    
     public function edit(User $user)
+    {
+        //
+    }
+
+    
+    public function update(Request $request, User $user)
+    {
+        //
+    }
+
+    
+    public function destroy(User $user)
     {
         //
     }

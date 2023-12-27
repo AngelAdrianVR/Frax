@@ -44,6 +44,7 @@ async deleteCommunityEvent(communityEventId) {
     const response = await axios.delete(route('community-events.destroy', communityEventId));
 
     if (response.status === 200) {
+      //encontrar index de elemento eliminado
       const deletedItemIndex = this.community_events.data.findIndex(item => item.id === communityEventId);
 
       // Elimina el objeto localmente
