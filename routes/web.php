@@ -6,6 +6,7 @@ use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
 use App\Http\Controllers\CommonAreaUserController;
 use App\Http\Controllers\CommunityEventController;
+use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\GuestHistoryController;
 use App\Http\Controllers\MaintenanceController;
@@ -141,6 +142,12 @@ Route::resource('supports', SupportController::class)->middleware('auth');
 //comments routes-------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 Route::resource('comments', CommentController::class)->middleware('auth');
+
+
+//contacts routes-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+Route::resource('emergency-contacts', EmergencyContactController::class)->middleware('auth');
+Route::post('emergency-contacts/{emergencyContact}/update-with-media', [EmergencyContactController::class, 'updateWithMedia'])->middleware('auth')->name('emergency-contacts.update-with-media');
 
 
 //profile routes-------------------------------------------------------------------------------------

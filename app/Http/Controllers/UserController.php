@@ -49,8 +49,6 @@ class UserController extends Controller
             $this->deleteProfilePhoto($user);
             $this->storeProfilePhoto($request, $user);
         }
-
-        // return response()->json(['data' => 'hey']);
     }
 
     public function storeProfilePhoto($request, User $user)
