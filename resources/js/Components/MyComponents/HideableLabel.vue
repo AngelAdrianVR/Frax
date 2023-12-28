@@ -1,6 +1,6 @@
 <template>
-  <div class="text-secondary font-bold text-xs">
-    <div class="flex space-x-3 rounded-tl-[5px] rounded-bl-[5px] cursor-pointer p-2 items-start bg-primarylight"
+  <div class="text-secondary font-bold text-xs border border-primary rounded-tl-[5px] rounded-bl-[5px]">
+    <div class="flex space-x-3 rounded-tl-[5px] rounded-bl-[5px] cursor-pointer p-2 items-start bg-white"
       @click="toggleNotification">
       <!-- <p v-if="showNotification" class="ml-3">{{ buttonText }}</p> -->
       <div class="rounded-full border-2 border-secondary w-4 h-4 flex items-center justify-center">

@@ -6,7 +6,7 @@
     <AppLayout title="Servicios">
         <!-- ------------- tabs section starts ------------- -->
       <div class="border-y-2 border-[#D9D9D9] items-center py-2">
-        <div class="flex lg:ml-20 w-full overflow-x-auto">
+        <div class="flex lg:ml-20 w-full overflow-x-auto lg:overflow-x-hidden">
           <Tab @click="currentTab = index + 1" :label="tab" :active="currentTab == index + 1" v-for="(tab, index) in tabs"
             :key="index" />
         </div>
