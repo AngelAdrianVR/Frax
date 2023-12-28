@@ -12,7 +12,7 @@
                 </h2>
                 <p v-if="!contacts.length" class="text-xs text-gray2">No has registrado ningún contacto</p>
                 <div v-for="(item, index) in contacts" :key="index">
-                    <div class="border border-gray4 rounded-[3px] p-4 min-h-52 flex flex-col justify-between text-sm">
+                    <div class="border border-gray4 rounded-[3px] my-2 lg:my-0 p-4 min-h-52 flex flex-col justify-between text-sm">
                         <div class="flex justify-between">
                             <figure class="h-1/2">
                                 <img v-if="item.media?.length" class="size-16 rounded-full object-cover"
@@ -77,7 +77,7 @@
                         <InputFilePreview ref="contactImage" @imagen="saveImage" @cleared="clearContactImage" />
                     </div>
                 </div>
-                <div class="col-span-full flex justify-end space-x-2">
+                <div class="col-span-full mt-10 lg:mt-0 flex justify-end space-x-2">
                     <CancelButton type="button" @click="showCreateForm = false; editIndex = null; resetForm();">Cancelar
                     </CancelButton>
                     <PrimaryButton :disabled="processing || !isFormCompleted">{{ editIndex !== null ? 'Guardar cambios' :

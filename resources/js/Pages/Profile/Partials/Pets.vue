@@ -6,12 +6,12 @@
             <div ref="petList" class="col-span-full lg:grid grid-cols-3 gap-x-4 gap-y-2 mt-1 pb-5">
                 <h2 class="col-span-full mb-4 flex justify-between items-center font-bold">
                     <p>Mascotas</p>
-                    <PrimaryButton v-if="!showCreateForm" type="button" @click="prepareCreateForm">Agregar nueva mascota
+                    <PrimaryButton v-if="!showCreateForm" type="button" @click="prepareCreateForm">Agregar mascota
                     </PrimaryButton>
                 </h2>
                 <p v-if="!pets.length" class="text-xs text-gray2">No has registrado ninguna mascota</p>
                 <div v-for="(item, index) in pets" :key="index">
-                    <div class="border border-gray4 rounded-[3px] p-4 min-h-52 flex flex-col justify-between text-sm">
+                    <div class="border border-gray4 rounded-[3px] p-4 my-2 lg:my-0 min-h-52 flex flex-col justify-between text-sm">
                         <div class="flex justify-between">
                             <figure class="h-1/2">
                                 <img v-if="item.media?.length" class="size-16 rounded-full object-cover"
@@ -81,7 +81,7 @@
                         <InputFilePreview ref="petImage" @imagen="saveImage" @cleared="clearPetImage" />
                     </div>
                 </div>
-                <div class="col-span-full flex justify-end space-x-2">
+                <div class="col-span-full mt-10 lg:mt-0 flex justify-end space-x-2">
                     <CancelButton type="button" @click="showCreateForm = false; editIndex = null; resetForm();">Cancelar
                     </CancelButton>
                     <PrimaryButton :disabled="loading || !isFormCompleted">{{ editIndex !== null ? 'Guardar cambios' :
