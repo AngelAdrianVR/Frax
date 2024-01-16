@@ -35,15 +35,12 @@
                         </div>
 
                         <div class="mt-4">
-                            <InputLabel value="Foto del visitante" class="ml-3 mb-1" />
-                            <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                                <i v-if="guestImage" @click.stop="guestImage = null; guestForm.guest_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
-                                <i v-if="!guestImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
-                                 <img v-if="guestImage" :src="guestImage" alt="Vista previa" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
-                                <input ref="fileGuestInput" type="file" @change="handleGuestImageUpload" class="hidden" />
-                            </figure>
+                            <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
+                            <InputFilePreview 
+                              :imageUrl="getMediaUrl('guest_images')" 
+                              @imagen="guestForm.guest_image = $event; guestImageCleared = false"
+                              @cleared="guestForm.guestImageCleared = true" />
                         </div>
-
                         <div class="mt-3">
                             <InputLabel value="Fecha de la visita*" class="ml-3 mb-1" />
                             <el-date-picker v-model="guestForm.visit_date" type="date" placeholder="Seleccione" :disabled-date="disabledDate" />
@@ -89,13 +86,11 @@
 
                     <div class="pt-1 pb-5 px-7">
                       <div>
-                        <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
-                        <figure @click="triggerVehicleImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                            <i v-if="vehicleImage" @click.stop="vehicleImage = null; guestForm.vehicle_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
-                            <i v-if="!vehicleImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
-                              <img v-if="vehicleImage" :src="vehicleImage" alt="Vista previa" class="w-full h-full  object-contain bg-no-repeat rounded-md opacity-50" />
-                            <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
-                        </figure>
+                        <InputLabel value="Foto del vehículo (opcional)" class="ml-3 mb-1" />
+                        <InputFilePreview 
+                          :imageUrl="getMediaUrl('vehicle_images')"  
+                          @imagen="guestForm.vehicle_image = $event; vehicleImageCleared = false"
+                          @cleared="guestForm.vehicleImageCleared = true" />
                       </div>
 
                         <div class="mt-3">
@@ -377,6 +372,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CancelButton from "@/Components/MyComponents/CancelButton.vue";
+import InputFilePreview from '@/Components/MyComponents/InputFilePreview.vue';
 import Back from '@/Components/MyComponents/Back.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
@@ -403,8 +399,10 @@ export default {
         plate: this.guest?.vehicle_details?.plate
       },
       qr_code:  this.guest?.qr_code,
-      guest_image: this.guest?.media[0]?.original_url,  // Asigna la URL de la imagen
-      vehicle_image: this.guest?.media[1]?.original_url,  // Asigna la URL de la imagen
+      guest_image: null,
+      vehicle_image: null,
+      guestImageCleared: false,
+      vehicleImageCleared: false,
     });
 
     const eventForm = useForm({
@@ -422,8 +420,6 @@ export default {
     return {
       guestForm,
       eventForm,
-      guestImage: this.guest.media[0]?.original_url,  // Asigna la URL de la imagen,
-      vehicleImage: this.guest.media[1]?.original_url,  // Asigna la URL de la imagen,
       favoriteGuestId: null, //modal visita frecuente
       selectedFavoriteGuest: null, //modal visita frecuente
       selectedVehicleIndex: null, //modal visita frecuente
@@ -434,6 +430,7 @@ export default {
   },
   components: {
     AppLayout,
+    InputFilePreview,
     PrimaryButton,
     CancelButton,
     InputLabel,
@@ -487,6 +484,10 @@ export default {
       });
     }
     },
+    getMediaUrl(collectionName) {
+        const media = this.guest.media.find(img => img.collection_name === collectionName);
+        return media ? media.original_url : null;
+    },
     // Función para generar una cadena de texto aleatoria
     qrGenerator(longitud) {
       const caracteres =
@@ -500,38 +501,6 @@ export default {
 
       // Asignar la cadena aleatoria al dato 'cadenaAleatoria'
       this.eventForm.qr_code = cadenaAleatoria;
-    },
-    triggerGuestImageInput() {
-      // Simular clic en el input file cuando se hace clic en el icono de la cámara
-      this.$refs.fileGuestInput.click();
-    },
-    triggerVehicleImageInput() {
-      // Simular clic en el input file cuando se hace clic en el icono de la cámara
-      this.$refs.fileVehicleInput.click();
-    },
-    handleGuestImageUpload(event) {
-      const file = event.target.files[0];
-      this.guestForm.guest_image = file;
-
-      if (file) {
-        // Obtener la URL de la imagen cargada
-        const imageURL = URL.createObjectURL(file);
-
-        // Mostrar la vista previa de la imagen
-        this.guestImage = imageURL;
-      }
-    },
-    handleVehicleImageUpload(event) {
-      const file = event.target.files[0];
-      this.guestForm.vehicle_image = file;
-
-      if (file) {
-        // Obtener la URL de la imagen cargada
-        const imageURL = URL.createObjectURL(file);
-
-        // Mostrar la vista previa de la imagen
-        this.vehicleImage = imageURL;
-      }
     },
     disabledDate(time) {
       const today = new Date();

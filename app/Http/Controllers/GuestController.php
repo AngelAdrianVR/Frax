@@ -18,7 +18,7 @@ class GuestController extends Controller
     {
         $guests = GuestResource::collection(Guest::with('media')->latest()->where('user_id', auth()->id())->get());
 
-        // return $guests;
+        return $guests;
 
         return inertia('Guest/Index', compact('guests'));
     }
@@ -80,6 +80,7 @@ class GuestController extends Controller
             'type_access' => $request->guest_type, //tomado del request porque el tipo de acceso no se guarda en la tabla de guets
             'qr_code' => $guest->qr_code,
             'notes' => $guest->notes,
+            'guest_reference_id' => $guest->id,
             'user_id' => auth()->id(),
         ]);
 
@@ -139,6 +140,16 @@ class GuestController extends Controller
         
         $guest->update($request->except('time') + $extra_data);
 
+        // media
+        // Eliminar imágenes antiguas solo si se borró desde el input y no se agregó una nueva
+        if ($request->guestImageCleared) {
+            $guest->clearMediaCollection('guest_images');
+        }
+
+        if ($request->vehicleImageCleared) {
+            $guest->clearMediaCollection('vehicle_images');
+        }
+
         //si se selecciona como visita frecuente
         if ($request->is_favorite_guest) {
             FavoriteGuest::create([
@@ -177,26 +188,38 @@ class GuestController extends Controller
         
         $guest->update($request->except('time') + $extra_data);
 
-         // media
-         $guest->clearMediaCollection();
-         
-          // Subir y asociar la imagen de visitante a la colección 'guest_images'
-        if ($request->hasFile('guest_image')) {
-            $guestImagePath = $request->file('guest_image')->store('guest_images', 'public');
-            $guest->addMedia(storage_path('app/public/' . $guestImagePath))
-                ->toMediaCollection('guest_images');
+        // media
+        // Eliminar imágenes antiguas solo si se borró desde el input y no se agregó una nueva
+        if ($request->guestImageCleared) {
+            $guest->clearMediaCollection('guest_images');
         }
 
-        // Subir y asociar la imagen del vehículo a la colección 'vehicle_images'
+        if ($request->vehicleImageCleared) {
+            $guest->clearMediaCollection('vehicle_images');
+        }
+
+         // Eliminar imágenes antiguas solo si se proporcionan nuevas imágenes
+         if ($request->hasFile('guest_image')) {
+            $guest->clearMediaCollection('guest_images');
+        }
+
         if ($request->hasFile('vehicle_image')) {
-            $vehicleImagePath = $request->file('vehicle_image')->store('vehicle_images', 'public');
-            $guest->addMedia(storage_path('app/public/' . $vehicleImagePath))
-                ->toMediaCollection('vehicle_images');
+            $guest->clearMediaCollection('vehicle_images');
+        }
+
+         // Guardar el archivo en la colección 'guest_images'
+         if ($request->hasFile('guest_image')) {
+            $guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
+        }
+
+        // Guardar el archivo en la colección 'vehicle_image'
+        if ($request->hasFile('vehicle_image')) {
+            $guest->addMediaFromRequest('vehicle_image')->toMediaCollection('vehicle_images');
         }
 
         //si se selecciona como visita frecuente
         if ($request->is_favorite_guest) {
-            FavoriteGuest::create([
+            $favorite_guest = FavoriteGuest::create([
                 'guest_type' => $request->gueguest_type,
                 'name' => $request->name,
                 'identification' => $request->identification,
@@ -204,6 +227,16 @@ class GuestController extends Controller
                 'vehicle_details' => [$request->vehicle_details],
                 'user_id' => auth()->id(),
             ]);
+
+            // Guardar el archivo en la colección 'guest_images'
+         if ($request->hasFile('guest_image')) {
+            $favorite_guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
+        }
+
+        // Guardar el archivo en la colección 'vehicle_image'
+        if ($request->hasFile('vehicle_image')) {
+            $favorite_guest->addMediaFromRequest('vehicle_image')->toMediaCollection('vehicle_images');
+        }
         }
 
       return to_route('guests.index');
@@ -213,6 +246,8 @@ class GuestController extends Controller
     public function destroy(Guest $guest)
     {
         $guest->clearMediaCollection();
+        $guest_history = GuestHistory::where('guest_reference_id', $guest->id)->first(); //busca el historial de la visita programada a eliminar
+        $guest_history->delete(); //Elimina el registro de historial para que no se muestren los que se eliminaron.
         $guest->delete();
 
         return response()->json(['item' => $guest]);

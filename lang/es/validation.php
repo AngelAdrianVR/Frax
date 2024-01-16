@@ -153,5 +153,6 @@ return [
         'password' => 'contraseña nueva',
         'current_password' => 'contraseña actual',
         'phone' => 'teléfono',
+        'start_date' => 'fecha de inicio',
     ],
 ];

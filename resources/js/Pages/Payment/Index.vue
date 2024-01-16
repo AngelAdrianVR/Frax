@@ -22,7 +22,7 @@
         </HideableLabel>
       </div>
       <div class="mt-7">
-        <div class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5">
+        <div class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5 space-y-4 lg:space-y-0">
           <PaymentCard class="self-start" v-for="payment in payments.data" :key="payment" :payment="payment" />
         </div>
       </div>

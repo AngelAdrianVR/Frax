@@ -15,13 +15,11 @@
                         </div>
 
                         <div class="mt-4">
-                            <InputLabel value="Foto del visitante" class="ml-3 mb-1" />
-                            <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                                <i v-if="guestImage" @click.stop="guestImage = null; form.guest_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
-                                <i v-if="!guestImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
-                                 <img v-if="guestImage" :src="guestImage" alt="Vista previa" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
-                                <input ref="fileGuestInput" type="file" @change="handleGuestImageUpload" class="hidden" />
-                            </figure>
+                            <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
+                            <InputFilePreview 
+                              :imageUrl="getMediaUrl('guest_image')" 
+                              @imagen="form.guest_image = $event; form.guestImageCleared = false"
+                              @cleared="form.guestImageCleared = true" />
                         </div>
 
                         <label class="flex items-center mt-4 text-xs">
@@ -132,13 +130,13 @@
                 </div>
             </form>
         </div>
-        
     </AppLayout>
   
 </template>
 
 <script>
 import AppLayout from "@/Layouts/AppLayout.vue";
+import InputFilePreview from '@/Components/MyComponents/InputFilePreview.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ThirthButton from "@/Components/ThirthButton.vue";
 import Back from '@/Components/MyComponents/Back.vue';
@@ -155,12 +153,12 @@ export default {
       identification: !!this.favorite_guest.identification,
       notes: this.favorite_guest.notes,
       vehicle_details: this.favorite_guest.vehicle_details,
-      guest_image: null, //se asigna en el mounted
+      guest_image: null,
+      guestImageCleared: false,
     });
 
     return {
       form,
-      guestImage: null, //se asigna en el mounted
       vehicleImage: null,
       editIndex: null,
       localVehicleDetails: {
@@ -175,6 +173,7 @@ export default {
   },
   components: {
     AppLayout,
+    InputFilePreview,
     PrimaryButton,
     ThirthButton,
     InputLabel,
@@ -187,7 +186,7 @@ export default {
   },
   methods: {
     update() {
-        if (this.form.guest_image !== null ) {
+        if (this.form.guest_image !== null || this.form.guest_type == 'Vehicular' ) {
             this.form.post(route("favorite-guests.update-with-media", this.favorite_guest.id), {
                 method: '_put',
                 onSuccess: () => {
@@ -243,25 +242,14 @@ export default {
       // Eliminar el vehículo del array
       this.form.vehicle_details.splice(index, 1);
     },
-    triggerGuestImageInput() {
-      // Simular clic en el input file cuando se hace clic en el icono de la cámara
-      this.$refs.fileGuestInput.click();
+    getMediaUrl(collectionName) {
+        const media = this.favorite_guest.media.find(img => img.collection_name === collectionName);
+        return media ? media.original_url : null;
     },
+
     triggerVehicleImageInput() {
       // Simular clic en el input file cuando se hace clic en el icono de la cámara
       this.$refs.fileVehicleInput.click();
-    },
-    handleGuestImageUpload(event) {
-      const file = event.target.files[0];
-      this.form.guest_image = file;
-
-      if (file) {
-        // Obtener la URL de la imagen cargada
-        const imageURL = URL.createObjectURL(file);
-
-        // Mostrar la vista previa de la imagen
-        this.guestImage = imageURL;
-      }
     },
     handleVehicleImageUpload(event) {
       const file = event.target.files[0];
@@ -276,11 +264,5 @@ export default {
       }
     },
   },
-  mounted() {
-    // Encuentra el primer elemento en favorite_guest.media con collection_name igual a "guest_image"
-    const guestImageMedia = this.favorite_guest.media.find(item => item.collection_name === "guest_image");
-    this.form.guest_image = guestImageMedia.original_url;
-    this.guestImage = guestImageMedia.original_url;
-  }
 };
 </script>

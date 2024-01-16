@@ -17,6 +17,12 @@
       <div class="p-4" v-if="currentTab == 1">
         <div class="flex justify-between items-center lg:mx-12 mb-10">
           <h2 class="font-bold">Tus visitas programadas</h2>
+          <HideableLabel class="absolute right-0 top-32 z-50" iconClass="fa-solid fa-info">
+          <p>
+            La tarjeta de visitante desaparecerá el día siguiente de su ingreso o al expirar la fecha de entrada registrada.
+          </p>
+        </HideableLabel>
+
           <PrimaryButton class="hidden md:block" @click="$inertia.get(route('guests.create'))">Programar visita
           </PrimaryButton>
           <PrimaryButton class="lg:hidden" @click="$inertia.get(route('guests.create'))"><i class="fa-solid fa-plus"></i>
@@ -82,6 +88,7 @@ import GuestCard from "@/Components/MyComponents/Guest/GuestCard.vue";
 import FavoriteGuestCard from "@/Components/MyComponents/Guest/FavoriteGuestCard.vue";
 import GuestHistoryTable from "@/Components/MyComponents/Guest/GuestHistoryTable.vue";
 import LoadingState from "@/Components/MyComponents/LoadingState.vue";
+import HideableLabel from "@/Components/MyComponents/HideableLabel.vue";
 import axios from 'axios';
 
 export default {
@@ -101,6 +108,7 @@ export default {
     FavoriteGuestCard,
     GuestCard,
     GuestHistoryTable,
+    HideableLabel,
     Link,
     Tab,
   },
