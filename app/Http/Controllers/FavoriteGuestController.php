@@ -90,6 +90,18 @@ class FavoriteGuestController extends Controller
 
         $favorite_guest->update($validated);
 
+        // media ------------------------------------------
+        // Eliminar imágenes antiguas solo si se borró desde el input y no se agregó una nueva
+        if ($request->guestImageCleared) {
+            $favorite_guest->clearMediaCollection('guest_image');
+        }
+
+        // Si se cambia el ipo de vehicular a peatonal se eliminan las imagenes de los vehiculos
+        if ($request->guest_type == 'Peatonal') {
+            $favorite_guest->clearMediaCollection('vehicle_images');
+        }
+        // -------------------------------------------------
+        
         return to_route('guests.index', ['currentTab' => 2]);
     }
 
@@ -108,27 +120,42 @@ class FavoriteGuestController extends Controller
         $favorite_guest->update($validated);
 
          // media
-         $favorite_guest->clearMediaCollection();
-
-          // Subir y asociar la imagen de visitante a la colección 'guest_images'
-        if ($request->hasFile('guest_image')) {
-            $guestImagePath = $request->file('guest_image')->store('guest_images', 'public');
-            $favorite_guest->addMedia(storage_path('app/public/' . $guestImagePath))
-                ->toMediaCollection('guest_image');
+         // media
+        // Eliminar imágenes antiguas solo si se borró desde el input y no se agregó una nueva
+        if ($request->guestImageCleared) {
+            $favorite_guest->clearMediaCollection('guest_image');
         }
 
-        foreach ($request->vehicle_details as $vehicle) {
-            if (isset($vehicle['image'])) {
-                // Subir y asociar la imagen del vehículo a la colección 'vehicle_images'
-                $vehicleImagePath = $vehicle['image']->store('vehicle_images', 'public');
-                
-                // Asegúrate de asociar la imagen al vehículo actual
-                $favorite_guest->addMedia(storage_path('app/public/' . $vehicleImagePath))
+         // Eliminar imágenes antiguas solo si se proporcionan nuevas imágenes
+         if ($request->hasFile('guest_image')) {
+            $favorite_guest->clearMediaCollection('guest_image');
+        }
+
+        // Guardar el archivo en la colección 'guest_image'
+        if ($request->hasFile('guest_image')) {
+            $favorite_guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_image');
+        }
+
+        // Si se cambia el ipo de vehicular a peatonal se eliminan las imagenes de los vehiculos
+        if ($request->guest_type == 'Peatonal') {
+            $favorite_guest->clearMediaCollection('vehicle_images');
+        }
+
+        if ( $request->vehicle_details !== null) {
+
+            foreach ($request->vehicle_details as $vehicle) {
+                if (isset($vehicle['image'])) {
+                    // Subir y asociar la imagen del vehículo a la colección 'vehicle_images'
+                    $vehicleImagePath = $vehicle['image']->store('vehicle_images', 'public');
+                    
+                    // Asegúrate de asociar la imagen al vehículo actual
+                    $favorite_guest->addMedia(storage_path('app/public/' . $vehicleImagePath))
                     ->toMediaCollection('vehicle_images');
-                
+                    
+                }
             }
         }
-
+            
         return to_route('guests.index', ['currentTab' => 2]);
     }
 

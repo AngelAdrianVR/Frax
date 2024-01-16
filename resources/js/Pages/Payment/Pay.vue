@@ -123,6 +123,8 @@
             <img src="'@/../public/images/oxxo.png'" alt="Oxxo">
         </figure>
 
+        <p>Referencia: {{ '1234720' }}</p>
+
           <div class="flex justify-end space-x-1 pt-5 pb-1">
             <CancelButton @click="cashForm.reset(); showCashPayment = false">Cancelar</CancelButton>  
             <PrimaryButton :disabled="!cardForm.card_number && !cardForm.expired_date && !cardForm.cvv" @click="store">Continuar</PrimaryButton>

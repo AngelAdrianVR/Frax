@@ -35,13 +35,10 @@
                       </div>
 
                       <div class="mt-4">
-                          <InputLabel value="Foto del visitante" class="ml-3 mb-1" />
-                          <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                              <i v-if="guestImage" @click.stop="guestImage = null; guestForm.guest_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
-                              <i v-if="!guestImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
-                               <img v-if="guestImage" :src="guestImage" alt="Vista previa" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
-                              <input ref="fileGuestInput" type="file" @change="handleGuestImageUpload" class="hidden" />
-                          </figure>
+                          <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
+                          <InputFilePreview
+                             @imagen="guestForm.guest_image = $event"
+                             @cleared="guestForm.guest_image = null" />
                       </div>
 
                       <div class="mt-3">
@@ -89,13 +86,10 @@
 
                   <div class="pt-1 pb-5 px-7">
                     <div>
-                      <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
-                      <figure @click="triggerVehicleImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                          <i v-if="vehicleImage" @click.stop="vehicleImage = null; guestForm.vehicle_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
-                          <i v-if="!vehicleImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
-                            <img v-if="vehicleImage" :src="vehicleImage" alt="Vista previa" class="w-full h-full  object-contain bg-no-repeat rounded-md opacity-50" />
-                          <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
-                      </figure>
+                      <InputLabel value="Foto del vehículo (opcional)" class="ml-3 mb-1" />
+                      <InputFilePreview 
+                        @imagen="guestForm.vehicle_image = $event"
+                        @cleared="guestForm.vehicle_image = null" />
                     </div>
 
                       <div class="mt-3">
@@ -221,7 +215,7 @@
                   </section>
               
               <div class="text-left col-span-2 mt-5 mb-3">
-                <PrimaryButton>Guardar</PrimaryButton>
+                <PrimaryButton :disabled="guestForm.processing || eventForm.processing">Guardar</PrimaryButton>
               </div>
       </form>
       </div>
@@ -363,10 +357,9 @@
               </div>
             </div>
           </section>
-
           <div class="flex justify-end space-x-1 pt-5 pb-1">
             <CancelButton @click="guestForm.reset(); favoriteGuestModal = false">Cancelar</CancelButton>  
-            <PrimaryButton :disabled="(guestForm.guest_type == 'Vehicular' && !selectedFavoriteGuest?.vehicle_details) || !favoriteGuestId" @click="store">Continuar</PrimaryButton>
+            <PrimaryButton :disabled="(guestForm.guest_type == 'Vehicular' && !selectedFavoriteGuest?.vehicle_details) || !favoriteGuestId || guestForm.processing" @click="store">Continuar</PrimaryButton>
           </div>
         </div>
       </Modal>
@@ -377,6 +370,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CancelButton from "@/Components/MyComponents/CancelButton.vue";
+import InputFilePreview from '@/Components/MyComponents/InputFilePreview.vue';
 import Back from '@/Components/MyComponents/Back.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
@@ -422,8 +416,6 @@ data() {
   return {
     guestForm,
     eventForm,
-    guestImage: null,
-    vehicleImage: null,
     favoriteGuestId: null, //modal visita frecuente
     selectedFavoriteGuest: null, //modal visita frecuente
     selectedVehicleIndex: null, //modal visita frecuente
@@ -434,6 +426,7 @@ data() {
 },
 components: {
   AppLayout,
+  InputFilePreview,
   PrimaryButton,
   CancelButton,
   InputLabel,
@@ -487,38 +480,6 @@ methods: {
     // Asignar la cadena aleatoria al dato 'cadenaAleatoria'
     this.eventForm.qr_code = cadenaAleatoria;
     this.guestForm.qr_code = cadenaAleatoria;
-  },
-  triggerGuestImageInput() {
-    // Simular clic en el input file cuando se hace clic en el icono de la cámara
-    this.$refs.fileGuestInput.click();
-  },
-  triggerVehicleImageInput() {
-    // Simular clic en el input file cuando se hace clic en el icono de la cámara
-    this.$refs.fileVehicleInput.click();
-  },
-  handleGuestImageUpload(event) {
-    const file = event.target.files[0];
-    this.guestForm.guest_image = file;
-
-    if (file) {
-      // Obtener la URL de la imagen cargada
-      const imageURL = URL.createObjectURL(file);
-
-      // Mostrar la vista previa de la imagen
-      this.guestImage = imageURL;
-    }
-  },
-  handleVehicleImageUpload(event) {
-    const file = event.target.files[0];
-    this.guestForm.vehicle_image = file;
-
-    if (file) {
-      // Obtener la URL de la imagen cargada
-      const imageURL = URL.createObjectURL(file);
-
-      // Mostrar la vista previa de la imagen
-      this.vehicleImage = imageURL;
-    }
   },
   disabledDate(time) {
     const today = new Date();
