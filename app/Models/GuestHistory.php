@@ -19,6 +19,7 @@ class GuestHistory extends Model
         'leaved_at',
         'qr_code',
         'notes',
+        'guest_reference_id',
         'user_id',
     ];
 

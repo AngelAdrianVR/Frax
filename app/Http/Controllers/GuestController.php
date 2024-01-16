@@ -18,7 +18,7 @@ class GuestController extends Controller
     {
         $guests = GuestResource::collection(Guest::with('media')->latest()->where('user_id', auth()->id())->get());
 
-        // return $guests;
+        return $guests;
 
         return inertia('Guest/Index', compact('guests'));
     }
@@ -80,6 +80,7 @@ class GuestController extends Controller
             'type_access' => $request->guest_type, //tomado del request porque el tipo de acceso no se guarda en la tabla de guets
             'qr_code' => $guest->qr_code,
             'notes' => $guest->notes,
+            'guest_reference_id' => $guest->id,
             'user_id' => auth()->id(),
         ]);
 
@@ -245,6 +246,8 @@ class GuestController extends Controller
     public function destroy(Guest $guest)
     {
         $guest->clearMediaCollection();
+        $guest_history = GuestHistory::where('guest_reference_id', $guest->id)->first(); //busca el historial de la visita programada a eliminar
+        $guest_history->delete(); //Elimina el registro de historial para que no se muestren los que se eliminaron.
         $guest->delete();
 
         return response()->json(['item' => $guest]);

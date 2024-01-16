@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('leaved_at')->nullable();
             $table->string('qr_code')->nullable();
             $table->string('notes')->nullable();
+            $table->unsignedBigInteger('guest_reference_id');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
