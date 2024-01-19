@@ -15,7 +15,8 @@ class PostController extends Controller
     public function index()
     {
         //Optimizacion para rapidez. No carga todos los datos, sólo los siguientes para hacer la busqueda y mostrar la tabla en index
-        $pre_posts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->get()->take(2));    
+        $pre_posts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->get()->take(5));    
+        $total_posts = Post::where('frax_id', auth()->user()->frax_id)->count();    
         
         $posts = $pre_posts->map(function ($post) {
 
@@ -58,9 +59,9 @@ class PostController extends Controller
             ];
         });
 
-        // return $posts;
+        // return $total_posts;
 
-        return inertia('Community/Index', compact('posts'));
+        return inertia('Community/Index', compact('posts', 'total_posts'));
     }
 
 
