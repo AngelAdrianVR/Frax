@@ -18,7 +18,7 @@ class GuestController extends Controller
     {
         $guests = GuestResource::collection(Guest::with('media')->latest()->where('user_id', auth()->id())->get());
 
-        return $guests;
+        // return $guests;
 
         return inertia('Guest/Index', compact('guests'));
     }

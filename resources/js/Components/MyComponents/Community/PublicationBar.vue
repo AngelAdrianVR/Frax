@@ -76,7 +76,9 @@ methods:{
           message: "Se ha creado tu publicación",
           type: "success",
         });
-        location.reload();
+        // location.reload();
+        this.form.reset();
+        this.showPublication = false;
       },
     });
 

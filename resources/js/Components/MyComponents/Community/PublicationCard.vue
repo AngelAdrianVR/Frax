@@ -79,19 +79,19 @@
         {{ post.body }}
       </p>
       <button
-        class="text-sm cursor-pointer text-blue-600"
-        v-if="truncated"
+        class="text-xs cursor-pointer text-blue-600"
+        v-if="post.body.length > 54 && truncated"
         @click="showMore"
       >
         Ver más
       </button>
       <figure
         v-if="post.media?.length > 0"
-        class="bg-gray5 m-4 rounded-md cursor-pointer"
+        class="bg-gray5 m-4 rounded-lg cursor-pointer"
         @click="openImage"
       >
         <img
-          class="w-full rounded-xl object-contain h-96"
+          class="w-full rounded-lg object-contain h-96"
           :src="post.media[0]?.original_url"
           alt="Sin imagen"
         />
@@ -103,19 +103,19 @@
     <div class="flex justify-between items-center my-2 mx-7">
       <div class="flex items-center">
         <i
-          class="fa-solid fa-heart text-red-500 mr-2 cursor-pointer P-1 hover:animate-bounce"
+          class="fa-solid fa-heart text-red-500 mr-2 cursor-pointer P-1 animate-bounce"
         ></i>
         <span class="text-xs">{{ post.likes }}</span>
       </div>
       <div class="flex items-center">
-        <i class="fa-regular fa-eye text-gray3 mr-2"></i>
+        <i class="fa-regular fa-eye text-gray3 mr-2 p-1"></i>
         <span class="text-xs">{{ post.views }}</span>
       </div>
     </div>
     <div class="border-b border-gray5"></div>
 
     <!-- Comentarios de post ------->
-    <div :class="{ 'overflow-hidden': !showComments }" class="mt-5 transition-all duration-700 ease-linear" :style="{ maxHeight: showComments ? '1000px' : '0' }">
+    <div :class="{ 'overflow-hidden': !showComments }" class="mt-5 transition-all duration-300 ease-linear" :style="{ maxHeight: showComments ? '1000px' : '0' }">
       <PostComment @report-comment="reportComment" @delete-comment="deleteComment" v-for="comment in post.comments" :key="comment" :comment="comment" />
     </div>
 
@@ -307,6 +307,7 @@ export default {
     }
   },
     addNewComment(comment) {
+        comment.created_at = 'Justo ahora'
         this.post.comments.push(comment);
     },
     async deleteComment(commentId) {
@@ -372,8 +373,6 @@ export default {
     });
     }
   },
-  watch: {
-    "post.body": "checkIfTruncated", // Observa cambios en el texto y ejecuta checkIfTruncated
-  },
+
 };
 </script>

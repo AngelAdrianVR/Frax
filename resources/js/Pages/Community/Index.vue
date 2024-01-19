@@ -1,6 +1,6 @@
 <template>
     <AppLayout title="Comunidad virtual">
-        <div class="py-8 px-3 lg:px-7 border">
+        <div ref="scrollContainer" style="height: 92vh; overflow-y: scroll;" @scroll="handleScroll">
             <div class="lg:w-1/2 mx-auto">
                 <h1 class="font-bold">Muro de noticias</h1>
 
@@ -14,14 +14,15 @@
                 <!-- Tab 1 publicaciones stars ------------------------------->
                 <div v-if="currentTab == 1">
                     
-                    <PublicationCard @delete-post="deletePost" v-for="post in posts" :key="post" :post="post" />
+                    <PublicationCard @delete-post="deletePost" v-for="post in visiblePosts" :key="post" :post="post" />
                 </div>
                 <!-- Tab 1 publicaciones ends ------------------------------->
 
             </div>
+            <div v-if="loading" class="flex justify-center items-center py-5">
+          <i class="fa-solid fa-spinner fa-spin text-4xl text-primary"></i>
         </div>
-
-        
+        </div>
     </AppLayout>
 </template>
 
@@ -37,7 +38,10 @@ export default {
 data(){
     return {
         currentTab: 1,
-        
+        loading: false,
+        offset: 2, //empieza a cargar mas posts desde ese numero
+        limit: 2, //cuantos post carga
+        visiblePosts: null,
     }
 },
 components:{
@@ -75,6 +79,35 @@ async deletePost(postId) {
             });
         }
     },
+    handleScroll() {
+      const container = this.$refs.scrollContainer;
+      const scrollHeight = container.scrollHeight;
+      const scrollTop = container.scrollTop;
+      const clientHeight = container.clientHeight;
+
+      // Determinar si has llegado al final de la vista
+      if (scrollHeight - scrollTop === clientHeight) {
+        // Ejecutar tu método cuando llegues al final
+        this.loadMorePosts();
+      }
+    },
+    async loadMorePosts() {
+        this.loading = true;
+      try {
+        const response = await axios.get(route('posts.load-more-posts', [this.offset, this.limit]));
+        if (response.status === 200 ) {
+            console.log(response.data.posts);
+            this.visiblePosts = [...this.posts, ...response.data.posts];
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+},
+mounted() {
+    this.visiblePosts = this.posts;
 }
 }
 </script>
