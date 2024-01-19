@@ -67,6 +67,7 @@ Modal,
 props:{
 
 },
+emits:['new-post'],
 methods:{
     storePublication() {
     this.form.post(route("posts.store"), {
@@ -76,7 +77,10 @@ methods:{
           message: "Se ha creado tu publicación",
           type: "success",
         });
-        location.reload();
+        // location.reload();
+        this.form.reset();
+        this.showPublication = false;
+        this.$emit('new-post');
       },
     });
 

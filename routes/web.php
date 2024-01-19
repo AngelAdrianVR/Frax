@@ -120,6 +120,7 @@ Route::post('/posts/increment-views/{postId}', [PostController::class, 'incremen
 Route::post('/posts/increment-likes/{postId}', [PostController::class, 'incrementLikes'])->name('posts.like')->middleware('auth');
 Route::post('posts/update-with-media/{postId}', [PostController::class, 'updateWithMedia'])->name('posts.update-with-media')->middleware('auth');
 Route::post('posts/{postId}/store-comment', [PostController::class, 'storeComment'])->name('posts.store-comment')->middleware('auth');
+Route::get('posts/{offset}{limit}/load-more-posts', [PostController::class, 'loadMorePosts'])->name('posts.load-more-posts')->middleware('auth'); //carga mas posts con scroll
 
 
 //reports routes-----------------------------------------------------------------------------------
