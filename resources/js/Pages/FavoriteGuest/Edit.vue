@@ -19,7 +19,7 @@
                             <InputFilePreview 
                               :imageUrl="getMediaUrl('guest_image')" 
                               @imagen="form.guest_image = $event; form.guestImageCleared = false"
-                              @cleared="form.guestImageCleared = true" />
+                              @cleared="form.guest_image = null; form.guestImageCleared = true" />
                         </div>
 
                         <label class="flex items-center mt-4 text-xs">

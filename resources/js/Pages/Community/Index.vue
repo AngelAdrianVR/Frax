@@ -1,6 +1,6 @@
 <template>
     <AppLayout title="Comunidad virtual">
-        <div ref="scrollContainer" style="height: 91vh; overflow-y: scroll;" @scroll="handleScroll">
+        <div ref="scrollContainer" class="px-1" style="height: 91vh; overflow-y: scroll;" @scroll="handleScroll">
             <div class="lg:w-1/2 mx-auto">
                 <h1 class="font-bold">Muro de noticias</h1>
 

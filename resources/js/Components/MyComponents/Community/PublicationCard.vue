@@ -34,7 +34,7 @@
       <div class="relative">
         <i
           @click.stop="optionsDropdown = !optionsDropdown; incrementViews(post.id)"
-          class="fa-solid fa-ellipsis text-primary cursor-pointer p-1 hover:bg-gray5 rounded-full"
+          class="fa-solid fa-ellipsis text-primary cursor-pointer p-2 hover:bg-gray5 rounded-full"
         ></i>
         <div
           v-if="optionsDropdown"

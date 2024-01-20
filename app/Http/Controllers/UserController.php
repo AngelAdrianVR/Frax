@@ -13,7 +13,7 @@ class UserController extends Controller
     
     public function index()
     {
-        $users = User::where('frax_id', auth()->user()->frax_id)->paginate(30, ['id', 'name', 'profile_photo_path']);
+        $users = User::where('frax_id', auth()->user()->frax_id)->paginate(30, ['id', 'name', 'profile_photo_path', 'resident_properties']);
 
         // return $users;
         return inertia('Neighbors/Index', compact('users'));

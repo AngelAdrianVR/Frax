@@ -32,10 +32,10 @@
                             {{ user.name}}
                         </td>
                         <td class="pr-2">
-                            {{ user.phone }}
+                            {{ user.resident_properties?.phone }}
                         </td>
                         <td class="pr-2">
-                            {{ user.date }}
+                            {{ user.resident_properties?.address }}
                         </td>
                         <td class="rounded-r-full">Actions
                         </td>
