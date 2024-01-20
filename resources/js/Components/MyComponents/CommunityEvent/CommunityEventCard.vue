@@ -23,7 +23,7 @@
         <figure v-if="communityEvent.image_cover?.length > 0" class="bg-gray5 m-4 rounded-md lg:h-64">
             <img class="lg:h-64 w-full rounded-lg" :src="communityEvent.image_cover[0]?.original_url" alt="Sin imagen" >
         </figure>
-        <div v-else class="bg-gray3 m-4 rounded-md lg:h-64"></div>
+        <div v-else class="bg-gray4 m-4 rounded-md lg:h-64 justify-center items-center flex text-white font-bold text-lg">Sin portada</div>
 
         <div class="text-center mt-9">
         <ThirthButton @click="$inertia.get(route('community-events.show', communityEvent.id))">Ver detalles</ThirthButton>

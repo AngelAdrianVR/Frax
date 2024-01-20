@@ -38,8 +38,8 @@
                             <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
                             <InputFilePreview 
                               :imageUrl="getMediaUrl('guest_images')" 
-                              @imagen="guestForm.guest_image = $event; guestImageCleared = false"
-                              @cleared="guestForm.guestImageCleared = true" />
+                              @imagen="guestForm.guest_image = $event; guestForm.guestImageCleared = false"
+                              @cleared="guestForm.guest_image = null; guestForm.guestImageCleared = true" />
                         </div>
                         <div class="mt-3">
                             <InputLabel value="Fecha de la visita*" class="ml-3 mb-1" />
@@ -89,8 +89,8 @@
                         <InputLabel value="Foto del vehículo (opcional)" class="ml-3 mb-1" />
                         <InputFilePreview 
                           :imageUrl="getMediaUrl('vehicle_images')"  
-                          @imagen="guestForm.vehicle_image = $event; vehicleImageCleared = false"
-                          @cleared="guestForm.vehicleImageCleared = true" />
+                          @imagen="guestForm.vehicle_image = $event; guestForm.vehicleImageCleared = false"
+                          @cleared="guestForm.vehicle_image = null; guestForm.vehicleImageCleared = true" />
                       </div>
 
                         <div class="mt-3">

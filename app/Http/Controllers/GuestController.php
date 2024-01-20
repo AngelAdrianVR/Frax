@@ -58,18 +58,14 @@ class GuestController extends Controller
         
         $guest = Guest::create($request->except('time') + $extra_data);
 
-        // Subir y asociar la imagen de visitante a la colección 'guest_images'
+        // Guardar el archivo en la colección 'guest_images'
         if ($request->hasFile('guest_image')) {
-            $guestImagePath = $request->file('guest_image')->store('guest_images', 'public');
-            $guest->addMedia(storage_path('app/public/' . $guestImagePath))
-                ->toMediaCollection('guest_images');
+            $guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
         }
 
-        // Subir y asociar la imagen del vehículo a la colección 'vehicle_images'
+        // Guardar el archivo en la colección 'vehicle_image'
         if ($request->hasFile('vehicle_image')) {
-            $vehicleImagePath = $request->file('vehicle_image')->store('vehicle_images', 'public');
-            $guest->addMedia(storage_path('app/public/' . $vehicleImagePath))
-                ->toMediaCollection('vehicle_images');
+            $guest->addMediaFromRequest('vehicle_image')->toMediaCollection('vehicle_images');
         }
 
         //historial de visitas
@@ -140,7 +136,7 @@ class GuestController extends Controller
         
         $guest->update($request->except('time') + $extra_data);
 
-        // media
+        // media ---------------------------------------------------
         // Eliminar imágenes antiguas solo si se borró desde el input y no se agregó una nueva
         if ($request->guestImageCleared) {
             $guest->clearMediaCollection('guest_images');
