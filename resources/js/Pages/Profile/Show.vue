@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="Perfil">
-        <header class="mb-6 mt-12 mx-20">
+        <header class="mb-6 mt-4 lg:mt-12 mx-2 lg:mx-20">
             <h1 class="font-bold text-lg">Mi perfil</h1>
         </header>
-        <main class="px-20">
+        <main class="px-2 lg:px-20">
             <el-tabs v-model="activeTab" @tab-click="handleClick">
                 <el-tab-pane name="1">
                     <template #label>

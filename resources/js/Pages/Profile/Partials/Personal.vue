@@ -70,12 +70,12 @@
                 </div>
                 <div>
                     <InputLabel value="Dirección de vivienda en el fraccionamiento " class="ml-2 mb-1" />
-                    <el-input v-model="form.resident_properties.address" placeholder="Escribe la calle y el número de casa" maxlength="255"
-                        clearable />
+                    <el-input v-model="form.resident_properties.address" placeholder="Escribe la calle y el número de casa"
+                        maxlength="255" clearable />
                     <InputError :message="form.errors['resident_properties.address']" />
                 </div>
             </div>
-            <div class="col-span-full flex justify-end">
+            <div class="col-span-full flex justify-end mt-3 lg:mt-0">
                 <PrimaryButton class="ml-auto" :disabled="!form.isDirty || form.processing">Guardar</PrimaryButton>
             </div>
         </section>
@@ -90,22 +90,25 @@
                     <img :src="user.profile_photo_url" class="object-cover rounded-full size-52">
                 </figure>
             </div>
-            <div class="col-span-4 lg:grid grid-cols-4 gap-x-4 gap-y-2 self-start">
-                <h2 class="font-bold col-span-full">Información personal</h2>
-                <span>Nombre</span>
-                <span class="col-span-3">{{ user.name }}</span>
-                <span>Fecha de nacimiento</span>
-                <span class="col-span-3">{{ user.resident_properties?.birthdate ?? '-' }}</span>
-                <span>Género</span>
-                <span class="col-span-3">{{ user.resident_properties?.gender ?? '-' }}</span>
-
+            <div class="col-span-4">
+                <h2 class="font-bold col-span-full mt-4">Información personal</h2>
+                <div class="grid grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2 self-start mt-2">
+                    <span>Nombre</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.name }}</span>
+                    <span>Fecha de nacimiento</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.birthdate ?? '-' }}</span>
+                    <span>Género</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.gender ?? '-' }}</span>
+                </div>
                 <h2 class="font-bold col-span-full mt-7">Información de contacto</h2>
-                <span>Número de télefono</span>
-                <span class="col-span-3">{{ user.resident_properties?.phone ?? '-' }}</span>
-                <span>Correo electrónico</span>
-                <span class="col-span-3">{{ user.email }}</span>
-                <span>Dirección de vivienda en el fraccionamiento</span>
-                <span class="col-span-3">{{ user.resident_properties?.address ?? '-' }}</span>
+                <div class="grid grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2 self-start mt-2">
+                    <span>Número de télefono</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.phone ?? '-' }}</span>
+                    <span>Correo electrónico</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.email }}</span>
+                    <span>Dirección de vivienda en el fraccionamiento</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.address ?? '-' }}</span>
+                </div>
             </div>
         </section>
     </section>

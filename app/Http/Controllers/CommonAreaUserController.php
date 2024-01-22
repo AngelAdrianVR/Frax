@@ -9,67 +9,58 @@ use Illuminate\Http\Request;
 
 class CommonAreaUserController extends Controller
 {
-    /**
-     * Display a listing of available common areas to booking.
-     */
     public function index()
     {
-        $common_areas = CommonArea::latest()->get();
-        
+        $common_areas = CommonArea::where('frax_id', auth()->user()->frax_id)->latest()->get();
+
         return inertia('CommonAreaUser/Index', compact('common_areas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
         $common_area = CommonArea::find($request->common_area_id);
-        $reservations = CommonAreaUserResource::collection(CommonAreaUser::whereDate('date', '>=', today())->get(['id', 'date', 'time']));
+        $reservations = CommonAreaUserResource::collection(CommonAreaUser::whereDate('date', '>=', today())
+            ->whereHas('commonArea', function ($query) {
+                $query->where('frax_id', auth()->user()->frax_id);
+            })->get(['id', 'date', 'time']));
 
         return inertia('CommonAreaUser/Create', compact('common_area', 'reservations'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'time' => 'required',
+            'people_quantity' => 'required|numeric|min:1',
+            'agree' => 'boolean',
+            'common_area_id' => 'required|numeric|min:1',
+        ]);
+
+        $reservation = CommonAreaUser::create($validated + ['user_id' => auth()->id()]);
+        
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(CommonAreaUser $commonAreaUser)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(CommonAreaUser $commonAreaUser)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, CommonAreaUser $commonAreaUser)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(CommonAreaUser $commonAreaUser)
     {
         //
     }
-    
+
     // public function activeReservations()
     // {
     //     $reservations = CommonAreaUser::whereDate('date', '<=', today())->get(['id', 'date', 'time']);

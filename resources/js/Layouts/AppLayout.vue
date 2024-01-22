@@ -44,7 +44,7 @@ const logout = () => {
             <main class="w-full">
                 <nav class="bg-white border-b border-[#f2f2f2]">
                     <!-- Primary Navigation Menu -->
-                    <div class="mx-auto pl-2 pr-16">
+                    <div class="mx-auto pl-2 pr-3 lg:pr-16">
                         <div class="flex justify-between h-16">
                             <div class="flex">
                                 <!-- Logo -->
