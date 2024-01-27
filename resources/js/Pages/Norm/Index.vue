@@ -14,7 +14,7 @@
                     <NormCard v-for="norm in norms.data" :key="norm" :norm="norm" class="mt-3" />
 
                     <!-- Solo lo puede ver el administrador deo fraccionamiento -->
-                    <div @click="$inertia.get(route('norms.create'))" class="rounded-md border border-gray4 h-80 cursor-pointer flex justify-center mt-3 md:mt-0">
+                    <div @click="$inertia.get(route('norms.create'))" class="rounded-md border border-gray4 h-80 cursor-pointer flex justify-center mt-3">
                         <div class="flex flex-col justify-center text-primary items-center">
                             <i class="fa-solid fa-plus text-lg mb-2"></i>
                             <p>Agregar sección</p>

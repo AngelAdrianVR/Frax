@@ -25,7 +25,6 @@ class CommonAreaUser extends Pivot
     protected $casts = [
         'payment_data' => 'array',
         'cancelation_data' => 'array',
-        'time' => 'datetime',
         'date' => 'datetime',
     ];
 

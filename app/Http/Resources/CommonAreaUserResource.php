@@ -17,7 +17,7 @@ class CommonAreaUserResource extends JsonResource
         return [
             'id' => $this->id,
             'date' => $this->date->toDateString(),
-            'time' => $this->time->isoFormat('hh:mm'),
+            'time' => $this->time,
             'people_quantity' => $this->people_quantity,
             'qr_code' => $this->qr_code,
             'payment_data' => $this->payment_data,

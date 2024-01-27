@@ -37,7 +37,18 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            //
+            'auth.user.emergencyContacts' => function () use ($request) {
+                if ($request->user()) {
+                    return $request->user()->emergencyContacts()->with('media')->get();
+                }
+                return [];
+            },
+            'auth.user.residentProperties' => function () use ($request) {
+                if ($request->user()) {
+                    return $request->user()->resident_properties;
+                }
+                return [];
+            },
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -31,6 +32,7 @@ class User extends Authenticatable
         'is_active',
         'resident_properties',
         'frax_id',
+        'profile_photo_path',
     ];
 
     /**
@@ -65,8 +67,13 @@ class User extends Authenticatable
     ];
 
     //relationships
-    public function frax():BelongsTo
+    public function frax() :BelongsTo
     {
         return $this->belongsTo(Frax::class);
+    }
+    
+    public function emergencyContacts() :HasMany
+    {
+        return $this->hasMany(EmergencyContact::class);
     }
 }

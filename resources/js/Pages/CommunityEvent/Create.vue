@@ -48,7 +48,7 @@
 
                 <div class="mt-3">
                     <InputLabel value="Imagen portada" class="ml-3 mb-1" />
-                    <InputFilePreview @imagen="saveImage" />
+                    <InputFilePreview @imagen="saveImage" @cleared="form.imageCover = null" />
                 </div>
 
 

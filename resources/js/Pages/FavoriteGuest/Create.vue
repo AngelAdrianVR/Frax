@@ -15,13 +15,16 @@
                         </div>
 
                         <div class="mt-4">
-                            <InputLabel value="Foto del visitante" class="ml-3 mb-1" />
-                            <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
+                            <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
+                            <InputFilePreview
+                             @imagen="form.guest_image = $event"
+                             @cleared="form.guest_image = null" />
+                            <!-- <figure @click="triggerGuestImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
                                 <i v-if="guestImage" @click.stop="guestImage = null; form.guest_image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
                                 <i v-if="!guestImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
                                  <img v-if="guestImage" :src="guestImage" alt="Vista previa" class="w-full h-full object-contain bg-no-repeat rounded-md opacity-50" />
                                 <input ref="fileGuestInput" type="file" @change="handleGuestImageUpload" class="hidden" />
-                            </figure>
+                            </figure> -->
                         </div>
 
                         <label class="flex items-center mt-4 text-xs">
@@ -63,9 +66,9 @@
                             </div>
                             <div class="pt-1 pb-5 px-7">
                                 <div>
-                                    <InputLabel value="Foto del visitante (opcional)" class="ml-3 mb-1" />
+                                    <InputLabel value="Foto del vehículo (opcional)" class="ml-3 mb-1" />
                                     <figure @click="triggerVehicleImageInput" class="flex items-center justify-center rounded-md border border-dashed border-[#373737] w-48 h-36 cursor-pointer relative">
-                                        <i v-if="vehicleImage" @click.stop="vehicleImage = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
+                                        <i v-if="vehicleImage" @click.stop="vehicleImage = null; localVehicleDetails.image = null" class="fa-solid fa-xmark absolute p-1 top-1 right-1 z-10 text-sm"></i>
                                         <i v-if="!vehicleImage" class="fa-solid fa-camera text-gray-400 text-xl"></i>
                                         <img v-if="vehicleImage" :src="vehicleImage" alt="Vista previa" class="w-full h-full  object-contain bg-no-repeat rounded-md opacity-50" />
                                         <input ref="fileVehicleInput" type="file" @change="handleVehicleImageUpload" class="hidden" />
@@ -132,13 +135,13 @@
                 </div>
             </form>
         </div>
-        
     </AppLayout>
   
 </template>
 
 <script>
 import AppLayout from "@/Layouts/AppLayout.vue";
+import InputFilePreview from '@/Components/MyComponents/InputFilePreview.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ThirthButton from "@/Components/ThirthButton.vue";
 import Back from '@/Components/MyComponents/Back.vue';
@@ -160,7 +163,6 @@ export default {
 
     return {
       form,
-      guestImage: null,
       vehicleImage: null,
       editIndex: null,
       localVehicleDetails: {
@@ -175,6 +177,7 @@ export default {
   },
   components: {
     AppLayout,
+    InputFilePreview,
     PrimaryButton,
     ThirthButton,
     InputLabel,
@@ -204,6 +207,7 @@ export default {
       //Actualiza el vehiculo si existe un index de edicion
       if (this.editIndex !== null) {
         this.form.vehicle_details[this.editIndex] = { ...this.localVehicleDetails };
+        // this.vehicleImage = this.form.vehicle_details[this.editIndex].image;
         } else {
 
           // Agregar el nuevo objeto al array
@@ -229,25 +233,10 @@ export default {
       // Eliminar el vehículo del array
       this.form.vehicle_details.splice(index, 1);
     },
-    triggerGuestImageInput() {
-      // Simular clic en el input file cuando se hace clic en el icono de la cámara
-      this.$refs.fileGuestInput.click();
-    },
+
     triggerVehicleImageInput() {
       // Simular clic en el input file cuando se hace clic en el icono de la cámara
       this.$refs.fileVehicleInput.click();
-    },
-    handleGuestImageUpload(event) {
-      const file = event.target.files[0];
-      this.form.guest_image = file;
-
-      if (file) {
-        // Obtener la URL de la imagen cargada
-        const imageURL = URL.createObjectURL(file);
-
-        // Mostrar la vista previa de la imagen
-        this.guestImage = imageURL;
-      }
     },
     handleVehicleImageUpload(event) {
       const file = event.target.files[0];

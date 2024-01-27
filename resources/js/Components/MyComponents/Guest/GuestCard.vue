@@ -4,7 +4,7 @@
   >
     <div class="px-5 py-3">
       <div class="flex items-center space-x-2 absolute top-2 right-2">
-        <el-popconfirm confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537" title="¿Eliminar?"
+        <el-popconfirm v-if="!guest.arrived_at" confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537" title="¿Eliminar?"
           @confirm="deleteGuest">
           <template #reference>
           <i class="fa-regular fa-trash-can bg-[#F2F2F2] rounded-md p-2 cursor-pointer"></i>

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('common_area_user', function (Blueprint $table) {
             $table->id();
-            $table->time('time');
+            $table->string('time', 10);
             $table->date('date');
             $table->unsignedSmallInteger('people_quantity');
             $table->string('qr_code');

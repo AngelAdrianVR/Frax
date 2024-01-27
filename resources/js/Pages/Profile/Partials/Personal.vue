@@ -1,9 +1,12 @@
 <template>
-    <form @submit.prevent="update">
-        <section class="lg:grid grid-cols-5 gap-x-4 gap-y-1 my-6">
+    <form v-if="inEdition" @submit.prevent="update">
+        <section class="lg:grid grid-cols-5 gap-x-28 gap-y-1 my-6 text-sm">
+            <div class="col-span-full flex justify-end">
+                <CancelButton @click="inEdition = false">Cancelar edición</CancelButton>
+            </div>
             <div>
                 <div @click="openFileInput" v-if="!selectedProfilePhoto"
-                    class="rounded-full w-20 lg:w-52 h-20 lg:h-52 bg-gray4 mx-auto flex items-center justify-center cursor-pointer">
+                    class="rounded-full size-20 lg:size-52 mx-auto flex items-center justify-center cursor-pointer">
                     <label for="fileInput">
                         <i class="fa-solid fa-camera text-white text-3xl"></i>
                     </label>
@@ -13,9 +16,9 @@
                 <Dropdown v-else align="right" width="24">
                     <template #trigger>
                         <div
-                            class="rounded-full w-20 lg:w-52 h-20 lg:h-52 bg-gray2 mx-auto flex items-center justify-center cursor-pointer">
+                            class="rounded-full size-20 lg:size-52 mx-auto flex items-center justify-center cursor-pointer">
                             <img :src="selectedProfilePhoto" alt="User Profile"
-                                class="object-cover rounded-full w-20 lg:w-52 h-20 lg:h-52 mx-auto" />
+                                class="object-cover rounded-full size-20 lg:size-52 mx-auto" />
                             <input @change="previewImage" type="file" id="fileInput" name="fileInput" style="display: none"
                                 accept="image/*" />
                         </div>
@@ -39,7 +42,7 @@
                     <InputError :message="form.errors.name" />
                 </div>
                 <div>
-                    <InputLabel value="Fecha de nacimiento *" class="ml-2 mb-1" />
+                    <InputLabel value="Fecha de nacimiento" class="ml-2 mb-1" />
                     <el-date-picker v-model="form.resident_properties.birthdate" type="date" placeholder="Selecciona" />
                     <InputError :message="form.errors['resident_properties.birthdate']" />
                 </div>
@@ -53,7 +56,7 @@
                 </div>
                 <h2 class="font-bold col-span-full mt-7">Datos de contacto</h2>
                 <div>
-                    <InputLabel value="Número de télefono *" class="ml-2 mb-1" />
+                    <InputLabel value="Número de télefono" class="ml-2 mb-1" />
                     <el-input v-model="form.resident_properties.phone" placeholder="Escribe aqui tu número"
                         :formatter="(value) => `${value}`.replace(/(\d{2})(\d{4})(\d{4})/, '$1 $2 $3')"
                         :parser="(value) => value.replace(/\D/g, '')" maxlength="10" clearable />
@@ -66,102 +69,54 @@
                     <InputError :message="form.errors.email" />
                 </div>
                 <div>
-                    <InputLabel value="Dirección de vivienda en el fraccionamiento *" class="ml-2 mb-1" />
-                    <el-input v-model="form.address" placeholder="Escribe la calle y el número de casa" maxlength="255"
-                        clearable />
-                    <InputError :message="form.errors.address" />
-                </div>
-                <!-- contactos de emergencia -->
-                <h2 class="font-bold col-span-full mt-7">Información de contacto de emergencia</h2>
-                <div>
-                    <InputLabel value="Nombre" class="ml-2 mb-1" />
-                    <el-input v-model="contact.name" placeholder="Escribe aqui el nombre completo" maxlength="255" clearable />
-                    <InputError :message="nameErrorMessage" />
-                </div>
-                <div>
-                    <InputLabel value="Número de télefono" class="ml-2 mb-1" />
-                    <el-input v-model="contact.phone" placeholder="Escribe el número del contacto"
-                        :formatter="(value) => `${value}`.replace(/(\d{2})(\d{4})(\d{4})/, '$1 $2 $3')"
-                        :parser="(value) => value.replace(/\D/g, '')" maxlength="10" clearable />
-                    <InputError :message="phoneErrorMessage" />
-                </div>
-                <div>
-                    <InputLabel value="Parentesco" class="ml-2" />
-                    <el-select v-model="contact.relationship" placeholder="Selecciona" class="w-full mt-1"
-                        no-data-text="No hay opciones para mostrar" no-match-text="No se encontraron coincidencias">
-                        <el-option v-for="(item, index) in relationships" :key="index" :label="item" :value="item" />
-                    </el-select>
-                </div>
-                <div class="col-span-full flex">
-                    <div>
-                        <InputLabel value="Foto" class="ml-2" />
-                        <InputFilePreview ref="contactImage" @imagen="saveImage" @cleared="clearContactImage" />
-                    </div>
-                    <ThirthButton v-if="editContactIndex !== null" @click="updateContact" type="button"
-                        class="self-end ml-10 !rounded-full" :disabled="!isContactCompleted">
-                        Actualizar contacto
-                    </ThirthButton>
-                    <ThirthButton v-else @click="addContact" type="button" class="self-end ml-10 !rounded-full"
-                        :disabled="!isContactCompleted">
-                        Agregar a lista de contactos de emergencia
-                    </ThirthButton>
-                </div>
-                <!-- contact list -->
-                <div ref="contactList" v-if="form.emergency_contacts.length"
-                    class="col-span-full lg:grid grid-cols-3 gap-x-4 gap-y-2 mt-8 pb-5">
-                    <h2 class="col-span-full mb-4">Lista de contactos de emergencia</h2>
-                    <div v-for="(item, index) in form.emergency_contacts" :key="index">
-                        <div class="border border-gray4 rounded-[3px] p-4 min-h-52 flex flex-col justify-between text-sm">
-                            <div class="flex justify-between">
-                                <figure class="h-1/2">
-                                    <img v-if="item.image" class="size-16 rounded-full object-cover"
-                                        :src="getURL(item.image)" :alt="item.name">
-                                    <figure v-else
-                                        class="flex items-center justify-center text-gray2  border-gray2 rounded-full size-16">
-                                        <i class="fa-solid fa-user text-4xl"></i>
-                                    </figure>
-                                </figure>
-                                <div class="flex space-x-1 items-center self-start">
-                                    <el-popconfirm v-if="editContactIndex != index" confirm-button-text="Si"
-                                        cancel-button-text="No" icon-color="#D90537" title="¿Continuar?"
-                                        @confirm="deleteContact(index)">
-                                        <template #reference>
-                                            <button type="button"
-                                                class="rounded-full bg-gray5 flex justify-center items-center size-7 text-xs"><i
-                                                    class="fa-regular fa-trash-can"></i></button>
-                                        </template>
-                                    </el-popconfirm>
-                                    <button type="button" v-if="editContactIndex != index" @click="editContact(index)"
-                                        class="rounded-full bg-gray5 flex justify-center items-center size-7 text-xs"><i
-                                            class="fa-solid fa-pencil"></i></button>
-                                    <el-tag v-else effect="light" size="small" closable @close="cancelContactEdition"
-                                        type="info">
-                                        En edición
-                                        <i class="fa-solid fa-arrow-up ml-2"></i>
-                                    </el-tag>
-                                </div>
-                            </div>
-                            <div class="h-1/2 grid grid-cols-3 gap-x-2 gap-y-1">
-                                <b>Nombre</b>
-                                <span class="col-span-2">{{ item.name }}</span>
-                                <b>Télefono</b>
-                                <span class="col-span-2">{{ item.phone }}</span>
-                                <b>Parentesco</b>
-                                <span class="col-span-2">{{ item.relationship }}</span>
-                            </div>
-                        </div>
-                    </div>
+                    <InputLabel value="Dirección de vivienda en el fraccionamiento " class="ml-2 mb-1" />
+                    <el-input v-model="form.resident_properties.address" placeholder="Escribe la calle y el número de casa"
+                        maxlength="255" clearable />
+                    <InputError :message="form.errors['resident_properties.address']" />
                 </div>
             </div>
-            <div class="col-span-full flex justify-end">
-                <PrimaryButton class="ml-auto">Guardar</PrimaryButton>
+            <div class="col-span-full flex justify-end mt-3 lg:mt-0">
+                <PrimaryButton class="ml-auto" :disabled="!form.isDirty || form.processing">Guardar</PrimaryButton>
             </div>
         </section>
     </form>
+    <section v-else>
+        <section class="lg:grid grid-cols-5 gap-x-28 gap-y-1 my-6 text-sm">
+            <div class="col-span-full flex justify-end">
+                <PrimaryButton @click="inEdition = true">Editar</PrimaryButton>
+            </div>
+            <div>
+                <figure class="rounded-full size-52 mx-auto">
+                    <img :src="user.profile_photo_url" class="object-cover rounded-full size-52">
+                </figure>
+            </div>
+            <div class="col-span-4">
+                <h2 class="font-bold col-span-full mt-4">Información personal</h2>
+                <div class="grid grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2 self-start mt-2">
+                    <span>Nombre</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.name }}</span>
+                    <span>Fecha de nacimiento</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.birthdate ?? '-' }}</span>
+                    <span>Género</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.gender ?? '-' }}</span>
+                </div>
+                <h2 class="font-bold col-span-full mt-7">Información de contacto</h2>
+                <div class="grid grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2 self-start mt-2">
+                    <span>Número de télefono</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.phone ?? '-' }}</span>
+                    <span>Correo electrónico</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.email }}</span>
+                    <span>Dirección de vivienda en el fraccionamiento</span>
+                    <span class="col-span-2 lg:col-span-3">{{ user.resident_properties?.address ?? '-' }}</span>
+                </div>
+            </div>
+        </section>
+    </section>
 </template>
 <script>
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import CancelButton from "@/Components/MyComponents/CancelButton.vue";
 import Back from '@/Components/MyComponents/Back.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import ThirthButton from "@/Components/ThirthButton.vue";
@@ -173,41 +128,25 @@ import { useForm, Link } from "@inertiajs/vue3";
 export default {
     data() {
         const form = useForm({
-            name: null,
-            email: null,
+            name: this.$page.props.auth.user.name,
+            email: this.$page.props.auth.user.email,
             photo: null,
             emergency_contacts: [],
             resident_properties: {
-                gender: null,
-                phone: null,
-                birthdate: null,
+                gender: this.$page.props.auth.user.residentProperties?.gender,
+                phone: this.$page.props.auth.user.residentProperties?.phone,
+                address: this.$page.props.auth.user.residentProperties?.address,
+                birthdate: this.$page.props.auth.user.residentProperties?.birthdate,
             }
         });
         return {
+            inEdition: false,
+            user: this.$page.props.auth.user,
             form,
-            // contactos de emergencia
-            contact: {
-                name: null,
-                phone: null,
-                relationship: null,
-                image: null,
-            },
-            phoneErrorMessage: null,
-            nameErrorMessage: null,
-            editContactIndex: null,
-            // informacion personal
-            selectedProfilePhoto: null,
+            selectedProfilePhoto: this.$page.props.auth.user.profile_photo_url,
             genders: [
                 'Masculino',
                 'Femenino',
-                'Otro',
-            ],
-            relationships: [
-                'Madre',
-                'Padre',
-                'Amigo (a)',
-                'Hermano (a)',
-                'Pareja',
                 'Otro',
             ],
         }
@@ -216,6 +155,7 @@ export default {
         InputError,
         InputLabel,
         PrimaryButton,
+        CancelButton,
         Back,
         InputFilePreview,
         Link,
@@ -223,88 +163,31 @@ export default {
         Dropdown,
         DropdownLink,
     },
-    computed: {
-        isContactCompleted() {
-            return this.contact.name &&
-                this.contact.phone &&
-                this.contact.relationship;
-        },
-    },
     methods: {
         update() {
-
+            this.form.post(route("users.profile.update-personal", this.user.id), {
+                onSuccess: () => {
+                    this.user = this.$page.props.auth.user;
+                    this.user = this.$page.props.auth.user;
+                    this.inEdition = false;
+                    this.$notify({
+                        title: "Correcto",
+                        message: "Información personal actualizada",
+                        type: "success",
+                    });
+                },
+            });
         },
         // Contacts -----------
         saveImage(image) {
             this.contact.image = image;
         },
-        clearContactImage() {
-            this.contact.image = null;
-        },
-        isContactFormCorrect() {
-            if (this.contact.name.length > 255) {
-                this.phoneErrorMessage = null;
-                this.nameErrorMessage = "El nombre no debe exceder los 255 caracteres";
-                return false;
-            } else if (this.contact.phone.length < 10 || this.contact.phone.length > 14) {
-                this.phoneErrorMessage = "Debe de ser entre 10 y 14 caracteres";
-                this.nameErrorMessage = null;
-                return false;
-            }
-
-            return true;
-        },
-        addContact() {
-            if (this.isContactFormCorrect()) {
-                // limpiar textos de validacion
-                this.phoneErrorMessage = null;
-                this.nameErrorMessage = null;
-                // agregar contacto
-                this.form.emergency_contacts.push({ ...this.contact });
-                this.resetContact();
-
-                // hacer scroll hasta el final de la pagina
-                this.$nextTick(() => {
-                    const scrollTarget = this.$refs.contactList;
-                    if (scrollTarget) {
-                        // Scroll hacia el final de la página
-                        scrollTarget.scrollIntoView({ behavior: "smooth", block: "end" });
-                    }
-                });
-            }
-        },
-        updateContact() {
-            if (this.isContactFormCorrect()) {
-                // limpiar textos de validacion
-                this.phoneErrorMessage = null;
-                this.nameErrorMessage = null;
-                // actualizar contacto
-                this.form.emergency_contacts[this.editContactIndex] = { ...this.contact };
-                this.editContactIndex = null;
-                this.resetContact();
-            }
-        },
-        resetContact() {
-            this.contact.name = null;
-            this.contact.phone = null;
-            this.contact.relationship = null;
-            this.contact.image = null;
-            this.$refs.contactImage.image = null;
-        },
-        deleteContact(index) {
-            this.form.emergency_contacts.splice(index, 1);
-        },
-        editContact(index) {
-            this.contact = { ...this.form.emergency_contacts[index] };
-            this.editContactIndex = index;
-            this.$refs.contactImage.image = this.getURL(this.contact.image);
-        },
-        cancelContactEdition() {
-            this.resetContact();
-            this.editContactIndex = null;
-        },
         getURL(file) {
-            return URL.createObjectURL(file);
+            if (typeof file == 'string') {
+                return file;
+            } else {
+                return URL.createObjectURL(file);
+            }
         },
         // profile photo ------------
         openFileInput() {
@@ -328,6 +211,6 @@ export default {
             this.form.photo = null;
             this.selectedProfilePhoto = null;
         },
-    }
+    },
 }
 </script>

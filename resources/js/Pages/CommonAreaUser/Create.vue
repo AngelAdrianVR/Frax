@@ -4,50 +4,51 @@
             <Back />
 
             <h1 class="font-bold mx-28 mt-5">{{ common_area.name }}</h1>
-            <div class="grid grid-cols-2 gap-x-32 gap-y-1 mx-28 mt-5">
+            <div class="grid grid-cols-2 gap-x-32 gap-y-1 mx-20 mt-5">
                 <!-- columna izquierda -->
                 <div>
-                    <p class="w-full flex">
-                        <span class="w-1/3">
-                            <i class="fa-solid fa-dollar-sign w-1/6 text-center mr-2 text-secondary"></i>
+                    <p class="w-full flex items-center space-x-2">
+                        <span class="w-1/2">
+                            <i class="fa-solid fa-dollar-sign w-1/6 text-center mr-px text-secondary"></i>
                             <small>Costo</small>
                         </span>
-                        <small class="w-2/3">${{ common_area.cost }} MXN</small>
+                        <small class="w-1/2">${{ common_area.cost }} MXN</small>
                     </p>
-                    <p class="w-full flex">
-                        <span class="w-1/3">
-                            <i class="fa-solid fa-users w-1/6 text-center mr-2 text-secondary"></i>
+                    <p class="w-full flex items-center space-x-2">
+                        <span class="w-1/2">
+                            <i class="fa-solid fa-users w-1/6 text-center mr-px text-secondary"></i>
                             <small>Capacidad</small>
                         </span>
-                        <small class="w-2/3">{{ common_area.capacity }} Personas</small>
+                        <small class="w-1/2">{{ common_area.capacity }} Personas</small>
                     </p>
-                    <p v-for="(feature, index) in common_area.features" :key="index" class="w-full flex">
-                        <span class="w-1/3">
-                            <i :class="feature.icon" class="w-1/6 text-center mr-2 text-secondary"></i>
+                    <p v-for="(feature, index) in common_area.features" :key="index"
+                        class="w-full flex items-center space-x-2">
+                        <span class="w-1/2">
+                            <i :class="feature.icon" class="w-1/6 text-center mr-px text-secondary"></i>
                             <small>{{ feature.label }}</small>
                         </span>
-                        <small class="w-2/3">{{ feature.value }}</small>
+                        <small class="w-1/2">{{ feature.value }}</small>
                     </p>
-
                     <form @submit.prevent="store" class="mt-5 text-sm">
                         <div>
                             <InputLabel value="Fecha de reservación*" class="ml-3 mb-1" />
                             <el-date-picker v-model="form.date" @change="updateTimeOptions" type="date"
                                 placeholder="Seleccione" :disabled-date="disabledDate" format="dddd, DD/MMM/YYYY"
                                 value-format="YYYY-MM-DD" />
-                            <InputError :message="form.errors.date" /> {{ timePickerOptions }}
+                            <InputError :message="form.errors.date" />
                         </div>
                         <div v-if="form.date" class="mt-2">
                             <InputLabel value="Horario disponible a reservar*" class="ml-3 mb-1" />
-                            <el-time-select v-model="form.time" :start="timePickerOptions[0]" :end="timePickerOptions[1]"
-                                :step="timePickerOptions[2]" format="hh:mm A" placeholder="Elige el horario"
-                                class="w-full" />
+                            <el-select v-model="form.time" placeholder="Elige la hora">
+                                <el-option v-for="item in timePickerOptions" :key="item.value" :label="item.label"
+                                    :value="item.value" :disabled="item.disabled" />
+                            </el-select>
                             <InputError :message="form.errors.time" />
                         </div>
                         <div class="mt-2">
                             <InputLabel value="Cantidad de personas*" class="ml-3 mb-1" />
-                            <input v-model="form.people_quantity" placeholder="Escribe la cantidad de personas"
-                                class="input" type="number" min="1" required />
+                            <el-slider v-model="form.people_quantity" :min="1" :max="common_area.capacity"
+                                class="!w-2/3 pl-3" :format-tooltip="formatTooltip" />
                             <InputError :message="form.errors.people_quantity" />
                         </div>
                         <div class="block mt-4">
@@ -55,9 +56,9 @@
                                 <Checkbox v-model:checked="form.agree" name="agree" required />
                                 <span class="ms-2 text-sm text-gray-600">
                                     He leído el
-                                    <Link class="text-primary hover:underline">reglamento</Link>,
-                                    <Link class="text-primary hover:underline">políticas</Link> y
-                                    <Link class="text-primary hover:underline">términos</Link> establecidos*
+                                    <Link href="#" class="text-primary hover:underline">reglamento</Link>,
+                                    <Link href="#" class="text-primary hover:underline">políticas</Link> y
+                                    <Link href="#" class="text-primary hover:underline">términos</Link> establecidos*
                                 </span>
                             </label>
                         </div>
@@ -102,6 +103,7 @@ import Checkbox from "@/Components/Checkbox.vue";
 import { useForm, Link } from "@inertiajs/vue3";
 import { Carousel, Slide } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
+import moment from "moment";
 import { parse, parseISO, format, addHours, isBefore } from 'date-fns';
 import axios from "axios";
 
@@ -110,15 +112,15 @@ export default {
         const form = useForm({
             date: null,
             time: null,
-            people_quantity: null,
+            people_quantity: 1,
             agree: false,
+            common_area_id: this.common_area.id,
         });
         return {
             form,
             currentSlide: 1,
             // reservations: [],
             timePickerOptions: [],
-
         };
     },
     components: {
@@ -137,6 +139,13 @@ export default {
         reservations: Object,
     },
     methods: {
+        formatTooltip(value) {
+            if (value == 1) {
+                return value + ' persona';
+            } else {
+                return value + ' personas';
+            }
+        },
         updateTimeOptions() {
             if (this.form.date) {
                 const reservationDate = parseISO(this.form.date);
@@ -147,34 +156,45 @@ export default {
                     const openTime = scheduleInfo.open;
                     const closeTime = scheduleInfo.close;
                     const duration = scheduleInfo.duration;
+                    const preparation = this.common_area.preparation_hours;
 
                     // Filtra las reservaciones del día seleccionado
                     const reservationsOfDay = this.reservations.data.filter(reservation => reservation.date == this.formatDate(reservationDate));
+
                     // Genera la lista de horarios disponibles
-                    this.generateTimeOptions(openTime, closeTime, duration, reservationsOfDay);
+                    const timeOptions = this.generateTimeOptions(openTime, closeTime, duration, preparation, reservationsOfDay);
+
+                    // Actualiza el modelo timePickerOptions con el resultado
+                    this.timePickerOptions = timeOptions;
                 }
             }
         },
-        generateTimeOptions(openTime, closeTime, duration, reservationsOfDay) {
+        generateTimeOptions(openTime, closeTime, duration, preparation, reservationsOfDay) {
             const timeOptions = [];
-            const currentTime = parse(`2000-01-01T${openTime}`, 'yyyy-MM-dd HH:mm', new Date());
-            const closeDateTime = parse(`2000-01-01T${closeTime}`, 'yyyy-MM-dd HH:mm', new Date());
+            let currentTime = moment(`2000-01-01 ${openTime}`, 'YYYY-MM-DD HH:mm');
+            const closeDateTime = moment(`2000-01-01 ${closeTime}`, 'YYYY-MM-DD HH:mm');
 
-            // Itera sobre el horario y verifica las reservaciones
-            while (isBefore(currentTime, closeDateTime)) {
-                const formattedTime = format(currentTime, 'HH:mm');
+            while (currentTime.isBefore(closeDateTime)) {
+                const nextTime = moment(currentTime).add(duration, 'hours');
 
-                // Verifica si la hora actual está disponible
-                const isAvailable = !reservationsOfDay.some(reservation => reservation.time == formattedTime);
+                const isDisabled = reservationsOfDay.some(reservation =>
+                    reservation.time == currentTime.format('HH:mm')
+                );
 
-                if (isAvailable) {
-                    timeOptions.push(formattedTime);
+                if (nextTime.isBefore(closeDateTime)) {
+                    let label = currentTime.format('h:mm A');
+                    if (isDisabled) label += ' (Reservado)';
+                    timeOptions.push({
+                        label: label,
+                        value: currentTime.format('HH:mm'),
+                        disabled: isDisabled
+                    });
                 }
-                currentTime = addHours(currentTime, duration);
-            }
-            console.log(duration)
 
-            this.timePickerOptions = timeOptions;
+                currentTime.add(duration + preparation, 'hours');
+            }
+
+            return timeOptions;
         },
         formatTime(date) {
             // Formatea la hora en el formato "HH:mm"
@@ -183,11 +203,11 @@ export default {
             return `${hours}:${minutes}`;
         },
         store() {
-            this.form.post(route("guests.store"), {
+            this.form.post(route("common-areas-users.store"), {
                 onSuccess: () => {
                     this.$notify({
                         title: "Correcto",
-                        message: "Se ha registrado la visita",
+                        message: "Se ha registrado la reservación",
                         type: "success",
                     });
                 },

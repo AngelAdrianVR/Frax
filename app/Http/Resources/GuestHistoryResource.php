@@ -30,6 +30,7 @@ class GuestHistoryResource extends JsonResource
             'arrived_at' => $this->arrived_at?->isoFormat('h:mm A'),
             'leaved_at' => $this->leaved_at?->isoFormat('h:mm A'),
             'notes' => $this->notes,
+            'guest_reference_id' => $this->guest_reference_id,
             'qr_code' => $this->qr_code,
             'status' => $status,
             'user' => $this->whenLoaded('user'),

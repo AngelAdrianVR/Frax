@@ -6,6 +6,7 @@ use App\Http\Resources\PostResource;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -14,7 +15,8 @@ class PostController extends Controller
     public function index()
     {
         //Optimizacion para rapidez. No carga todos los datos, sólo los siguientes para hacer la busqueda y mostrar la tabla en index
-        $pre_posts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->get());    
+        $pre_posts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->get()->take(5));    
+        $total_posts = Post::where('frax_id', auth()->user()->frax_id)->count();    
         
         $posts = $pre_posts->map(function ($post) {
 
@@ -57,9 +59,9 @@ class PostController extends Controller
             ];
         });
 
-        // return $posts;
+        // return $total_posts;
 
-        return inertia('Community/Index', compact('posts'));
+        return inertia('Community/Index', compact('posts', 'total_posts'));
     }
 
 
@@ -120,6 +122,7 @@ class PostController extends Controller
     
     public function destroy(Post $post)
     {
+        Comment::where('commentable_id', $post->id)->delete(); // Elimina todos los posts ligados a ese post
         $post->delete();
     }
 
@@ -149,5 +152,14 @@ class PostController extends Controller
         $post->comments()->save($comment);
 
         return response()->json(['item' => $comment->fresh()->load('user')]);
+    }
+
+
+    public function loadMorePosts($offset, $limit)
+    {
+        // Cargar más publicaciones desde la base de datos
+        $morePosts = PostResource::collection(Post::with('user', 'media', 'comments.user')->latest()->where('frax_id', auth()->user()->frax_id)->skip($offset)->take($limit)->get());
+
+        return response()->json(['posts' => $morePosts]);
     }
 }

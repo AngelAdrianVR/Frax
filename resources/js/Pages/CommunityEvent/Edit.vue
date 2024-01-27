@@ -48,7 +48,10 @@
 
                 <div class="mt-3">
                     <InputLabel value="Imagen portada" class="ml-3 mb-1" />
-                    <InputFilePreview @imagen="saveImage" />
+                    <InputFilePreview 
+                        @imagen="saveImage; form.coverImageCleared = false"
+                        @cleared="form.imageCover = null; form.coverImageCleared = true"
+                        :imageUrl="community_event.media[0]?.original_url" />
                 </div>
 
 
@@ -80,6 +83,7 @@ data(){
     participants: null,
     description: this.community_event.description,
     imageCover: null,
+    coverImageCleared: false,
   });
     return {
         form,
@@ -111,7 +115,7 @@ update() {
         this.form.participants = this.localParticipants
     }
     
-    if (this.form.imageCover !== null ) {
+    if (this.form.imageCover != null ) {
             this.form.post(route("community-events.update-with-media", this.community_event.id), {
                 method: '_put',
                 onSuccess: () => {
@@ -122,17 +126,17 @@ update() {
                       });
                   },
               });
-              } else {
 
-        this.form.put(route("community-events.update", this.community_event.id), {
-            onSuccess: () => {
-                this.$notify({
-                    title: "Correcto",
-                    message: "Se ha editado el evento",
-                    type: "success",
-                });
-                },
-            });
+              } else {
+                this.form.put(route("community-events.update", this.community_event.id), {
+                    onSuccess: () => {
+                        this.$notify({
+                            title: "Correcto",
+                            message: "Se ha editado el evento",
+                            type: "success",
+                        });
+                        },
+                    });
              }
   },
   saveImage(image) {

@@ -8,6 +8,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import SideNav from '@/Components/MyComponents/SideNav.vue';
+import NotificationsCenter from '@/Components/MyComponents/NotificationsCenter.vue';
 import axios from 'axios';
 
 defineProps({
@@ -35,15 +36,15 @@ const logout = () => {
 
         <Banner />
 
-        <div class="overflow-hidden h-screen bg-[#F2F2F2] md:grid md:grid-cols-12">
-            <aside>
+        <div class="overflow-hidden h-screen bg-white md:flex">
+            <aside class="col-span-2 w-[10%]">
                 <SideNav />
             </aside>
 
-            <main class="md:col-span-11">
+            <main class="w-full">
                 <nav class="bg-white border-b border-[#f2f2f2]">
                     <!-- Primary Navigation Menu -->
-                    <div class="mx-auto pl-2 pr-16">
+                    <div class="mx-auto pl-2 pr-3 lg:pr-16">
                         <div class="flex justify-between h-16">
                             <div class="flex">
                                 <!-- Logo -->
@@ -56,7 +57,7 @@ const logout = () => {
 
                             <div class="hidden sm:flex sm:items-center sm:ml-6 items-center">
                                 <!-- calendar -->
-                                <!-- <div class="relative mt-2">
+                                <div class="relative mt-2">
                                     <el-tooltip content="Calendario">
                                         <Link :href="route('calendars.index')">
                                         <button :class="route().current('calendars.*') ? 'text-primary' : 'text-[#97989A]'">
@@ -75,10 +76,10 @@ const logout = () => {
                                     })"
                                         class="bg-primary w-[10px] h-[10px] border border-white rounded-full absolute -top-1 -right-2">
                                     </div>
-                                </div> -->
+                                </div>
 
                                 <!-- notifications -->
-                                <!-- <NotificationsCenter /> -->
+                                <NotificationsCenter />
 
                                 <!-- Settings Dropdown -->
                                 <div class="ml-3 relative">
@@ -133,7 +134,7 @@ const logout = () => {
                             </div>
 
                             <!-- Hamburger -->
-                            <div class="-mr-2 flex items-center sm:hidden">
+                            <div class="-mr-14 flex items-center sm:hidden">
                                 <button
                                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                                     @click="showingNavigationDropdown = !showingNavigationDropdown">
@@ -154,35 +155,67 @@ const logout = () => {
 
                     <!-- Responsive Navigation Menu -->
                     <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
-                        class="sm:hidden">
+                        class="sm:hidden z-50 rounded-tl-[6px] rounded-bl-[6px] bg-white w-4/6 absolute right-0 top-14 min-h-[30%] max-h-[90%] overflow-y-scroll overflow-x-hidden shadow-lg shadow-gray3 border border-gray3 pt-4">
+
+                        <!-- User info -->
+                        <div class="flex flex-col justify-center items-center">
+                                <div :class="route().current('profile.show') ? 'border border-primary rounded-full p-1' : '' " @click="$inertia.get(route('profile.show'))" v-if="$page.props.jetstream.managesProfilePhotos">
+                                    <img class="size-16 rounded-full object-cover"
+                                        :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                                </div>
+
+                                <div class="mt-3">
+                                    <div class="font-medium text-base text-center text-gray-800">
+                                        {{ $page.props.auth.user.name }}
+                                    </div>
+                                    <div class="font-medium text-sm text-center text-gray-500">
+                                        {{ $page.props.auth.user.email }}
+                                    </div>
+                                </div>
+                            </div>
                         <div class="pt-2 pb-3 space-y-1">
                             <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                Dashboard
+                                <i class="fa-solid fa-house text-xs mr-2"></i> Inicio
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('payments.index')" :active="route().current('payments.*')">
+                                <i class="fa-solid fa-dollar-sign mr-2"></i> Gestion de pagos
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('guests.index')" :active="route().current('guests.*')">
+                                <i class="fa-solid fa-users text-sm mr-2"></i> Visitas
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('common-areas-users.index')" :active="route().current('common-areas-users.*')">
+                                <i class="fa-solid fa-leaf text-sm mr-2"></i> Reservación de áreas
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('maintenances.index')" :active="route().current('maintenances.*')">
+                                <i class="fa-solid fa-screwdriver-wrench text-sm mr-2"></i> Mantenimiento
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('posts.index')" :active="route().current('posts.*')">
+                                <i class="fa-solid fa-people-roof text-sm mr-2"></i> Muro de noticias
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('community-events.index')" :active="route().current('community-events.*')">
+                                <i class="fa-solid fa-users-rays text-base mr-2"></i> Eventos
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('neighbors.index')" :active="route().current('neighbors.*')">
+                                <i class="fa-regular fa-address-book mr-2"></i> Directorio de vecinos
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('norms.index')" :active="route().current('norms.*')">
+                                <i class="fa-solid fa-sheet-plastic text-sm mr-2"></i> Normativas
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('services.index')" :active="route().current('services.*')">
+                                <i class="fa-solid fa-briefcase text-sm mr-2"></i> Servicios
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('supports.index')" :active="route().current('supports.*')">
+                                <i class="fa-solid fa-headset text-sm mr-2"></i> Soporte técnico
                             </ResponsiveNavLink>
                         </div>
 
                         <!-- Responsive Settings Options -->
                         <div class="pt-4 pb-1 border-t border-gray-200">
-                            <div class="flex items-center px-4">
-                                <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 mr-3">
-                                    <img class="h-10 w-10 rounded-full object-cover"
-                                        :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
-                                </div>
-
-                                <div>
-                                    <div class="font-medium text-base text-gray-800">
-                                        {{ $page.props.auth.user.name }}
-                                    </div>
-                                    <div class="font-medium text-sm text-gray-500">
-                                        {{ $page.props.auth.user.email }}
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="mt-3 space-y-1">
-                                <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
+                                <!-- <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
                                     Perfil
-                                </ResponsiveNavLink>
+                                </ResponsiveNavLink> -->
 
                                 <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures"
                                     :href="route('api-tokens.index')" :active="route().current('api-tokens.index')">
@@ -190,10 +223,10 @@ const logout = () => {
                                 </ResponsiveNavLink>
 
                                 <!-- Authentication -->
-                                <form method="POST" @submit.prevent="logout">
-                                    <ResponsiveNavLink as="button">
-                                        Cerrar sesión
-                                    </ResponsiveNavLink>
+                                <form method="POST" @submit.prevent="logout" class="text-red-500 text-right px-2">
+                                    <button>
+                                    <i class="fa-solid fa-arrow-right-from-bracket mr-[7px]"></i> Cerrar sesión
+                                    </button>
                                 </form>
                             </div>
                         </div>
