@@ -23,9 +23,29 @@
             <!-- Tab 1 all events ------------------------ -->
             <div class="lg:grid grid-cols-2 gap-5 lg:mx-7" v-if="currentTab == 1">
               <div class="space-y-5" v-if="community_events.data.length > 0">
-                <CommunityEventCard @delete-community-event="deleteCommunityEvent" v-for="communityEvent in community_events.data" :key="communityEvent" :communityEvent="communityEvent" />
+                <CommunityEventCard 
+                @delete-community-event="deleteCommunityEvent" 
+                v-for="communityEvent in community_events.data" :key="communityEvent" :communityEvent="communityEvent"
+                :registered_events="my_community_events" />
               </div>
               <p class="text-xs text-gray-400 text-center" v-else>No hay eventos próximos</p>
+            </div>
+            <!-- ----------------------------------------- -->
+
+
+            <!-- Tab 2 my events ------------------------ -->
+            <div class="lg:grid grid-cols-2 gap-5 lg:mx-7" v-if="currentTab == 2 && !loading">
+              <div class="space-y-5" v-if="myEvents?.length > 0">
+                <CommunityEventCard 
+                :is_my_event="true"
+                v-for="myEvent in myEvents" :key="myEvent" :communityEvent="myEvent"
+                :registered_events="my_community_events" />
+              </div>
+              <p class="text-xs text-gray-400 text-center" v-else>No tienes ningún evento registrado</p>
+            </div>
+            <!--  estado de carga -->
+            <div v-if="loading" class="flex justify-center items-center py-10">
+              <i class="fa-solid fa-spinner fa-spin text-4xl text-primary"></i>
             </div>
             <!-- ----------------------------------------- -->
             
@@ -44,6 +64,8 @@ export default {
 data(){
     return {
         currentTab: 1,
+        myEvents: null,
+        loading: false,
     }
 },
 components:{
@@ -53,7 +75,8 @@ CancelButton,
 CommunityEventCard,
 },
 props:{
-community_events: Object
+community_events: Object,
+my_community_events: Array
 },
 methods:{
 async deleteCommunityEvent(communityEventId) {
@@ -84,7 +107,47 @@ async deleteCommunityEvent(communityEventId) {
           type: "error",
         });
   }
-}
-}
+},
+ async fetchMyEvents() {
+      try {
+        this.loading = true;
+        const response = await axios.get(route('community-event-user.get-all', { registeredEvents: this.my_community_events }));
+        if (response.status === 200) {
+          this.myEvents = response.data.items;
+          
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+},
+watch: {
+    currentTab(newVal) {
+      if (newVal == 2 && this.myEvents === null) {
+        //recupera la información de visitas frecuentes
+        this.fetchMyEvents();
+
+      }
+      // Agrega la variable currentTab=newVal a la URL para mejorar la navegacion al actalizar o cambiar de pagina
+      const currentURL = new URL(window.location.href);
+      currentURL.searchParams.set('currentTab', newVal);
+
+      // Actualiza la URL
+      window.history.replaceState({}, document.title, currentURL.href);
+    }
+  },
+  mounted() {
+    // Agrega la variable currentTab al url para mejorar navegación al retroceder
+    // Obtén la URL actual
+    const currentURL = new URL(window.location.href);
+
+    // Extrae el valor de 'currentTab' de los parámetros de búsqueda
+    const currentTabFromURL = currentURL.searchParams.get('currentTab');
+
+    // Convierte el valor a un número, ya que los parámetros de búsqueda son cadenas
+    this.currentTab = parseInt(currentTabFromURL) || 1;
+  },
 }
 </script>
