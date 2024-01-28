@@ -78,7 +78,6 @@
             </div>
         </div>
     </div>
-    {{ registered_events }}
 </template>
 
 <script>
