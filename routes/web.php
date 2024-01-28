@@ -138,6 +138,7 @@ Route::post('community-events/{community_event}/update-with-media', [CommunityEv
 //community-event-user routes--------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('community-event-user', CommunityEventUserController::class)->middleware('auth');
+Route::get('community-event-user-get-all', [CommunityEventUserController::class, 'getAll'])->name('community-event-user.get-all')->middleware('auth');
 
 
 //neighbors routes---------------------------------------------------------------------------------
