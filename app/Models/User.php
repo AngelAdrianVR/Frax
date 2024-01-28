@@ -76,4 +76,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(EmergencyContact::class);
     }
+
+    public function events()
+    {
+        return $this->belongsToMany(CommunityEvent::class, 'community_event_user')
+        ->withPivot([
+            'participants_quantity'
+        ])->withTimestamps();
+    }
 }

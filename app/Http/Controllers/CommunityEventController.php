@@ -60,13 +60,9 @@ class CommunityEventController extends Controller
     }
 
     
-    public function show($community_event_id)
+    public function show(CommunityEvent $community_event)
     {
-        $community_event = CommunityEventResource::make(CommunityEvent::with('media')->find($community_event_id));
-
-        // return $community_event;
-
-        return inertia('CommunityEvent/Show', compact('community_event'));
+       //
     }
 
     

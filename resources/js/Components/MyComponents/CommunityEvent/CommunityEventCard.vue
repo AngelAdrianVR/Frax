@@ -28,7 +28,7 @@
             <div class="p-4 clas border-r border-gray3 flex flex-col items-center justify-center pt-20 col-span-2">
                 <p class="text-lg font-bold uppercase">{{ communityEvent.date.split('.')[0] }}</p>
                 <p class="text-3xl font-bold uppercase">{{ communityEvent.date.split('-')[1] }}</p>
-                <PrimaryButton @click="$inertia.get(route('community-events.show', communityEvent.id))" class="mt-16">Registrarme</PrimaryButton>
+                <PrimaryButton @click="$inertia.get(route('community-event-user.create', { community_event_id: communityEvent.id}))" class="mt-16">Registrarme</PrimaryButton>
             </div>
             <div class="p-4 col-span-4">
                 <h1 class="lg:text-2xl text-lg font-bold mb-2">{{ communityEvent.name }}</h1>

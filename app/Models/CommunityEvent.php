@@ -37,4 +37,12 @@ class CommunityEvent extends Model implements HasMedia
     {
         return $this->belongsTo(Frax::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'community_event_user')
+        ->withPivot([
+            'participants_quantity'
+        ])->withTimestamps();
+    }
 }
