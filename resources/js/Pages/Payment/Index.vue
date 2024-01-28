@@ -13,20 +13,21 @@
     <!-- ------------- tab 1 section pagos pendientes starts ------------- -->
     <div class="p-4" v-if="currentTab == 1">
 
-      <div class="flex justify-between mt-5 lg:mx-16">
+      <div class="flex justify-between mt-7 lg:mx-16">
         <p class="font-bold">Pagos pendientes</p>
-        <HideableLabel class="absolute right-0 top-32 z-50" iconClass="fa-solid fa-info">
+        <HideableLabel class="absolute right-0 top-28 z-50" iconClass="fa-solid fa-info">
           <p>
             Es importante pagar los montos si ya ha pasado la fecha de vencimiento para evitar cargos adicionales
           </p>
         </HideableLabel>
       </div>
       <div class="mt-7">
-        <div class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5 space-y-4 lg:space-y-0">
+        <div v-if="payments.data.length > 0" class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5 space-y-4 lg:space-y-0">
           <PaymentCard class="self-start" v-for="payment in payments.data" :key="payment" :payment="payment" />
         </div>
+        <p class="text-center text-sm text-gray-500" v-else>No tienes pagos pendientes</p>
       </div>
-      <div class="text-right mt-5 lg:mr-9">
+      <div v-if="payments.data.length > 0" class="text-right mt-5 lg:mr-9">
         <ThirthButton @click="$inertia.get(route('payment-feedbacks.create'))">Envía tus comentarios</ThirthButton>
       </div>
     </div>

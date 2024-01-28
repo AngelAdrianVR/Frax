@@ -34,6 +34,9 @@ class CommunityEventController extends Controller
             'time' => 'nullable',
             'participants' => 'required|string',
             'description' => 'required|string',
+            'place' => 'required|string|max:100',
+            'cost' => 'required|numeric|min:0|max:99999',
+            'rules' => 'nullable|array',
         ]);
 
         // Convierte el campo 'time' a un objeto Carbon y resta 6 horas porque lo guarda en otra zona la cual suma 6 horas
@@ -82,6 +85,9 @@ class CommunityEventController extends Controller
             'time' => 'nullable',
             'participants' => 'required|string',
             'description' => 'required|string',
+            'place' => 'required|string|max:100',
+            'cost' => 'required|numeric|min:0|max:99999',
+            'rules' => 'nullable|array',
         ]);
 
          // Convierte el campo 'time' a un objeto Carbon y resta 6 horas
@@ -107,6 +113,9 @@ class CommunityEventController extends Controller
             'time' => 'nullable',
             'participants' => 'required|string',
             'description' => 'required|string',
+            'place' => 'required|string|max:100',
+            'cost' => 'required|numeric|min:0|max:99999',
+            'rules' => 'nullable|array',
         ]);
 
          // Convierte el campo 'time' a un objeto Carbon y resta 6 horas

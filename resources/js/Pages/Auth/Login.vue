@@ -56,54 +56,37 @@ const togglePasswordVisibility = () => {
         </div>
 
         <form @submit.prevent="submit">
-            <div>
-                <InputWithPlaceholder
-                    id="email" 
+             <div>
+                <InputLabel for="user" value="Usuario" class="mb-2 ml-3" />
+                <input
+                    class="input"
+                    id="user" 
                     v-model="form.email"
                     inputType="email"
                     autofocus
                     autocomplete="username"
-                > Correo electrónico
-                </InputWithPlaceholder>
-                <!-- <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="username"
-                /> -->
+                >
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
-                <!-- <InputLabel for="password" value="Password" /> -->
                 <div class="mt-4 relative">
-                <div class="flex justify-center items-center">
-                    <InputWithPlaceholder
-                    id="password" 
-                    v-model="form.password"
-                    :inputType="showPassword ? 'text' : 'password'"
-                    autofocus
-                    autocomplete="username"
-                    > Contraseña
-                    </InputWithPlaceholder>
-                    <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"
-                        class="text-gray-400 ml-2 cursor-pointer absolute right-3 top-3"
-                        @click="togglePasswordVisibility"></i>
+                    <InputLabel for="password" value="Contraseña" class="mb-2 ml-3" />
+                    <div class="flex justify-center items-center">
+                        <input
+                        class="input"
+                        id="password" 
+                        v-model="form.password"
+                        :type="showPassword ? 'text' : 'password'"
+                        autofocus
+                        autocomplete="username"
+                        >
+                        <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"
+                            class="text-gray-400 ml-2 cursor-pointer absolute right-3 top-10"
+                            @click="togglePasswordVisibility"></i>
+                    </div>
+                    <InputError class="mt-2" :message="form.errors.password" />
                 </div>
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-                <!-- <TextInput
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="current-password"
-                /> -->
-                <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="block mt-4">
@@ -114,7 +97,7 @@ const togglePasswordVisibility = () => {
             </div>
 
             <div class="flex flex-col space-y-5 items-center justify-center mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Link v-if="canResetPassword" :href="route('password.request')" class="text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2">
                     Olvidé mi contraseña
                 </Link>
 

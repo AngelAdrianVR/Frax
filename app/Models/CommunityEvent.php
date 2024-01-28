@@ -18,12 +18,16 @@ class CommunityEvent extends Model implements HasMedia
         'time',
         'participants',
         'description',
+        'place',
+        'cost',
+        'rules',
         'frax_id',
     ];
 
     protected $casts = [
         'date' => 'date',
         'time' => 'datetime',
+        'rules' => 'array',
     ];
 
     //relationships

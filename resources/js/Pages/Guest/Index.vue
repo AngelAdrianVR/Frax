@@ -15,9 +15,9 @@
 
       <!-- ------------- tab 1 section visitas programadas starts ------------- -->
       <div class="p-4" v-if="currentTab == 1">
-        <div class="flex justify-between items-center lg:mx-12 mb-10">
+        <div class="flex justify-between items-center lg:mx-12 mb-10 mt-4">
           <h2 class="font-bold">Tus visitas programadas</h2>
-          <HideableLabel class="absolute right-0 top-32 z-50" iconClass="fa-solid fa-info">
+          <HideableLabel class="absolute right-0 top-28 z-50" iconClass="fa-solid fa-info">
           <p>
             La tarjeta de visitante desaparecerá el día siguiente de su ingreso o al expirar la fecha de entrada registrada.
           </p>
