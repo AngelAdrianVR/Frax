@@ -34,6 +34,11 @@ class CommunityEventController extends Controller
             'time' => 'nullable',
             'participants' => 'required|string',
             'description' => 'required|string',
+            'place' => 'required|string|max:100',
+            'cost' => 'required|numeric|min:0|max:99999',
+            'capacity_per_resident' => 'nullable|numeric|min:0|max:99999',
+            'capacity_event' => 'nullable|numeric|min:0|max:99999',
+            'rules' => 'nullable|array',
         ]);
 
         // Convierte el campo 'time' a un objeto Carbon y resta 6 horas porque lo guarda en otra zona la cual suma 6 horas
@@ -55,13 +60,9 @@ class CommunityEventController extends Controller
     }
 
     
-    public function show($community_event_id)
+    public function show(CommunityEvent $community_event)
     {
-        $community_event = CommunityEventResource::make(CommunityEvent::with('media')->find($community_event_id));
-
-        // return $community_event;
-
-        return inertia('CommunityEvent/Show', compact('community_event'));
+       //
     }
 
     
@@ -82,6 +83,11 @@ class CommunityEventController extends Controller
             'time' => 'nullable',
             'participants' => 'required|string',
             'description' => 'required|string',
+            'place' => 'required|string|max:100',
+            'cost' => 'required|numeric|min:0|max:99999',
+            'capacity_per_resident' => 'nullable|numeric|min:0|max:99999',
+            'capacity_event' => 'nullable|numeric|min:0|max:99999',
+            'rules' => 'nullable|array',
         ]);
 
          // Convierte el campo 'time' a un objeto Carbon y resta 6 horas
@@ -107,6 +113,11 @@ class CommunityEventController extends Controller
             'time' => 'nullable',
             'participants' => 'required|string',
             'description' => 'required|string',
+            'place' => 'required|string|max:100',
+            'cost' => 'required|numeric|min:0|max:99999',
+            'capacity_per_resident' => 'nullable|numeric|min:0|max:99999',
+            'capacity_event' => 'nullable|numeric|min:0|max:99999',
+            'rules' => 'nullable|array',
         ]);
 
          // Convierte el campo 'time' a un objeto Carbon y resta 6 horas

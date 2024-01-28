@@ -18,6 +18,11 @@ return new class extends Migration
             $table->timestamp('time')->nullable();
             $table->string('participants')->nullable();
             $table->text('description')->nullable();
+            $table->string('place')->nullable();
+            $table->unsignedDouble('cost')->nullable();
+            $table->unsignedInteger('capacity_event')->nullable();
+            $table->unsignedInteger('capacity_per_resident')->nullable();
+            $table->json('rules')->nullable();
             $table->foreignId('frax_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

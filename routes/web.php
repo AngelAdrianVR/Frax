@@ -7,6 +7,7 @@ use App\Http\Controllers\FavoriteGuestController;
 use App\Http\Controllers\CommonAreaController;
 use App\Http\Controllers\CommonAreaUserController;
 use App\Http\Controllers\CommunityEventController;
+use App\Http\Controllers\CommunityEventUserController;
 use App\Http\Controllers\EmergencyContactController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\GuestHistoryController;
@@ -132,6 +133,11 @@ Route::resource('reports', ReportController::class)->middleware('auth');
 //-------------------------------------------------------------------------------------------------
 Route::resource('community-events', CommunityEventController::class)->middleware('auth');
 Route::post('community-events/{community_event}/update-with-media', [CommunityEventController::class, 'updateWithMedia'])->name('community-events.update-with-media')->middleware('auth');
+
+
+//community-event-user routes--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+Route::resource('community-event-user', CommunityEventUserController::class)->middleware('auth');
 
 
 //neighbors routes---------------------------------------------------------------------------------
