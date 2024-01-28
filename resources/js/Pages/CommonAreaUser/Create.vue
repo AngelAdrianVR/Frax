@@ -3,8 +3,8 @@
         <div class="lg:py-7 lg:px-10">
             <Back />
 
-            <h1 class="font-bold mx-28 mt-5">{{ common_area.name }}</h1>
-            <div class="grid grid-cols-2 gap-x-32 gap-y-1 mx-20 mt-5">
+            <h1 class="font-bold mx-5 lg:mx-28 mt-5">{{ common_area.name }}</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-32 gap-y-1 mx-5 lg:mx-20 mt-5">
                 <!-- columna izquierda -->
                 <div>
                     <p class="w-full flex items-center space-x-2">
@@ -29,6 +29,22 @@
                         </span>
                         <small class="w-1/2">{{ feature.value }}</small>
                     </p>
+                    <!-- carrusel vista movil -->
+                    <div class="md:hidden my-3">
+                        <figure class="rounded-[5px] w-full">
+                            <Carousel :autoplay="4000" :wrap-around="true" v-model="currentSlide">
+                                <Slide v-for="slide in 10" :key="slide">
+                                    <div class="carousel__item">{{ slide }}</div>
+                                </Slide>
+                            </Carousel>
+                            <div class="flex justify-center space-x-2 mt-2">
+                                <button v-for="image in 10" :key="image" @click="currentSlide = image"
+                                    class="w-2 h-2 rounded-full"
+                                    :class="currentSlide == image ? 'bg-secondary' : 'bg-gray4'"></button>
+                            </div>
+                        </figure>
+                        <p class="mt-4 mx-6 text-center text-xs">{{ common_area.notes }}</p>
+                    </div>
                     <form @submit.prevent="store" class="mt-5 text-sm">
                         <div>
                             <InputLabel value="Fecha de reservación*" class="ml-3 mb-1" />
@@ -72,8 +88,8 @@
                         </div>
                     </form>
                 </div>
-                <!-- columna derecha -->
-                <div>
+                <!-- columna derecha desktop-->
+                <div class="hidden md:block">
                     <figure class="rounded-[5px] w-full">
                         <Carousel :autoplay="4000" :wrap-around="true" v-model="currentSlide">
                             <Slide v-for="slide in 10" :key="slide">
