@@ -36,6 +36,8 @@ class CommunityEventController extends Controller
             'description' => 'required|string',
             'place' => 'required|string|max:100',
             'cost' => 'required|numeric|min:0|max:99999',
+            'capacity_per_resident' => 'nullable|numeric|min:0|max:99999',
+            'capacity_event' => 'nullable|numeric|min:0|max:99999',
             'rules' => 'nullable|array',
         ]);
 
@@ -87,6 +89,8 @@ class CommunityEventController extends Controller
             'description' => 'required|string',
             'place' => 'required|string|max:100',
             'cost' => 'required|numeric|min:0|max:99999',
+            'capacity_per_resident' => 'nullable|numeric|min:0|max:99999',
+            'capacity_event' => 'nullable|numeric|min:0|max:99999',
             'rules' => 'nullable|array',
         ]);
 
@@ -115,6 +119,8 @@ class CommunityEventController extends Controller
             'description' => 'required|string',
             'place' => 'required|string|max:100',
             'cost' => 'required|numeric|min:0|max:99999',
+            'capacity_per_resident' => 'nullable|numeric|min:0|max:99999',
+            'capacity_event' => 'nullable|numeric|min:0|max:99999',
             'rules' => 'nullable|array',
         ]);
 

@@ -154,5 +154,8 @@ return [
         'current_password' => 'contraseña actual',
         'phone' => 'teléfono',
         'start_date' => 'fecha de inicio',
+        'place' => 'lugar',
+        'capacity_per_resident' => 'participante por residencia',
+        'capacity_event' => 'capacidad del evento',
     ],
 ];

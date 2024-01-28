@@ -21,6 +21,8 @@ class CommunityEvent extends Model implements HasMedia
         'place',
         'cost',
         'rules',
+        'capacity_event',
+        'capacity_per_resident',
         'frax_id',
     ];
 

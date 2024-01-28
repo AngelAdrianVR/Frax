@@ -1,8 +1,8 @@
 <template>
     <AppLayout title="Crear evento">
-        <div class="lg:py-7 lg:px-10 py-2 px-1">
+        <div class="lg:py-7 lg:px-10 py-2 px-3">
           <Back />
-          <form @submit.prevent="store" class="mx-8 mt-9 md:grid grid-cols-2 md:gap-9 md:p-4">
+          <form @submit.prevent="store" class="lg:mx-8 mt-9 md:grid grid-cols-2 md:gap-9 md:p-4">
             <!-- Primera parte del grid (izquierda) -->
             <section> 
                 <h1 class="font-bold mb-5">Crear un evento</h1>
@@ -12,63 +12,93 @@
                     <InputError :message="form.errors.name" />
                 </div>
 
-                <div class="mt-3">
-                    <InputLabel value="Fecha del evento*" class="ml-3 mb-1" />
-                    <el-date-picker v-model="form.date" type="date" placeholder="Seleccione" :disabled-date="disabledDate" />
-                    <InputError :message="form.errors.date" />
-                </div>
+                <div class="flex items-center space-x-2 mt-3">
+                  <div class="w-1/2">
+                      <InputLabel value="Fecha del evento*" class="ml-3 mb-1" />
+                      <el-date-picker v-model="form.date" type="date" placeholder="Seleccione" :disabled-date="disabledDate" />
+                      <InputError :message="form.errors.date" />
+                  </div>
 
-                <div class="mt-3">
+                  <div class="w-1/2">
                     <InputLabel value="Hora" class="ml-3 mb-1" />
                     <el-time-picker v-model="form.time" placeholder="Seleccione (opcional)" />
                     <InputError :message="form.errors.time" />
+                  </div>
                 </div>
 
                 <div class="mt-3">
-                    <InputLabel value="Lugar" class="ml-3 mb-1" />
+                    <InputLabel value="Lugar*" class="ml-3 mb-1" />
                     <input v-model="form.place" class="input" type="text" placeholder="Lugar del evento" />
                     <InputError :message="form.errors.place" />
                 </div>
 
-                <div class="mt-3 relative">
+                <div class="flex items-center space-x-3 mt-3">
+                  <div class="w-2/3">
+                      <InputLabel value="Capacidad" class="ml-3 mb-1 text-sm" />
+                      <input :disabled="unlimited_capacity" v-model="form.capacity_event" type="number" autocomplete="off" class="input" placeholder="Cantidad máxima de personas" />
+                      <InputError :message="form.errors.capacity_event" />
+                  </div>
+                  <label class="flex items-center text-xs mt-5">
+                    <Checkbox @change="form.capacity_event = null; form.capacity_per_resident = null" v-model:checked="unlimited_capacity" class="bg-transparent disabled:border-gray-400" />
+                    <span class="ml-2 mr-2 text-xs">Capacidad ilimitada</span>
+                    <el-tooltip
+                    content="Marca la casilla si no hay límite de participantes para este evento"
+                    placement="top">
+                    <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                      <i class="fa-solid fa-info text-primary text-[7px]"></i>
+                    </div>
+                    </el-tooltip>
+                  </label>
+                </div>
+
+                <div class="mt-3 w-2/3">
+                  <InputLabel value="Participantes por residencia" class="ml-3 mb-1 text-sm" />
+                  <input :disabled="unlimited_capacity" v-model="form.capacity_per_resident" type="number" autocomplete="off" class="input" placeholder="Cantidad máxima de personas por residencia" />
+                  <InputError :message="form.errors.capacity_per_resident" />
+                </div>
+
+                <div class="mt-3 w-1/2 relative">
                     <InputLabel value="Costo*" class="ml-3 mb-1 text-sm" />
-                    <input v-model="form.cost" type="number" min="0" required step="0.1" autocomplete="off" class="input pl-7" placeholder="0" />
+                    <input v-model="form.cost" type="number" step="0.1" autocomplete="off" class="input pl-7" placeholder="00.00" />
                     <p class="text-sm text-gray-500 absolute top-[26px] left-2 border-r border-gray2 pr-[6px] py-[6px]">$</p>
                     <InputError :message="form.errors.cost" />
                 </div>
+            </section>
 
-                <div class="mt-3">
-                  <InputLabel value="Participantes*" class="ml-3 mb-1" />
-                  <el-select class="w-full" v-model="localParticipants" clearable
-                      placeholder="Seleccione" no-data-text="No hay opciones registradas"
-                      no-match-text="No se encontraron coincidencias">
-                      <el-option v-for="item in participants" :key="item" :label="item" :value="item" />
-                  </el-select>
+            <!-- Segunda parte del grid (derecha) -->
+            <section class="mt-8">
+              <div class="mt-3">
+                <InputLabel value="Participantes*" class="ml-3 mb-1" />
+                <el-select class="w-full" v-model="localParticipants" clearable
+                    placeholder="Seleccione" no-data-text="No hay opciones registradas"
+                    no-match-text="No se encontraron coincidencias">
+                    <el-option v-for="item in participants" :key="item" :label="item" :value="item" />
+                </el-select>
+                <InputError :message="form.errors.participants" />
+              </div>
+
+                <div v-if="localParticipants === 'Otro'" class="mt-3">
+                  <InputLabel value="Describa a los participantes*" class="ml-3 mb-1" />
+                  <input v-model="form.participants" class="input" type="text" />
                   <InputError :message="form.errors.participants" />
                 </div>
 
-                <div v-if="localParticipants === 'Otro'" class="mt-3">
-                    <InputLabel value="Describa a los participantes*" class="ml-3 mb-1" />
-                    <input v-model="form.participants" class="input" type="text" />
-                    <InputError :message="form.errors.participants" />
-                </div>
-
                 <div class="mt-3">
-                    <InputLabel value="Descripción" class="ml-3 mb-1" />
-                    <textarea v-model="form.description" class="textarea" rows="3"></textarea>
-                    <InputError :message="form.errors.description" />
+                  <InputLabel value="Descripción*" class="ml-3 mb-1" />
+                  <textarea v-model="form.description" class="textarea" rows="3" placeholder="Escriba una breve descripción del evento"></textarea>
+                  <InputError :message="form.errors.description" />
                 </div>
 
                 <div class="mt-3">
                     <InputLabel value="Reglas del evento" class="ml-3 mb-1" />
                   <div class="flex space-x-2 mb-1">
-                    <input v-model="newRule" class="input" type="text" placeholder="Escribe una regla (Opcional)" />
+                    <input v-model="newRule" class="input" type="text" placeholder="Escriba una regla (Opcional)" />
                     <SecondaryButton @click="addRule" type="button">
                         Agregar
                     </SecondaryButton>
                   </div>
                   <el-select class="w-full" v-model="form.rules" multiple clearable placeholder="Reglas"
-                      no-data-text="Agrega primero una regla">
+                      no-data-text="Agregue primero una regla">
                       <el-option v-for="rule in rules" :key="rule" :label="rule"
                           :value="rule"></el-option>
                   </el-select>
@@ -78,7 +108,6 @@
                     <InputLabel value="Imagen portada" class="ml-3 mb-1" />
                     <InputFilePreview @imagen="saveImage" @cleared="form.imageCover = null" />
                 </div>
-
 
                 <div class="text-right mt-5 mb-3">
                     <PrimaryButton>Crear</PrimaryButton>
@@ -98,6 +127,7 @@ import Back from '@/Components/MyComponents/Back.vue';
 import InputFilePreview from '@/Components/MyComponents/InputFilePreview.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
+import Checkbox from "@/Components/Checkbox.vue";
 import { useForm } from "@inertiajs/vue3";
 
 export default {
@@ -110,12 +140,15 @@ data(){
     description: null,
     place: null,
     cost: null,
+    capacity_event: null,
+    capacity_per_resident: null,
     rules: [],
     imageCover: null,
   });
     return {
         form,
         newRule: null,
+        unlimited_capacity: false,
         rules: [],
         localParticipants: null,
         participants: [
@@ -136,6 +169,7 @@ SecondaryButton,
 InputLabel,
 InputFilePreview,
 InputError,
+Checkbox,
 Back
 },
 props:{
@@ -165,11 +199,11 @@ store() {
     return time.getTime() < today.getTime();
   },
   addRule() {
-      if (this.newRule?.trim() !== '') {
-          this.form.rules.push(this.newRule);
-          this.rules.push(this.newRule);
-          this.newRule = '';
-      }
+    if (this.newRule?.trim() !== '') {
+        this.form.rules.push(this.newRule);
+        this.rules.push(this.newRule);
+        this.newRule = '';
+    }
   },
 }
 }

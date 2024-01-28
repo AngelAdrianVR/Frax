@@ -21,6 +21,8 @@ class CommunityEventResource extends JsonResource
             'time' => $this->time?->isoFormat('h:mm A'),
             'participants' => $this->participants,
             'description' => $this->description,
+            'capacity_per_resident' => $this->capacity_per_resident,
+            'capacity_event' => $this->capacity_event,
             'place' => $this->place,
             'cost' => $this->cost,
             'rules' => $this->rules,

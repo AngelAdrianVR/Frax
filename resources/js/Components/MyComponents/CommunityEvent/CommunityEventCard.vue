@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-lg border border-gray4 text-sm shadow-md group relative">
+    <div class="rounded-lg border border-gray4 text-sm shadow-md group relative lg:w-[870px]">
         <!-- Action buttons only for admin -->
         <div v-if="true"
             class="flex justify-end mb-3 space-x-1 lg:group-hover:opacity-100 lg:opacity-0 transition-opacity duration-300 absolute top-3 right-3">
@@ -17,10 +17,10 @@
         <!-- -------------------------------- -->
 
         <!-- Imagen ---------------------------------- -->
-        <figure v-if="communityEvent.image_cover?.length > 0" class="bg-gray5 lg:h-[358px]">
-            <img class="lg:h-[358px] w-full rounded-t-lg" :src="communityEvent.image_cover[0]?.original_url" alt="Sin imagen" >
+        <figure v-if="communityEvent.image_cover?.length > 0" class="bg-gray5 lg:h-[440px]">
+            <img class="lg:h-[440px] w-full rounded-t-lg" :src="communityEvent.image_cover[0]?.original_url" alt="Sin imagen" >
         </figure>
-        <div v-else class="bg-gray4 rounded-t-lg lg:h-[358px] h-64 justify-center items-center flex text-white font-bold text-lg">Sin portada</div>
+        <div v-else class="bg-gray4 rounded-t-lg lg:h-[440px] h-64 justify-center items-center flex text-white font-bold text-lg">Sin portada</div>
         <!-- ------------------------------------------ -->
 
         <!-- Information ---------------------------- -->
@@ -28,7 +28,7 @@
             <div class="p-4 clas border-r border-gray3 flex flex-col items-center justify-center pt-20 col-span-2">
                 <p class="text-lg font-bold uppercase">{{ communityEvent.date.split('.')[0] }}</p>
                 <p class="text-3xl font-bold uppercase">{{ communityEvent.date.split('-')[1] }}</p>
-                <PrimaryButton class="mt-16">Registrarme</PrimaryButton>
+                <PrimaryButton @click="$inertia.get(route('community-events.show', communityEvent.id))" class="mt-16">Registrarme</PrimaryButton>
             </div>
             <div class="p-4 col-span-4">
                 <h1 class="lg:text-2xl text-lg font-bold mb-2">{{ communityEvent.name }}</h1>
@@ -37,7 +37,9 @@
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-clock-rotate-left text-xs mr-2"></i>Hora: <strong>{{ communityEvent.time }}</strong></p>
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-location-dot text-xs mr-2"></i>Lugar: <strong>{{ communityEvent.place }}</strong></p>
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-dollar-sign text-xs mr-2"></i>Costo: <strong>${{ communityEvent.cost?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</strong></p>
-                <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-list-ol text-xs mr-2"></i>Reglas: <strong>{{ communityEvent.rules ?? '-' }}</strong></p>
+                <p v-if="communityEvent.capacity_event" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-users text-xs mr-2"></i>Capacidad máx: <strong>{{ communityEvent.capacity_event }}</strong></p>
+                <p v-if="communityEvent.capacity_per_resident" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-people-roof text-xs mr-2"></i>Participantes por residencia: <strong>{{ communityEvent.capacity_per_resident }}</strong></p>
+                <p v-if="communityEvent.rules" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-list-ol text-xs mr-2"></i>Reglas: <strong>{{ communityEvent.rules }}</strong></p>
             </div>
         </div>   
     </div>
