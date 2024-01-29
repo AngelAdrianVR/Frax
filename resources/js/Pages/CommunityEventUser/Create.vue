@@ -5,6 +5,7 @@
           <form @submit.prevent="store" class="mx-8 mt-7 md:grid grid-cols-2 md:gap-9 md:p-4">
             <!-- Primera parte del grid (izquierda) -->
             <section> 
+
                 <h1 class="text-lg font-bold mb-1 text-center">{{ community_event.data.name }}</h1>
                 <h1 v-if="!loading" :class="currentCapacity == community_event.data.capacity_event ? 'text-red-600' : ''"
                 class="text-lg font-bold mb-4 text-center">{{ currentCapacity + '/' + community_event.data.capacity_event }}</h1>
@@ -36,11 +37,13 @@
                   <InputLabel value="Asistentes*" class="ml-3 mb-1" />
                   <div class="flex items-center space-x-4">
                     <p class="text-xs">Min. 1</p>
+
                     <el-slider v-model="form.participants_quantity" 
                         :min="0" 
                         :max="capacityAvailable < community_event.data.capacity_per_resident ? capacityAvailable : community_event.data.capacity_per_resident"
                         class="!w-2/3 pl-3" :format-tooltip="formatTooltip" />
                     <p class="text-xs">Máx. {{ capacityAvailable < community_event.data.capacity_per_resident ? capacityAvailable : community_event.data.capacity_per_resident }}</p>
+
                   </div>
                   <InputError :message="form.errors.participants_quantity" />
                 </div>
@@ -86,6 +89,7 @@ data(){
         loading: false,
         currentCapacity: null,
         capacityAvailable: null,
+
     }
 },
 components:{
