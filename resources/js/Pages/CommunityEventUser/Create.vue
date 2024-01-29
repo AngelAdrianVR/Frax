@@ -7,7 +7,7 @@
             <section> 
 
                 <h1 class="text-lg font-bold mb-1 text-center">{{ community_event.data.name }}</h1>
-                <h1 v-if="!loading" :class="currentCapacity == community_event.data.capacity_event ? 'text-red-600' : ''"
+                <h1 v-if="!loading &&  community_event.data.capacity_event" :class="currentCapacity == community_event.data.capacity_event ? 'text-red-600' : ''"
                 class="text-lg font-bold mb-4 text-center">{{ currentCapacity + '/' + community_event.data.capacity_event }}</h1>
                 <!--  estado de carga -->
                 <div v-if="loading" class="flex justify-center items-center py-10">
@@ -17,7 +17,7 @@
                 <p class="text-sm mb-4">Si estás interesado en participar en este evento, por favor completa el siguiente formulario de registro: </p>
                 <div class="mt-3">
                     <InputLabel value="Nombre*" class="ml-3 mb-1" />
-                    <input v-model="form.name" class="input" type="text" placeholder="Escriba el nombre del representante" />
+                    <el-input v-model="form.name" placeholder="Escriba el nombre del representante" :maxlength="100" clearable />
                     <InputError :message="form.errors.name" />
                 </div>
 
@@ -37,12 +37,17 @@
                   <InputLabel value="Asistentes*" class="ml-3 mb-1" />
                   <div class="flex items-center space-x-4">
                     <p class="text-xs">Min. 1</p>
-
-                    <el-slider v-model="form.participants_quantity" 
+                    <!-- En caso de haber capacidad definida -->
+                    <el-slider v-if=" community_event.data.capacity_event" v-model="form.participants_quantity" 
                         :min="0" 
                         :max="capacityAvailable < community_event.data.capacity_per_resident ? capacityAvailable : community_event.data.capacity_per_resident"
                         class="!w-2/3 pl-3" :format-tooltip="formatTooltip" />
-                    <p class="text-xs">Máx. {{ capacityAvailable < community_event.data.capacity_per_resident ? capacityAvailable : community_event.data.capacity_per_resident }}</p>
+                    <!-- En caso de haber capacidad ilimitada -->
+                    <el-slider v-else v-model="form.participants_quantity" 
+                        :min="0" 
+                        :max="community_event.data.capacity_per_resident ?? 10"
+                        class="!w-2/3 pl-3" :format-tooltip="formatTooltip" />
+                    <p class="text-xs">Máx. {{ community_event.data.capacity_per_resident ?? 10 }}</p>
 
                   </div>
                   <InputError :message="form.errors.participants_quantity" />
