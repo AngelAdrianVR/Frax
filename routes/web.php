@@ -133,6 +133,7 @@ Route::resource('reports', ReportController::class)->middleware('auth');
 //-------------------------------------------------------------------------------------------------
 Route::resource('community-events', CommunityEventController::class)->middleware('auth');
 Route::post('community-events/{community_event}/update-with-media', [CommunityEventController::class, 'updateWithMedia'])->name('community-events.update-with-media')->middleware('auth');
+Route::get('community-events-fetch-current-capacity', [CommunityEventController::class, 'fetchCurrentCapacity'])->name('community-events.fetch-current-capacity')->middleware('auth');
 
 
 //community-event-user routes--------------------------------------------------------------------------

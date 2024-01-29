@@ -24,7 +24,7 @@
         <!-- ------------------------------------------ -->
 
         <!-- Information ---------------------------- -->
-        <div class="grid grid-cols-6">
+        <div v-if="!loading" class="grid grid-cols-6">
             <div class="p-4 clas border-r border-gray3 flex flex-col items-center justify-center pt-20 col-span-2">
                 <p class="text-lg font-bold uppercase">{{ communityEvent.date.split('.')[0] }}</p>
                 <p class="text-3xl font-bold uppercase">{{ communityEvent.date.split('-')[1] }}</p>
@@ -33,11 +33,12 @@
                     class="mt-16 !bg-red-600">
                     Cancelar registro
                 </PrimaryButton>
-                <PrimaryButton v-else
+                <PrimaryButton v-else-if="currentCapacity != communityEvent?.capacity_event"
                     @click="$inertia.get(route('community-event-user.create', { community_event_id: communityEvent.id}))" 
                     class="mt-16">
                     Registrarme
                 </PrimaryButton>
+                <p v-else class="text-red-600 font-bold mt-5 text-base">CUPO LLENO</p>
             </div>
             <div class="p-4 col-span-4">
                 <h1 class="lg:text-2xl text-lg font-bold mb-2">{{ communityEvent?.name }}</h1>
@@ -46,11 +47,15 @@
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-clock-rotate-left text-xs mr-2"></i>Hora: <strong>{{ communityEvent?.time }}</strong></p>
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-location-dot text-xs mr-2"></i>Lugar: <strong>{{ communityEvent?.place }}</strong></p>
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-dollar-sign text-xs mr-2"></i>Costo: <strong>${{ communityEvent?.cost?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</strong></p>
-                <p v-if="communityEvent?.capacity_event" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-users text-xs mr-2"></i>Capacidad máx: <strong>{{ communityEvent?.capacity_event }}</strong></p>
+                <p v-if="communityEvent?.capacity_event" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-users text-xs mr-2"></i>Capacidad máx: <strong :class="currentCapacity == communityEvent?.capacity_event ? 'text-red-500' : ''" >{{ currentCapacity + '/' + communityEvent?.capacity_event }}</strong></p>
                 <p v-if="communityEvent?.capacity_per_resident" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-people-roof text-xs mr-2"></i>Participantes por residencia: <strong>{{ communityEvent?.capacity_per_resident }}</strong></p>
                 <p v-if="communityEvent?.rules" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-list-ol text-xs mr-2"></i>Reglas: <strong>{{ communityEvent?.rules }}</strong></p>
             </div>
         </div> 
+        <!--  estado de carga -->
+        <div v-if="loading" class="flex justify-center items-center py-10">
+            <i class="fa-solid fa-spinner fa-spin text-4xl text-primary"></i>
+        </div>
         <!-- ----------------------------------------- -->
 
         <!-- Editable in my event ------------------- -->
@@ -93,6 +98,8 @@ data(){
     return {
         form,
         registeredObj: null,
+        loading: false,
+        currentCapacity: null,
         edit_participants_quantity: false,
         participants: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     }
@@ -135,7 +142,21 @@ methods:{
                 this.edit_participants_quantity = false;
             },
         });
-    }
+    },
+    async fetchCurrentCapacity() {
+      try {
+        this.loading = true;
+        const response = await axios.get(route('community-events.fetch-current-capacity', { community_event_id: this.communityEvent.id }));
+        if (response.status === 200) {
+          this.currentCapacity = response.data.current_capacity;
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+        console.log(response.data)
+      }
+    },
 },
 mounted() {
     // Revisa si el usuario ya esta registrado al evento
@@ -144,6 +165,7 @@ mounted() {
             this.registeredObj = registered_event; // guarda el id del registo y del evento para eliminarlo si se cancela
         }
     });
+    this.fetchCurrentCapacity();
 }
 }
 </script>
