@@ -180,6 +180,7 @@ export default {
     }
   },
   mounted() {
+    // Agrega la variable currentTab al url para mejorar navegación al retroceder
     // Obtén la URL actual
     const currentURL = new URL(window.location.href);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CommunityEventResource;
 use App\Models\CommunityEvent;
+use App\Models\CommunityEventUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,11 @@ class CommunityEventController extends Controller
     public function index()
     {
         $community_events = CommunityEventResource::collection(CommunityEvent::latest()->with('media')->where('frax_id', auth()->user()->frax_id)->get());
+        $my_community_events = CommunityEventUser::where('user_id', auth()->id())->get();
 
         // return $community_events;
 
-        return inertia('CommunityEvent/Index', compact('community_events'));
+        return inertia('CommunityEvent/Index', compact('community_events', 'my_community_events'));
     }
 
     
@@ -148,6 +150,17 @@ class CommunityEventController extends Controller
     public function destroy(CommunityEvent $community_event)
     {
         $community_event->delete();
-
     }
+
+
+    public function fetchCurrentCapacity()
+{
+    $community_event_id = request('community_event_id');
+
+    // Utilizamos la función sum para calcular la suma directamente en la consulta
+    $current_capacity = CommunityEventUser::where('community_event_id', $community_event_id)
+        ->sum('participants_quantity');
+
+    return response()->json(['current_capacity' => $current_capacity]);
+}
 }

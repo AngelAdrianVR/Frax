@@ -20,8 +20,8 @@
 
             </div>
             <div v-if="loading" class="flex justify-center items-center py-10">
-          <i class="fa-solid fa-spinner fa-spin text-4xl text-primary"></i>
-        </div>
+                <i class="fa-solid fa-spinner fa-spin text-4xl text-primary"></i>
+            </div>
         </div>
     </AppLayout>
 </template>
