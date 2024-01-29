@@ -14,7 +14,7 @@ class CommonAreaController extends Controller
 
     public function create()
     {
-        //
+        return inertia('CommonArea/Create');
     }
 
     public function store(Request $request)
