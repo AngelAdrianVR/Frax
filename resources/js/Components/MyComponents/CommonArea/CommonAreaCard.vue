@@ -31,12 +31,13 @@
                 <el-tooltip :content="feature.label" placement="top">
                     <i :class="feature.icon" class="text-xl"></i>
                 </el-tooltip>
-                <span class="text-xs">{{ feature.value.split(' ')[0] }}</span>
-                <small>{{ feature.value.split(' ')[1] }}</small>
+                <span class="text-xs">{{ feature.value ? feature.value.split(' ')[0] : 'Si' }}</span>
+                <small>{{ feature.value ? feature.value.split(' ')[1] : '' }}</small>
             </div>
         </div>
         <div class="h-[12%] flex">
-            <PrimaryButton @click="$inertia.get(route('common-areas-users.create'), {common_area_id: commonArea.id})" class="w-full self-end">Reservar
+            <PrimaryButton @click="$inertia.get(route('common-areas-users.create'), { common_area_id: commonArea.id })"
+                class="w-full self-end">Reservar
             </PrimaryButton>
         </div>
     </div>

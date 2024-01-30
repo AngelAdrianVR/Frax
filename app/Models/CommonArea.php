@@ -42,17 +42,17 @@ class CommonArea extends Model implements HasMedia
         return $this->belongsTo(Frax::class);
     }
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(Quote::class)
-            ->withPivot([
-                'time',
-                'date',
-                'people_quantity',
-                'qr_code',
-                'payment_data',
-                'cancelation_data',
-            ])->withTimestamps()
-            ->using(CommonAreaUser::class);
-    }
+    // public function users(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Quote::class)
+    //         ->withPivot([
+    //             'time',
+    //             'date',
+    //             'people_quantity',
+    //             'qr_code',
+    //             'payment_data',
+    //             'cancelation_data',
+    //         ])->withTimestamps()
+    //         ->using(CommonAreaUser::class);
+    // }
 }

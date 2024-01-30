@@ -55,7 +55,7 @@
                         <InputError :message="form.errors.notes" />
                     </div>
                     <div class="flex flex-col items-center mt-7">
-                        <PrimaryButton class="w-1/2" :disabled="!form.name || !form.description">Guardar
+                        <PrimaryButton class="w-1/2" :disabled="!form.name || !form.description || form.processing">Guardar
                         </PrimaryButton>
                     </div>
                 </section>
@@ -204,7 +204,7 @@ export default {
                 {
                     label: 'Área para fumar',
                     icon: 'fa-solid fa-smoking',
-                    unit: 'Vehículos',
+                    unit: null,
                 },
                 {
                     label: 'Asadores',
