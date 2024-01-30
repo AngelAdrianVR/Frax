@@ -5,17 +5,23 @@
             <Back />
             <PrimaryButton @click="addNormModal = true">Agregar normativa</PrimaryButton>
           </div>
-          <div class="flex">
-            <section class="w-1/4 border">
+          <div class="lg:flex">
+            <section class="lg:w-1/5">
               <div class="mt-7">
                 <p class="my-4 px-3 font-bold">{{ section.title }}</p>
-                <p @click="selectedNorm = index" v-for="(norm, index) in normsMedia" :key="norm" 
+                <p @click="normSelected(index, norm)" v-for="(norm, index) in normsMedia" :key="norm" 
                 :class="{'bg-primarylight text-primary': selectedNorm == index}"
-                class="mt-3 px-3 py-1 cursor-pointer">{{ norm.name }}</p>
+                class="text-sm mt-1 px-3 py-1 cursor-pointer truncate">{{ norm.name }}</p>
               </div>
             </section>
-            <section class="w-3/4 border">
-
+            <section class="lg:w-4/5 lg:p-5 p-3">
+              <div class="rounded-t-sm border border-gray3 p-9">
+                 <!-- Mostrar el PDF seleccionado -->
+                <VuePDF :pdf="pdf" />
+              </div>
+                <div class="text-right p-3 rounded-b-sm border border-gray3">
+                  <PrimaryButton>Marcar como leído</PrimaryButton>
+                </div>
             </section>
           </div>
         </div>
@@ -59,12 +65,13 @@
   
 </template>
 
-<script>
+<script>  
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CancelButton from "@/Components/MyComponents/CancelButton.vue";
 import Modal from "@/Components/Modal.vue";
 import Back from '@/Components/MyComponents/Back.vue';
+import { VuePDF, usePDF } from '@tato30/vue-pdf'
 import { useForm } from "@inertiajs/vue3";
 
 export default {
@@ -73,9 +80,12 @@ data(){
     section_id: this.section.id,
     media: null,
   });
+  const { pdf } = usePDF('http://localhost:8000/storage/35/Residentfy_ManualResidente.pdf');
     return {
       form,
+      pdf,
       selectedNorm: null,
+      selectedNormUrl: null,
       addNormModal: false,
     }
 },
@@ -84,6 +94,7 @@ AppLayout,
 PrimaryButton,
 CancelButton,
 Modal,
+VuePDF,
 Back
 },
 props:{
@@ -101,6 +112,10 @@ methods:{
         location.reload();
       },
     });
+  },
+  normSelected(index, norm) {
+    this.selectedNorm = index;
+    this.selectedNormUrl = norm.original_url;
   }
 },
 computed: {

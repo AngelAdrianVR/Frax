@@ -9,7 +9,7 @@
                     <section>
                         <div class="mt-4">
                             <InputLabel value="Nombre del visitante*" class="ml-3 mb-1" />
-                            <input v-model="form.name" class="input" type="text" />
+                            <el-input v-model="form.name" placeholder="Escribe el nombre de tu visita" :maxlength="100" clearable />
                             <InputError :message="form.errors.name" />
                             <p class="text-xs ml-3">En caso de no saber el nombre de la visita, solo puede agregar  el nombre de la empresa o el tipo de servicio que le realizarán. (p ej. servicio de comida)</p>
                         </div>
@@ -71,22 +71,22 @@
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Marca*" class="ml-3 mb-1" />
-                                    <input class="input" v-model="localVehicleDetails.brand" type="text" placeholder="Escribe el modelo del vehículo" />
+                                    <el-input v-model="localVehicleDetails.brand" placeholder="Escribe la marca del vehículo" required :maxlength="20" clearable />
                                     <!-- <InputError :message="form.errors?.vehicle_details?.brand" /> -->
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Modelo*" class="ml-3 mb-1" />
-                                    <input class="input" v-model="localVehicleDetails.model" type="text" placeholder="Escribe la marca del vehículo" />
+                                    <el-input v-model="localVehicleDetails.model" placeholder="Escribe el modelo del vehículo" required :maxlength="20" clearable />
                                     <!-- <InputError :message="form.errors.vehicle_details.model" /> -->
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Color*" class="ml-3 mb-1" />
-                                    <input class="input" v-model="localVehicleDetails.color" type="text" placeholder="Escribe el color del vehículo" />
+                                    <el-input v-model="localVehicleDetails.color" placeholder="Escribe el color del vehículo" required :maxlength="20" clearable />
                                     <!-- <InputError :message="form.errors.vehicle_details.color" /> -->
                                 </div>
                                 <div class="mt-3">
                                     <InputLabel value="Placa*" class="ml-3 mb-1" />
-                                    <input class="input uppercase" v-model="localVehicleDetails.plate" type="text" placeholder="Escribe la placa del vehículo" />
+                                    <el-input v-model="localVehicleDetails.plate" placeholder="Escribe la placa del vehículo" required :maxlength="10" clearable />
                                     <!-- <InputError :message="form.errors.vehicle_details.plate" /> -->
                                 </div>
 
@@ -119,7 +119,8 @@
 
                         <div class="mt-3">
                           <InputLabel value="Notas" class="ml-3 mb-1" />
-                          <textarea v-model="form.notes" class="textarea" rows="3"></textarea>
+                          <el-input v-model="form.notes" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                            :maxlength="200" show-word-limit clearable />
                           <InputError :message="form.errors.notes" />
                         </div>
                     </section>

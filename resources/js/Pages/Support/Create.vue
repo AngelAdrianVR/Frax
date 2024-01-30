@@ -2,19 +2,20 @@
   <AppLayout title="Soporte técnico">
     <div class="py-8 px-3 lg:px-12">
       <p>Soporte técnico</p>
-      <form @submit.prevent="store" class="mx-8 mt-9 md:grid grid-cols-3 md:gap-9 md:p-4">
+      <form @submit.prevent="store" class="lg:mx-8 mx-2 mt-9 md:grid grid-cols-3 md:gap-9 md:p-4">
         <!-- Primera parte del grid (izquierda) 2 partes del grid -->
         <section class="col-span-2">
           <h1 class="font-bold mb-5">Reporta tu problema</h1>
           <div class="mt-3">
             <InputLabel value="Nombre*" class="ml-3 mb-1" />
-            <input v-model="form.name" class="input" type="text" placeholder="Escribe tu nombre" />
+            <el-input v-model="form.name" placeholder="Escribe tu nombre" :maxlength="100" clearable />
             <InputError :message="form.errors.name" />
           </div>
 
           <div class="mt-3">
             <InputLabel value="¿Tienes algún problema?" class="ml-3 mb-1" />
-            <textarea v-model="form.description" class="textarea" rows="3" placeholder="Describe el problema"></textarea>
+            <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                            placeholder="Describe el problema" :maxlength="200" show-word-limit clearable />
             <InputError :message="form.errors.description" />
           </div>
 
