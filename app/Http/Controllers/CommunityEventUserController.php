@@ -34,18 +34,19 @@ class CommunityEventUserController extends Controller
             'participants_quantity' => 'required|numeric|min:1|max:99',
         ]);
 
-        // revisa si aun hay cupo para la cantidad de personas que quiere registrar
-         // Utilizamos la función sum para calcular la suma directamente en la consulta
-        $current_capacity = CommunityEventUser::where('community_event_id', $request->community_event_id)->sum('participants_quantity');
-        $community_event = CommunityEvent::find($request->community_event_id); // recupera el evento para comparar su capacidad
-        $capacity_available = $community_event->capacity_event - $current_capacity; // calcula los lugares disponibles
+        $community_event = CommunityEvent::find($request->community_event_id);
 
-        if ($capacity_available < $request->participants_quantity) {
-            return response()->json(['error' => 'No hay lugares suficientes para tu registro'], 422);
-        } else {
-            CommunityEventUser::create($request->all());
-            return to_route('community-events.index');
+        if ($community_event) {
+            $current_capacity = CommunityEventUser::where('community_event_id', $request->community_event_id)->sum('participants_quantity');
+            $capacity_available = $community_event->capacity_event - $current_capacity;
+
+            if ($community_event->capacity_event && $capacity_available < $request->participants_quantity) {
+                return response()->json(['error' => 'No hay lugares suficientes para tu registro. Actualiza la página'], 422);
+            }
         }
+
+        CommunityEventUser::create($request->all());
+        return to_route('community-events.index');
     }
 
     

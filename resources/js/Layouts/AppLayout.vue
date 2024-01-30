@@ -48,11 +48,11 @@ const logout = () => {
                         <div class="flex justify-between h-16">
                             <div class="flex">
                                 <!-- Logo -->
-                                <!-- <div class="shrink-0 flex items-center">
+                                <div class="lg:hidden shrink-0 flex items-center">
                                     <Link :href="route('dashboard')">
                                     <ApplicationMark class="block w-12" />
                                     </Link>
-                                </div> -->
+                                </div>
                             </div>
 
                             <div class="hidden sm:flex sm:items-center sm:ml-6 items-center">
@@ -134,7 +134,7 @@ const logout = () => {
                             </div>
 
                             <!-- Hamburger -->
-                            <div class="-mr-14 flex items-center sm:hidden">
+                            <div class="mr-1 flex items-center md:hidden">
                                 <button
                                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                                     @click="showingNavigationDropdown = !showingNavigationDropdown">
@@ -155,7 +155,7 @@ const logout = () => {
 
                     <!-- Responsive Navigation Menu -->
                     <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
-                        class="sm:hidden z-50 rounded-tl-[6px] rounded-bl-[6px] bg-white w-4/6 absolute right-0 top-14 min-h-[30%] max-h-[90%] overflow-y-scroll overflow-x-hidden shadow-lg shadow-gray3 border border-gray3 pt-4">
+                        class="sm:hidden z-50 rounded-tl-[6px] rounded-bl-[6px] bg-gray-900 w-4/6 absolute right-0 top-14 min-h-[30%] max-h-[90%] overflow-y-scroll overflow-x-hidden shadow-lg shadow-gray3 border border-gray3 pt-4">
 
                         <!-- User info -->
                         <div class="flex flex-col justify-center items-center">
@@ -165,10 +165,10 @@ const logout = () => {
                                 </div>
 
                                 <div class="mt-3">
-                                    <div class="font-medium text-base text-center text-gray-800">
+                                    <div class="font-medium text-base text-center text-white">
                                         {{ $page.props.auth.user.name }}
                                     </div>
-                                    <div class="font-medium text-sm text-center text-gray-500">
+                                    <div class="font-medium text-sm text-center text-gray-400">
                                         {{ $page.props.auth.user.email }}
                                     </div>
                                 </div>
@@ -204,7 +204,7 @@ const logout = () => {
                             <ResponsiveNavLink :href="route('services.index')" :active="route().current('services.*')">
                                 <i class="fa-solid fa-briefcase text-sm mr-2"></i> Servicios
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('supports.index')" :active="route().current('supports.*')">
+                            <ResponsiveNavLink :href="route('supports.create')" :active="route().current('supports.*')">
                                 <i class="fa-solid fa-headset text-sm mr-2"></i> Soporte técnico
                             </ResponsiveNavLink>
                         </div>
