@@ -99,6 +99,7 @@ Route::resource('events', EventController::class)->middleware('auth');
 //Common areas routes---------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------
 Route::resource('common-areas', CommonAreaController::class)->middleware('auth');
+Route::get('common-areas/get-by-id/{common_area}',[ CommonAreaController::class, 'getById'])->middleware('auth')->name('common-areas.get-by-id');
 
 
 //Common areas user (bookings) routes---------------------------------------------------------------------------

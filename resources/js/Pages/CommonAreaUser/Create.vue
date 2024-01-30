@@ -32,16 +32,14 @@
                     <!-- carrusel vista movil -->
                     <div class="md:hidden my-3">
                         <figure class="rounded-[5px] w-full">
-                            <Carousel :autoplay="4000" :wrap-around="true" v-model="currentSlide">
-                                <Slide v-for="slide in 10" :key="slide">
-                                    <div class="carousel__item">{{ slide }}</div>
+                            <Carousel :wrap-around="true">
+                                <Slide v-for="media in common_area.media" :key="media.id">
+                                    <img class="object-contain" :src="media.original_url">
                                 </Slide>
+                                <template #addons>
+                                    <Pagination />
+                                </template>
                             </Carousel>
-                            <div class="flex justify-center space-x-2 mt-2">
-                                <button v-for="image in 10" :key="image" @click="currentSlide = image"
-                                    class="w-2 h-2 rounded-full"
-                                    :class="currentSlide == image ? 'bg-secondary' : 'bg-gray4'"></button>
-                            </div>
                         </figure>
                         <p class="mt-4 mx-6 text-center text-xs">{{ common_area.notes }}</p>
                     </div>
@@ -91,16 +89,14 @@
                 <!-- columna derecha desktop-->
                 <div class="hidden md:block">
                     <figure class="rounded-[5px] w-full">
-                        <Carousel :autoplay="4000" :wrap-around="true" v-model="currentSlide">
-                            <Slide v-for="slide in 10" :key="slide">
-                                <div class="carousel__item">{{ slide }}</div>
+                        <Carousel :wrap-around="true">
+                            <Slide v-for="media in common_area.media" :key="media.id" class="px-px">
+                                <img class="object-contain" :src="media.original_url">
                             </Slide>
+                            <template #addons>
+                                <Pagination />
+                            </template>
                         </Carousel>
-                        <div class="flex justify-center space-x-2 mt-2">
-                            <button v-for="image in 10" :key="image" @click="currentSlide = image"
-                                class="w-2 h-2 rounded-full"
-                                :class="currentSlide == image ? 'bg-secondary' : 'bg-gray4'"></button>
-                        </div>
                     </figure>
                     <p class="mt-4 mx-6 text-center text-sm">{{ common_area.notes }}</p>
                 </div>
@@ -117,7 +113,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import { useForm, Link } from "@inertiajs/vue3";
-import { Carousel, Slide } from 'vue3-carousel';
+import { Carousel, Slide, Pagination } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
 import moment from "moment";
 import { parse, parseISO, format, addHours, isBefore } from 'date-fns';
@@ -134,8 +130,7 @@ export default {
         });
         return {
             form,
-            currentSlide: 1,
-            // reservations: [],
+            loading: true,
             timePickerOptions: [],
         };
     },
@@ -149,6 +144,7 @@ export default {
         Link,
         Carousel,
         Slide,
+        Pagination,
     },
     props: {
         common_area: Object,

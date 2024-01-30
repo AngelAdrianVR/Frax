@@ -1,16 +1,18 @@
 <template>
-    <div class="border border-gray4 rounded-[5px] p-6 bg-transparent h-[450px]">
-        <figure class="rounded-[5px] w-full h-[60%]">
-            <Carousel :wrap-around="true" v-model="currentSlide">
-                <Slide v-for="slide in 10" :key="slide">
-                    <div class="carousel__item">{{ slide }}</div>
-                </Slide>
-            </Carousel>
-            <div class="flex justify-center space-x-2 mt-2">
-                <button v-for="image in 10" :key="image" @click="currentSlide = image" class="w-2 h-2 rounded-full"
-                    :class="currentSlide == image ? 'bg-secondary' : 'bg-gray4'"></button>
-            </div>
-        </figure>
+    <LoadingState :loading="loading" />
+    <div v-if="!loading" class="border border-gray4 rounded-[5px] p-6 bg-transparent h-[450px]">
+        <article>
+            <figure class="rounded-[5px] w-full h-[60%] relative">
+                <Carousel :wrap-around="true">
+                    <Slide v-for="media in commonArea.media" :key="media.id" class="h-full">
+                        <img class="object-contain" :src="media.original_url">
+                    </Slide>
+                    <template #addons>
+                        <Pagination />
+                    </template>
+                </Carousel>
+            </figure>
+        </article>
         <h2 class="flex justify-center items-center font-bold h-[8%]">{{ commonArea.name }}</h2>
         <div class="flex justify-center items-center flex-wrap h-[20%] text-secondary">
             <div class="flex flex-col items-center w-1/6">
@@ -45,14 +47,17 @@
   
 <script>
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import LoadingState from "@/Components/MyComponents/LoadingState.vue";
 import { Link } from "@inertiajs/vue3";
-import { Carousel, Slide } from 'vue3-carousel';
+import axios from "axios";
+import { Carousel, Slide, Pagination } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
 
 export default {
     data() {
         return {
-            currentSlide: 0,
+            commonArea: null,
+            loading: true,
         };
     },
     components: {
@@ -60,27 +65,29 @@ export default {
         Carousel,
         Slide,
         Link,
+        Pagination,
+        LoadingState,
     },
     props: {
-        commonArea: Object,
+        commonAreaId: Object,
     },
     methods: {
+        async fetchCommonArea() {
+            try {
+                const response = await axios.get(route('common-areas.get-by-id', this.commonAreaId));
 
+                if (response.status === 200) {
+                    this.commonArea = response.data.item;
+                }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.loading = false;
+            }
+        }
+    },
+    mounted() {
+        this.fetchCommonArea();
     }
 };
 </script>
-<style scoped>
-.carousel__item {
-    height: 220px;
-    width: 100%;
-    background-color: var(--vc-clr-primary);
-    color: var(--vc-clr-white);
-    font-size: 20px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 2px;
-    margin-right: 2px;
-}
-</style>

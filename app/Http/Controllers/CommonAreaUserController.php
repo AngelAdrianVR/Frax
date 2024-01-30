@@ -11,14 +11,14 @@ class CommonAreaUserController extends Controller
 {
     public function index()
     {
-        $common_areas = CommonArea::where('frax_id', auth()->user()->frax_id)->latest()->get();
+        $common_areas = CommonArea::where('frax_id', auth()->user()->frax_id)->latest()->get(['id']);
 
         return inertia('CommonAreaUser/Index', compact('common_areas'));
     }
 
     public function create(Request $request)
     {
-        $common_area = CommonArea::find($request->common_area_id);
+        $common_area = CommonArea::with('media')->find($request->common_area_id);
         $reservations = CommonAreaUserResource::collection(CommonAreaUser::whereDate('date', '>=', today())
             ->whereHas('commonArea', function ($query) {
                 $query->where('frax_id', auth()->user()->frax_id);

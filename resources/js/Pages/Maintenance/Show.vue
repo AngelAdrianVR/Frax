@@ -1,10 +1,10 @@
 <template>
     <AppLayout title="Detalles de mantenimiento">
-        <header class="mx-10 my-6">
+        <header class="mx-2 lg:mx-10 my-6">
             <Back />
         </header>
-        <main class="lg:mx-48 text-sm pb-6">
-            <section class="grid grid-cols-3 gap-x-14 gap-y-2 border-b border-dashed pb-10 border-gray4">
+        <main class="mx-2 lg:mx-48 text-sm pb-6">
+            <section class="grid grid-cols-1 lg:grid-cols-3 lg:gap-x-14 gap-y-2 border-b border-dashed pb-10 border-gray4">
                 <article class="col-span-2">
                     <h1 class="font-bold text-secondary">
                         <i class="mr-2" :class="problemTypes.find(item => item.label == maintenance.name)?.icon"></i>

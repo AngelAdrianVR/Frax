@@ -10,7 +10,7 @@
             </HideableLabel>
             <Back />
 
-            <h1 class="font-bold mx-28 mt-5 flex items-center space-x-2">
+            <h1 class="font-bold mx-2 lg:mx-28 mt-5 flex items-center space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -19,7 +19,7 @@
                 </svg>
                 <span>Editar reporte</span>
             </h1>
-            <div class="grid grid-cols-2 gap-x-32 gap-y-1 mx-28 mt-5">
+            <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-32 gap-y-1 mx-2 lg:mx-28 mt-5">
                 <!-- columna izquierda -->
                 <div>
                     <form @submit.prevent="update" class="mt-1 text-sm">

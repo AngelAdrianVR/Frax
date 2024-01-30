@@ -59,4 +59,11 @@ class CommonAreaController extends Controller
     {
         //
     }
+
+    public function getById(CommonArea $common_area)
+    {
+        $common_area = $common_area->load('media');
+
+        return response()->json(['item' => $common_area]); 
+    }
 }
