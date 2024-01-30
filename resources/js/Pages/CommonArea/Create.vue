@@ -43,13 +43,15 @@
                     <div class="mt-1">
                         <InputLabel value="Descripción*" class="ml-3 mb-1" />
                         <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
-                            placeholder="Please input" :maxlength="800" show-word-limit clearable />
+                            placeholder="Proporciona detalles sobre las comodidades y actividades en esta área..."
+                            :maxlength="800" show-word-limit clearable />
                         <InputError :message="form.errors.description" />
                     </div>
                     <div class="mt-1">
                         <InputLabel value="Notas*" class="ml-3 mb-1" />
                         <el-input v-model="form.notes" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
-                            placeholder="Please input" :maxlength="800" show-word-limit clearable />
+                            placeholder="Agrega notas adicionales o comentarios aquí.." :maxlength="800" show-word-limit
+                            clearable />
                         <InputError :message="form.errors.notes" />
                     </div>
                     <div class="flex flex-col items-center mt-7">
@@ -100,7 +102,8 @@
                             <el-select v-model="feature" placeholder="Seleccione" class="!w-1/2"
                                 @change="featureValue = null" no-data-text="No hay opciones registradas"
                                 no-match-text="No se encontraron coincidencias">
-                                <el-option v-for="(item, index) in featureList" :key="index" :value="item.label">
+                                <el-option v-for="(item, index) in featureList" :key="index" :value="item.label"
+                                    :disabled="form.features.some(feature => feature.label === item.label)">
                                     <i :class="item.icon"></i>
                                     <span class="ml-3">{{ item.label }}</span>
                                 </el-option>
@@ -120,14 +123,23 @@
                             </el-tooltip>
                         </div>
                         <!-- lista de caracteristicas -->
-                        <ul class="mt-3 text-xs text-gray1">
+                        <ul class="mt-3 text-xs text-gray1 grid grid-cols-2 gap-1">
                             <li v-for="(item, index) in form.features" :key="index"
-                                class="flex items-center space-x-3 space-y-1">
+                                class="flex items-center space-x-2 mb-1">
                                 <i :class="item.icon"></i>
                                 <span>{{ item.label }}</span>
                                 <span>{{ item.value }}</span>
+                                <button @click="removeFeature(index)" type="button"
+                                    class="ml-auto pr-2 text-right hover:text-red-500">
+                                    <i class="fa-regular fa-circle-xmark"></i>
+                                </button>
                             </li>
                         </ul>
+                        <div class="flex flex-wrap">
+                            <InputFilePreview v-for="(file, index) in form.images" :key="index"
+                                :canDelete="index == (form.images.length - 2)" @imagen="saveImage"
+                                @cleared="handleCleared(index)" class="my-2 mr-4" />
+                        </div>
                     </div>
                 </section>
             </form>
@@ -139,13 +151,10 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Back from '@/Components/MyComponents/Back.vue';
-import IconSelector from '@/Components/MyComponents/IconSelector.vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
-import Checkbox from "@/Components/Checkbox.vue";
+import InputFilePreview from "@/Components/MyComponents/InputFilePreview.vue";
 import { useForm, Link } from "@inertiajs/vue3";
-import { Carousel, Slide } from 'vue3-carousel';
-import 'vue3-carousel/dist/carousel.css';
 
 export default {
     data() {
@@ -161,6 +170,7 @@ export default {
             days_anticipation_booking: 0,
             is_multiple_reserved: true,
             features: [],
+            images: [null],
             schedule: [
                 { open: null, close: null, duration: 1, active: true },
                 { open: null, close: null, duration: 1, active: true },
@@ -174,13 +184,52 @@ export default {
         return {
             form,
             value: null,
-            currentSlide: 1,
             weekDays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado',],
             featureList: [
                 {
                     label: 'Espacio para niños',
                     icon: 'fa-solid fa-fan',
                     unit: 'Niños',
+                },
+                {
+                    label: 'Profundidad',
+                    icon: 'fa-solid fa-person-swimming',
+                    unit: 'Metros',
+                },
+                {
+                    label: 'Estacionamiento',
+                    icon: 'fa-solid fa-car-side',
+                    unit: 'Vehículos',
+                },
+                {
+                    label: 'Área para fumar',
+                    icon: 'fa-solid fa-smoking',
+                    unit: 'Vehículos',
+                },
+                {
+                    label: 'Asadores',
+                    icon: 'fa-solid fa-burger',
+                    unit: 'Unidades',
+                },
+                {
+                    label: 'Vigilancia',
+                    icon: 'fa-solid fa-user-shield',
+                    unit: null,
+                },
+                {
+                    label: 'Acceso a mascotas',
+                    icon: 'fa-solid fa-dog',
+                    unit: null,
+                },
+                {
+                    label: 'Sanitarios',
+                    icon: 'fa-solid fa-restroom',
+                    unit: null,
+                },
+                {
+                    label: 'Accesible',
+                    icon: 'fa-brands fa-accessible-icon',
+                    unit: null,
                 },
                 {
                     label: 'Zona wifi',
@@ -197,18 +246,27 @@ export default {
         PrimaryButton,
         InputLabel,
         InputError,
-        Checkbox,
         Back,
         Link,
-        Carousel,
-        Slide,
-        IconSelector,
+        InputFilePreview,
     },
     props: {
         common_area: Object,
         reservations: Object,
     },
     methods: {
+        handleCleared(index) {
+            // Eliminar el componente y su información correspondiente cuando se borra la imagen
+            this.form.images.splice(index, 1);
+        },
+        saveImage(image) {
+            const currentIndex = this.form.images.length - 1;
+            this.form.images[currentIndex] = image;
+            this.form.images.push(null);
+        },
+        removeFeature(index) {
+            this.form.features.splice(index, 1);
+        },
         addFeature() {
             const selected = this.featureList.find(item => item.label === this.feature);
             let feature = {
