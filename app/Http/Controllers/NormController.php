@@ -51,10 +51,26 @@ class NormController extends Controller
        return to_route('norms.index');
     }
 
-    
-    public function show(Norm $norm)
+
+    public function storeNorm(Request $request)
     {
-        return inertia('Norm/Show', compact('norm'));
+        $section = Norm::find($request->section_id);
+
+        // Guardar el archivo en la colección 'norms'
+        if ($request->hasFile('media')) {
+            $section->addMediaFromRequest('media')->toMediaCollection('norms');
+        }
+
+       return to_route('norms.index');
+    }
+
+    
+    public function show($norm_id)
+    {
+        $section = Norm::with('media')->find($norm_id);
+
+        // return $section;
+        return inertia('Norm/Show', compact('section'));
     }
 
     

@@ -150,6 +150,7 @@ Route::resource('neighbors', UserController::class)->middleware('auth');
 //norms routes-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 Route::resource('norms', NormController::class)->middleware('auth');
+Route::post('norms/store-norm', [NormController::class, 'storeNorm'])->name('norms.store-norm')->middleware('auth');
 
 
 //supports routes-------------------------------------------------------------------------------------

@@ -23,8 +23,8 @@
             </div>
 
             <h1 class="text-lg border-b pb-2 px-3">Crear publicación</h1>
-
-            <input v-model="form.title" class="input" type="text" placeholder="Escribe un título a tu publicación (opcional)">
+            
+            <el-input v-model="form.title" placeholder="Escribe un título a tu publicación (opcional)" :maxlength="100" clearable />
 
             <textarea v-model="form.body" class="w-full textarea !border-transparent" rows="3" placeholder="Escribe el contenido de tu publicación"></textarea>
 

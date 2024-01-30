@@ -1,7 +1,7 @@
 <template>
     <div class="rounded-lg border border-gray4 text-sm shadow-md group relative lg:w-[870px]">
         <!-- Action buttons only for admin -->
-        <div v-if="true"
+        <div v-if="!is_my_event"
             class="flex justify-end mb-3 space-x-1 lg:group-hover:opacity-100 lg:opacity-0 transition-opacity duration-300 absolute top-3 right-3">
             <el-popconfirm confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537"
                 title="¿Continuar?" @confirm="deleteCommunityEvent">
@@ -46,10 +46,11 @@
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-grip-lines text-xs mr-2"></i>Descripción: <strong>{{ communityEvent?.description }}</strong></p>
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-clock-rotate-left text-xs mr-2"></i>Hora: <strong>{{ communityEvent?.time }}</strong></p>
                 <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-location-dot text-xs mr-2"></i>Lugar: <strong>{{ communityEvent?.place }}</strong></p>
-                <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-dollar-sign text-xs mr-2"></i>Costo: <strong>${{ communityEvent?.cost?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</strong></p>
+                <p class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-dollar-sign text-xs mr-2"></i>Costo: <strong :class="{'text-green-500': communityEvent?.cost == 0}">{{ communityEvent?.cost == 0 ? 'Gratis' : '$' + communityEvent?.cost?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</strong></p>
                 <p v-if="communityEvent?.capacity_event" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-users text-xs mr-2"></i>Capacidad máx: <strong :class="currentCapacity == communityEvent?.capacity_event ? 'text-red-500' : ''" >{{ currentCapacity + '/' + communityEvent?.capacity_event }}</strong></p>
+                <p v-if="!communityEvent?.capacity_event" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-users text-xs mr-2"></i>N° registrados: <strong>{{ currentCapacity }}</strong></p>
                 <p v-if="communityEvent?.capacity_per_resident" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-people-roof text-xs mr-2"></i>Participantes por residencia: <strong>{{ communityEvent?.capacity_per_resident }}</strong></p>
-                <p v-if="communityEvent?.rules" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-list-ol text-xs mr-2"></i>Reglas: <strong>{{ communityEvent?.rules }}</strong></p>
+                <p v-if="communityEvent?.rules" class="text-gray1 mt-2 lg:text-sm text-xs"><i class="fa-solid fa-list-ol text-xs mr-2"></i>Reglas: <strong v-for="rule in communityEvent?.rules" :key="rule">{{ rule + '. ' }}</strong></p>
             </div>
         </div> 
         <!--  estado de carga -->

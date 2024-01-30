@@ -8,7 +8,7 @@
                 <h1 class="font-bold mb-5">Crear un evento</h1>
                 <div class="mt-3">
                     <InputLabel value="Nombre*" class="ml-3 mb-1" />
-                    <input v-model="form.name" class="input" type="text" placeholder="Escriba el nombre del evento" />
+                    <el-input v-model="form.name" placeholder="Escribe el nombre del evento" :maxlength="100" clearable />
                     <InputError :message="form.errors.name" />
                 </div>
 
@@ -28,14 +28,16 @@
 
                 <div class="mt-3">
                     <InputLabel value="Lugar*" class="ml-3 mb-1" />
-                    <input v-model="form.place" class="input" type="text" placeholder="Lugar del evento" />
+                    <el-input v-model="form.place" placeholder="Escribe el Lugar del evento" :maxlength="100" clearable />
                     <InputError :message="form.errors.place" />
                 </div>
 
                 <div class="flex items-center space-x-3 mt-3">
                   <div class="w-2/3">
                       <InputLabel value="Capacidad" class="ml-3 mb-1 text-sm" />
-                      <input :disabled="unlimited_capacity" v-model="form.capacity_event" type="number" autocomplete="off" class="input" placeholder="Cantidad máxima de personas" />
+                      <el-input :disabled="unlimited_capacity" v-model="form.capacity_event" placeholder="Cantidad máxima de personas"
+                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')" />
                       <InputError :message="form.errors.capacity_event" />
                   </div>
                   <label class="flex items-center text-xs mt-5">
@@ -53,14 +55,17 @@
 
                 <div class="mt-3 w-2/3">
                   <InputLabel value="Participantes por residencia" class="ml-3 mb-1 text-sm" />
-                  <input :disabled="unlimited_capacity" v-model="form.capacity_per_resident" type="number" autocomplete="off" class="input" placeholder="Cantidad máxima de personas por residencia" />
+                  <el-input :disabled="unlimited_capacity" v-model="form.capacity_per_resident" placeholder="Cantidad máxima de personas por residencia"
+                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')" />
                   <InputError :message="form.errors.capacity_per_resident" />
                 </div>
 
                 <div class="mt-3 w-1/2 relative">
                     <InputLabel value="Costo*" class="ml-3 mb-1 text-sm" />
-                    <input v-model="form.cost" type="number" step="0.1" autocomplete="off" class="input pl-7" placeholder="00.00" />
-                    <p class="text-sm text-gray-500 absolute top-[26px] left-2 border-r border-gray2 pr-[6px] py-[6px]">$</p>
+                    <el-input v-model="form.cost" placeholder=""
+                      :formatter="(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')" />
                     <InputError :message="form.errors.cost" />
                 </div>
             </section>
@@ -79,20 +84,21 @@
 
                 <div v-if="localParticipants === 'Otro'" class="mt-3">
                   <InputLabel value="Describa a los participantes*" class="ml-3 mb-1" />
-                  <input v-model="form.participants" class="input" type="text" />
+                  <el-input v-model="form.participants" placeholder="Describe los participantes" :maxlength="100" clearable />
                   <InputError :message="form.errors.participants" />
                 </div>
 
                 <div class="mt-3">
                   <InputLabel value="Descripción*" class="ml-3 mb-1" />
-                  <textarea v-model="form.description" class="textarea" rows="3" placeholder="Escriba una breve descripción del evento"></textarea>
+                  <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                            placeholder="Escribe una breve descripción del evento" :maxlength="200" show-word-limit clearable />
                   <InputError :message="form.errors.description" />
                 </div>
 
                 <div class="mt-3">
                     <InputLabel value="Reglas del evento" class="ml-3 mb-1" />
                   <div class="flex space-x-2 mb-1">
-                    <input v-model="newRule" class="input" type="text" placeholder="Escriba una regla (Opcional)" />
+                    <el-input v-model="newRule" placeholder="Escriba una regla (Opcional)" :maxlength="100" clearable />
                     <SecondaryButton @click="addRule" type="button">
                         Agregar
                     </SecondaryButton>

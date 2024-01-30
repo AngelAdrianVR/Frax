@@ -1,8 +1,8 @@
 <template>
     <AppLayout title="Editar visita">
-        <div class="lg:py-7 lg:px-10 py-2 px-">
+        <div class="lg:py-7 lg:px-10 py-2">
             <Back />
-            <form @submit.prevent="update" class="mx-8 mt-9 md:grid grid-cols-2 md:gap-9 md:p-4">
+            <form @submit.prevent="update" class="lg:mx-8 mx-2 mt-9 md:grid grid-cols-2 md:gap-9 md:p-4">
                 <div>
                     <div class="flex justify-center items-start space-x-12 text-sm mb-8">
                         <div class="flex items-center mr-5">
@@ -29,7 +29,7 @@
                         <div class="relative">
                             <InputLabel value="Nombre del visitante*" class="ml-3 mb-1" />
                             <p @click="guestForm.reset(); favoriteGuestModal = true" class="text-primary text-xs underline cursor-pointer absolute right-2 top-[2px]">Seleccionar visita frecuente</p>
-                            <input v-model="guestForm.name" class="input" type="text" />
+                            <el-input v-model="guestForm.name" placeholder="Escribe el nombre de tu visita" :maxlength="100" clearable />
                             <InputError :message="guestForm.errors.name" />
                             <p class="text-xs ml-3">En caso de no saber el nombre de la visita, solo puede agregar  el nombre de la empresa o el tipo de servicio que le realizarán. (p ej. servicio de comida)</p>
                         </div>
@@ -95,25 +95,25 @@
 
                         <div class="mt-3">
                             <InputLabel value="Marca*" class="ml-3 mb-1" />
-                            <input class="input" v-model="guestForm.vehicle_details.brand" type="text" placeholder="Escribe la marca del vehículo" required />
+                            <el-input v-model="guestForm.vehicle_details.brand" placeholder="Escribe la marca del vehículo" required :maxlength="20" clearable />
                             <!-- <InputError :message="guestForm.errors?.vehicle_details?.brand" /> -->
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Modelo*" class="ml-3 mb-1" />
-                            <input class="input" v-model="guestForm.vehicle_details.model" type="text" placeholder="Escribe el modelo del vehículo" required />
+                            <el-input v-model="guestForm.vehicle_details.model" placeholder="Escribe el modelo del vehículo" required :maxlength="20" clearable />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.model" /> -->
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Color*" class="ml-3 mb-1" />
-                            <input class="input" v-model="guestForm.vehicle_details.color" type="text" placeholder="Escribe el color del vehículo" required />
+                            <el-input v-model="guestForm.vehicle_details.color" placeholder="Escribe el color del vehículo" required :maxlength="20" clearable />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.color" /> -->
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Placa*" class="ml-3 mb-1" />
-                            <input class="input uppercase" v-model="guestForm.vehicle_details.plate" type="text" placeholder="Escribe la placa del vehículo" required />
+                            <el-input v-model="guestForm.vehicle_details.plate" placeholder="Escribe la placa del vehículo" required :maxlength="10" clearable />
                             <!-- <InputError :message="guestForm.errors.vehicle_details.plate" /> -->
                         </div>
                     </div>
@@ -121,7 +121,8 @@
 
                   <div class="mt-3">
                     <InputLabel value="Notas" class="ml-3 mb-1" />
-                    <textarea v-model="guestForm.notes" class="textarea" rows="3"></textarea>
+                    <el-input v-model="guestForm.notes" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                            :maxlength="200" show-word-limit clearable />
                     <InputError :message="guestForm.errors.notes" />
                   </div>
                   
@@ -141,13 +142,15 @@
                 <section class="col-start-1" v-if="guestForm.type == 'Evento'">
                         <div>
                             <InputLabel value="Título del evento*" class="ml-3 mb-1" />
-                            <input v-model="eventForm.title" class="input" type="text" />
+                            <el-input v-model="eventForm.title" placeholder="Escribe el nombre del evento" :maxlength="100" clearable />
                             <InputError :message="eventForm.errors.title" />
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Cantidad de invitados*" class="ml-3 mb-1" />
-                            <input v-model="eventForm.guests_quantity" class="input" type="number" min="0" />
+                            <el-input v-model="eventForm.guests_quantity" placeholder="0"
+                              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')" />
                             <InputError :message="eventForm.errors.guests_quantity" />
                         </div>
 
@@ -165,36 +168,38 @@
                         </div>
 
                         <div class="mt-3">
-                            <InputLabel value="Horario" class="ml-3 mb-1" />
-                              <el-time-select
-                                v-model="eventForm.start_time"
-                                class="mr-4 mb-2 lg:mb-0"
-                                placeholder="Hora de inicio"
-                                start="07:00"
-                                step="00:15"
-                                end="20:00"
-                                :disabled="eventForm.is_all_day"
-                              />
-                              <el-time-select
-                                v-model="eventForm.end_time"
-                                placeholder="Hora de terminación"
-                                start="07:00"
-                                step="00:15"
-                                end="22:00"
-                                :disabled="eventForm.is_all_day"
-                              />
-                            <InputError :message="eventForm.errors.schedule" />
-                        </div>
+                          <InputLabel value="Horario" class="ml-3 mb-1" />
+                            <el-time-select
+                              v-model="eventForm.start_time"
+                              class="mr-4 lg:mb-0"
+                              placeholder="Hora de inicio"
+                              start="07:00"
+                              step="00:15"
+                              end="20:00"
+                              :disabled="eventForm.is_all_day"
+                            />
+                            <el-time-select
+                              v-model="eventForm.end_time"
+                              placeholder="Hora de terminación"
+                              start="07:00"
+                              step="00:15"
+                              end="22:00"
+                              class="mt-2"
+                              :disabled="eventForm.is_all_day"
+                            />
+                          <InputError :message="eventForm.errors.schedule" />
+                      </div>
 
                         <div class="mt-3">
                             <InputLabel value="Ubicación" class="ml-3 mb-1" />
-                            <input v-model="eventForm.location" class="input" type="text" />
+                            <el-input v-model="eventForm.location" placeholder="Escribe el lugar del evento" :maxlength="100" clearable />
                             <InputError :message="eventForm.errors.location" />
                         </div>
 
                         <div class="mt-3">
                             <InputLabel value="Descripción" class="ml-3 mb-1" />
-                            <textarea v-model="eventForm.description" class="textarea" rows="3"></textarea>
+                            <el-input v-model="eventForm.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                            :maxlength="200" show-word-limit clearable />
                             <InputError :message="eventForm.errors.description" />
                         </div>
                     </section>
@@ -353,7 +358,8 @@
                 </div>
                 <div class="mt-3">
                   <InputLabel value="Notas" class="ml-3 mb-1" />
-                  <textarea v-model="guestForm.notes" class="textarea" rows="3"></textarea>
+                  <el-input v-model="guestForm.notes" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                            :maxlength="200" show-word-limit clearable />
                   <InputError :message="guestForm.errors.notes" />
                 </div>
               </div>

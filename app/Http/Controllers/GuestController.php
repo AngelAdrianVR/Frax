@@ -82,7 +82,7 @@ class GuestController extends Controller
 
         //si se selecciona como visita frecuente
         if ($request->is_favorite_guest) {
-            FavoriteGuest::create([
+            $favorite_guest = FavoriteGuest::create([
                 'guest_type' => $request->gueguest_type,
                 'name' => $request->name,
                 'identification' => $request->identification,
@@ -90,6 +90,12 @@ class GuestController extends Controller
                 'vehicle_details' => [$request->vehicle_details],
                 'user_id' => auth()->id(),
             ]);
+
+            // Guardar el archivo en la colección 'guest_images'
+        if ($request->hasFile('guest_image')) {
+                $favorite_guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
+            }
+            
         }
 
         return to_route('guests.index');

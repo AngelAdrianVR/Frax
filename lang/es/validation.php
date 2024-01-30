@@ -158,6 +158,6 @@ return [
         'capacity_per_resident' => 'participante por residencia',
         'capacity_event' => 'capacidad del evento',
         'address' => 'domicilio',
-        'people_quantity' => 'asistentes',
+        'participants_quantity' => 'asistentes',
     ],
 ];
