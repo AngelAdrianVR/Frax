@@ -1,50 +1,52 @@
 <template>
   <AppLayout title="Calendario">
-    <div class="relative overflow-hidden">
-      <div class="flex justify-between text-lg mx-2 lg:mx-14 mt-2">
-        <span>Calendario</span>
-      </div>
-
-      <div class="flex justify-between text-lg mx-2 lg:mx-14">
-        <!-- <span class="text-primary text-sm cursor-pointer">Mes <i class="fa-solid fa-angle-down text-xs ml-2"></i></span> -->
-        <span></span>
-        <div class="flex justify-between items-center lg:w-1/5">
-          <i @click="changeMonth(-1)" class="fa-solid fa-angle-left text-primary text-xs mr-5 cursor-pointer p-1"></i>
-          <i class="fa-solid fa-calendar-days text-primary text-sm mr-2"></i>
-          <p class="text-[#cccccc]">|</p>
-          <p class="text-sm ml-2 uppercase">{{ currentMonth.toLocaleDateString('es-ES', {
-            month: 'long', year: 'numeric'
-          })
+       <p class="mt-4 pr-10 -mb-5 text-2xl font-bold text-right lg:mr-10 uppercase">{{ currentMonth.toLocaleDateString('es-ES', {
+              year: 'numeric'
+            })
           }}</p>
-          <i @click="changeMonth(1)" class="fa-solid fa-angle-right text-primary text-xs ml-5 cursor-pointer p-1"></i>
+    <div class="relative overflow-hidden flex">
+      <section class="text-lg mx-2 w-1/4 mt-14">
+        <div class="flex flex-col justify-center items-center">
+          <p class="text-8xl font-bold">12</p>
+          <div class="flex items-center">
+            <i @click="changeMonth(-1)" class="fa-solid fa-angle-left text-primary text-xs mr-1 cursor-pointer p-1"></i>
+            <p class="text-center text-xl ml-2 uppercase w-44">{{ currentMonth.toLocaleDateString('es-ES', {
+              month: 'long'
+            })
+            }}</p>
+            <i @click="changeMonth(1)" class="fa-solid fa-angle-right text-primary text-xs ml-1 cursor-pointer p-1"></i>
+          </div>
         </div>
+      </section>
+
         <div class="flex space-x-2">
           <Link :href="route('calendars.create')">
           <PrimaryButton>Agendar</PrimaryButton>
           </Link>
         </div>
-      </div>
       <!-- <div class="mx-14">
         <button @click="showPendentInvitationsModal = true" v-if="pendent_invitations.length"
           class="bg-[#FEDBBD] text-[#FD8827] px-2 py-1 rounded-[5px] text-sm">Invitaciones pendientes <span
             class="ml-2">({{
               pendent_invitations.length }})</span></button>
       </div> -->
+
       <!-- -------------- calendar section --------------- -->
-      <section @click="selectedDay = null" class="w-11/12 mx-auto mb-24 min-h-screen">
+      <section @click="selectedDay = null" class="w-3/4 ml-auto min-h-screen lg:mr-14">
         <table class="w-full mt-8">
-          <tr class="text-center text-xs">
-            <th class="py-2 w-[14.28%] border border-[#9A9A9A]">DOM</th>
-            <th class="py-2 w-[14.28%] border border-[#9A9A9A]">LUN</th>
-            <th class="py-2 w-[14.28%] border border-[#9A9A9A]">MAR</th>
-            <th class="py-2 w-[14.28%] border border-[#9A9A9A]">MIE</th>
-            <th class="py-2 w-[14.28%] border border-[#9A9A9A]">JUE</th>
-            <th class="py-2 w-[14.28%] border border-[#9A9A9A]">VIE</th>
-            <th class="py-2 w-[14.28%] border border-[#9A9A9A]">SAB</th>
+          <tr class="text-center text-base *:bg-primarylight *:py-2">
+            <th>DOM</th>
+            <th>LUN</th>
+            <th>MAR</th>
+            <th>MIE</th>
+            <th>JUE</th>
+            <th>VIE</th>
+            <th>SAB</th>
           </tr>
           <tr v-for="(week, index) in weeks" :key="index" class="text-xs text-right">
-            <td v-for="day in week" :key="day" class="h-32 pb-4 border border-[#9A9A9A] relative">
-              <p class="absolute bottom-0 right-3">{{ day }}</p>
+            <td v-for="day in week" :key="day" class="h-10 relative text-center">
+              <p @click="daySelection = day" class="rounded-full text-sm cursor-pointer hover:bg-gray-100 inline-block size-8 pt-1.5">{{ day }}</p>
+
               <!-- Agregar línea para tareas y eventos -->
               <div v-for="task in tasks.data" :key="task.id">
                 <div class="" v-if="isTaskDay(task, day)">
@@ -203,6 +205,7 @@ export default {
       selectedDay: null, // Seguinmiento del dia seleccionado
       showPendentInvitationsModal: false,
       pendent_invitations_local: this.pendent_invitations,
+      daySelection: null,
     }
   },
   components: {
