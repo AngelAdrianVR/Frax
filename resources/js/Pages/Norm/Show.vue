@@ -9,19 +9,28 @@
             <section class="lg:w-1/5">
               <div class="mt-7">
                 <p class="my-4 px-3 font-bold">{{ section.title }}</p>
-                <p @click="normSelected(index, norm)" v-for="(norm, index) in normsMedia" :key="norm" 
+                <p :title="norm.name" @click="normSelected(index, norm)" v-for="(norm, index) in normsMedia" :key="norm" 
                 :class="{'bg-primarylight text-primary': selectedNorm == index}"
                 class="text-sm mt-1 px-3 py-1 cursor-pointer truncate">{{ norm.name }}</p>
               </div>
             </section>
-            <section class="lg:w-4/5 lg:p-5 p-3">
+            <section v-if="selectedNormObj" class="lg:w-4/5 lg:mr-28 lg:p-5 p-3">
               <div class="rounded-t-sm border border-gray3 p-9">
                  <!-- Mostrar el PDF seleccionado -->
-                <VuePDF :pdf="pdf" />
-              </div>
-                <div class="text-right p-3 rounded-b-sm border border-gray3">
-                  <PrimaryButton>Marcar como leído</PrimaryButton>
+                <!-- <VuePDF :pdf="pdf" /> -->
+                <div v-if="selectedNormObj">
+                  <h1 class="font-bold text-lg text-center">{{ selectedNormObj.name }}</h1>
+                  <p class="text-center text-sm my-4">{{ selectedNormObj }}</p>
+                  <p class="text-sm">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nulla eius hic quas recusandae perspiciatis corrupti illo ut unde aut. Nulla obcaecati hic et eligendi laborum veritatis quod aut aliquam doloribus.
+                  Adipisci sed enim impedit culpa quo mollitia, saepe temporibus commodi deleniti velit reiciendis laborum itaque numquam ad ducimus dolore veniam nulla aspernatur fuga quia quos quidem quaerat atque suscipit. Asperiores.
+                  Sit odio recusandae, expedita natus error delectus vero ducimus? Optio itaque tempore neque alias quasi dolorum excepturi voluptates ipsam fugit. Pariatur similique vero libero, voluptatem id nemo aperiam dolor tempore.
+                  Dicta minus, adipisci asperiores, consequatur, perferendis neque officia qui quos tempora ipsa sit repudiandae accusantium rerum id molestiae? Itaque, natus. Harum eos expedita magnam dolores iste laborum sapiente dolorem voluptates?
+                  Iusto hic, assumenda exercitationem provident laboriosam ab quidem inventore eos reiciendis impedit laborum non eius nulla doloremque consectetur facere voluptatum dolorem. Debitis laudantium reprehenderit fugit ex esse suscipit nam iusto.</p>
                 </div>
+              </div>
+              <div class="text-right p-3 rounded-b-sm border border-gray3">
+                <PrimaryButton>Marcar como leído</PrimaryButton>
+              </div>
             </section>
           </div>
         </div>
@@ -71,7 +80,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import CancelButton from "@/Components/MyComponents/CancelButton.vue";
 import Modal from "@/Components/Modal.vue";
 import Back from '@/Components/MyComponents/Back.vue';
-import { VuePDF, usePDF } from '@tato30/vue-pdf'
+// import { VuePDF, usePDF } from '@tato30/vue-pdf'
 import { useForm } from "@inertiajs/vue3";
 
 export default {
@@ -80,12 +89,12 @@ data(){
     section_id: this.section.id,
     media: null,
   });
-  const { pdf } = usePDF('http://localhost:8000/storage/35/Residentfy_ManualResidente.pdf');
+  // const { pdf } = usePDF('http://localhost:8000/storage/35/Residentfy_ManualResidente.pdf');
     return {
       form,
-      pdf,
+      // pdf,
       selectedNorm: null,
-      selectedNormUrl: null,
+      selectedNormObj: null,
       addNormModal: false,
     }
 },
@@ -94,7 +103,7 @@ AppLayout,
 PrimaryButton,
 CancelButton,
 Modal,
-VuePDF,
+// VuePDF,
 Back
 },
 props:{
@@ -115,7 +124,8 @@ methods:{
   },
   normSelected(index, norm) {
     this.selectedNorm = index;
-    this.selectedNormUrl = norm.original_url;
+    this.selectedNormObj = norm;
+    console.log(norm)
   }
 },
 computed: {

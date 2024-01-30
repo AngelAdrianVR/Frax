@@ -60,7 +60,7 @@ class GuestController extends Controller
 
         // Guardar el archivo en la colección 'guest_images'
         if ($request->hasFile('guest_image')) {
-            $guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
+            $mediaItem = $guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
         }
 
         // Guardar el archivo en la colección 'vehicle_image'
@@ -80,23 +80,23 @@ class GuestController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        //si se selecciona como visita frecuente
-        if ($request->is_favorite_guest) {
-            $favorite_guest = FavoriteGuest::create([
-                'guest_type' => $request->gueguest_type,
-                'name' => $request->name,
-                'identification' => $request->identification,
-                'notes' => $request->notes,
-                'vehicle_details' => [$request->vehicle_details],
-                'user_id' => auth()->id(),
-            ]);
+        // //si se selecciona como visita frecuente comen tado porque no guarda las imagenes a la visita favorita
+        // if ($request->is_favorite_guest) {
+        //     $favorite_guest = FavoriteGuest::create([
+        //         'guest_type' => $request->gueguest_type,
+        //         'name' => $request->name,
+        //         'identification' => $request->identification,
+        //         'notes' => $request->notes,
+        //         'vehicle_details' => [$request->vehicle_details],
+        //         'user_id' => auth()->id(),
+        //     ]);
 
-            // Guardar el archivo en la colección 'guest_images'
-        if ($request->hasFile('guest_image')) {
-                $favorite_guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
-            }
+        //     // Copiar la misma imagen de la visita regular a la visita favorita
+        //     if (isset($mediaItem)) {
+        //         $favorite_guest->addMedia($mediaItem->getPath())->toMediaCollection('guest_images');
+        //     }
             
-        }
+        // }
 
         return to_route('guests.index');
 
