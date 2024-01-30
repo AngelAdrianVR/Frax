@@ -126,7 +126,7 @@
                     <InputError :message="guestForm.errors.notes" />
                   </div>
                   
-                  <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
+                  <!-- <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
                       <Checkbox v-model:checked="guestForm.is_favorite_guest" class="bg-transparent disabled:border-gray-400" />
                       <span class="ml-2 mr-2 text-xs">Agregar esta visita como frecuente</span>
                       <el-tooltip
@@ -136,7 +136,7 @@
                         <i class="fa-solid fa-info text-primary text-[7px]"></i>
                       </div>
                     </el-tooltip>
-                  </label>
+                  </label> -->
                 </section>
                 <!----------------- Evento -------------------------------------->
                 <section class="col-start-1" v-if="guestForm.type == 'Evento'">

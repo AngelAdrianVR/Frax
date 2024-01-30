@@ -113,7 +113,7 @@
                 <div class="mt-3">
                     <InputLabel value="Imagen portada" class="ml-3 mb-1" />
                     <InputFilePreview 
-                    @imagen="saveImage; form.coverImageCleared = false"
+                    @imagen="saveImage($event); form.coverImageCleared = false"
                     @cleared="form.imageCover = null; form.coverImageCleared = true"
                     :imageUrl="community_event.media[0]?.original_url" />
                 </div>
