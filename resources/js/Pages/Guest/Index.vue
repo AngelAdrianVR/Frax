@@ -1,176 +1,78 @@
 <template>
-  <!-- Envoltorio de AppLaout para estado de carga en toda la pantalla -->
   <div class="relative h-full">
-    <LoadingState :loading="loading" />
-
     <AppLayout title="Visitantes">
-      <!-- ------------- tabs section starts ------------- -->
-      <div class="border-y-2 border-[#D9D9D9] items-center py-2">
-        <div class="flex lg:ml-20 w-full overflow-x-auto">
-          <Tab @click="currentTab = index + 1" :label="tab" :active="currentTab == index + 1" v-for="(tab, index) in tabs"
-            :key="index" />
-        </div>
-      </div>
-      <!-- ------------- tabs section ends ------------- -->
-
-      <!-- ------------- tab 1 section visitas programadas starts ------------- -->
-      <div class="p-4" v-if="currentTab == 1">
-        <div class="flex justify-between items-center lg:mx-12 mb-10 mt-4">
-          <h2 class="font-bold">Tus visitas programadas</h2>
-          <HideableLabel class="absolute right-0 top-28 z-50" iconClass="fa-solid fa-info">
-          <p>
-            La tarjeta de visitante desaparecerá el día siguiente de su ingreso o al expirar la fecha de entrada registrada.
-          </p>
-        </HideableLabel>
-
-          <PrimaryButton class="hidden md:block" @click="$inertia.get(route('guests.create'))">Programar visita
-          </PrimaryButton>
-          <PrimaryButton class="lg:hidden" @click="$inertia.get(route('guests.create'))"><i class="fa-solid fa-plus"></i>
-          </PrimaryButton>
-        </div>
-        <div class="mt-4 lg:mx-12">
-          <div v-if="guests.data?.length > 0" class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5">
-            <GuestCard class="mt-4 lg:mt-0" @guestDeleted="handleGuestDeleted" v-for="guest in guests.data" :key="guest"
-              :guest="guest" />
-          </div>
-          <p class="text-xs text-gray-400 text-center" v-else>No hay visitas registradas</p>
-        </div>
-      </div>
-      <!-- ------------- tab 1 section visitas programadas ends ------------- -->
-
-
-      <!-- ------------- tab 2 section visitas frecuentes starts ------------- -->
-      <div class="p-4" v-if="currentTab == 2">
-        <div class="flex justify-between items-center lg:mx-12 mb-10">
-          <h2 class="font-bold">Tus visitas frecuentes</h2>
-          <PrimaryButton class="hidden md:block" @click="$inertia.get(route('favorite-guests.create'))">Agregar visita
-            frecuente</PrimaryButton>
-          <PrimaryButton class="lg:hidden" @click="$inertia.get(route('favorite-guests.create'))"><i
-              class="fa-solid fa-plus"></i></PrimaryButton>
-        </div>
-        <div class="mt-4 lg:mx-12">
-          <div v-if="favoriteGuests?.length > 0" class="md:grid lg:grid-cols-3 md:grid-cols-2 gap-5">
-            <FavoriteGuestCard class="mt-4 lg:mt-0" @favoriteGuestDeleted="handleFavoriteGuestDeleted"
-              v-for="favoriteGuest in favoriteGuests" :key="favoriteGuest" :favoriteGuest="favoriteGuest" />
-          </div>
-          <p class="text-xs text-gray-400 text-center" v-else>No tienes visitantes frecuentes registrados</p>
-        </div>
-      </div>
-      <!-- ------------- tab 2 section visitas frecuentes ends ------------- -->
-
-      <!-- ------------- tab 3 section hidtorial de visitas starts ------------- -->
-      <div class="p-4" v-if="currentTab == 3">
-        <div class="flex justify-between items-center lg:mx-12 mb-10">
-          <h2 class="font-bold">Historial de visitas</h2>
-        </div>
-
-        <div class="overflow-auto">
-          <GuestHistoryTable v-if="guestHistories?.length > 0" :guestHistories="guestHistories" />
-          <p class="text-xs text-gray-400 text-center" v-else>No tienes historial de visitas</p>
-        </div>
-
-        <!-- --- pagination --- -->
-        <div class="mt-4">
-          <Pagination :pagination="guestHistories" />
-        </div>
-      </div>
-      <!-- ------------- tab 3 section hidtorial de visitas ends ------------- -->
+      <main class="mt-3 px-2 lg:px-20">
+        <el-tabs v-model="currentTab">
+          <el-tab-pane name="1">
+            <template #label>
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-4 mr-1">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                </svg>
+                <span>Visitas programadas</span>
+              </div>
+            </template>
+            <ProgrammedVisit :guests="guests.data" />
+          </el-tab-pane>
+          <el-tab-pane name="2">
+            <template #label>
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-4 mr-1">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                </svg>
+                <span>Visitas frecuentes</span>
+              </div>
+            </template>
+           <FavoriteVisits />
+          </el-tab-pane>
+          <el-tab-pane name="3">
+            <template #label>
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-4 mr-1">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span>Historial</span>
+              </div>
+            </template>
+            <Historical />
+          </el-tab-pane>
+        </el-tabs>
+      </main>
     </AppLayout>
   </div>
 </template>
 
 <script>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Link } from "@inertiajs/vue3";
-import Tab from "@/Components/MyComponents/Tab.vue";
-import GuestCard from "@/Components/MyComponents/Guest/GuestCard.vue";
-import FavoriteGuestCard from "@/Components/MyComponents/Guest/FavoriteGuestCard.vue";
-import GuestHistoryTable from "@/Components/MyComponents/Guest/GuestHistoryTable.vue";
-import LoadingState from "@/Components/MyComponents/LoadingState.vue";
-import HideableLabel from "@/Components/MyComponents/HideableLabel.vue";
-import axios from 'axios';
+import ProgrammedVisit from "./Tabs/ProgrammedVisit.vue";
+import Historical from "./Tabs/Historical.vue";
+import FavoriteVisits from "./Tabs/FavoriteVisits.vue";
 
 export default {
   data() {
     return {
-      currentTab: 1,
-      loading: false,
-      favoriteGuests: null,
-      guestHistories: null,
-      tabs: ["Visitas programadas", "Visitas frecuentes", "Historial"],
+      currentTab: '1',
     };
   },
   components: {
     AppLayout,
-    PrimaryButton,
-    LoadingState,
-    FavoriteGuestCard,
-    GuestCard,
-    GuestHistoryTable,
-    HideableLabel,
-    Link,
-    Tab,
+    ProgrammedVisit,
+    FavoriteVisits,
+    Historical,
   },
   props: {
     guests: Object,
   },
   methods: {
-    handleGuestDeleted(deletedItemId) {
-      // Encuentra el índice del objeto eliminado en la lista
-      const deletedItemIndex = this.guests.data.findIndex(item => item.id === deletedItemId);
-
-      // Elimina el objeto localmente
-      if (deletedItemIndex !== -1) {
-        this.guests.data.splice(deletedItemIndex, 1);
-      }
-    },
-    handleFavoriteGuestDeleted(deletedItemId) {
-      // Encuentra el índice del objeto eliminado en la lista
-      const deletedItemIndex = this.favoriteGuests.findIndex(item => item.id === deletedItemId);
-
-      // Elimina el objeto localmente
-      if (deletedItemIndex !== -1) {
-        this.favoriteGuests.splice(deletedItemIndex, 1);
-      }
-    },
-    async fetchFavoriteGuests() {
-      try {
-        this.loading = true;
-        const response = await axios.get(route('favorite-guests.get-all'));
-        if (response.status === 200) {
-          this.favoriteGuests = response.data.items;
-          this.loading = false;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async fetchGuestHistories() {
-      try {
-        this.loading = true;
-        const response = await axios.get(route('guest-histories.get-all'));
-        if (response.status === 200) {
-          this.guestHistories = response.data.items;
-          this.loading = false;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
   },
   watch: {
     currentTab(newVal) {
-      if (newVal == 2 && this.favoriteGuests === null) {
-        //recupera la información de visitas frecuentes
-        this.fetchFavoriteGuests();
-
-      }
-      if (newVal == 3 && this.guestHistories === null) {
-        //recupera la información de visitas frecuentes
-        this.fetchGuestHistories();
-      }
-
       // Agrega la variable currentTab=newVal a la URL para mejorar la navegacion al actalizar o cambiar de pagina
       const currentURL = new URL(window.location.href);
       currentURL.searchParams.set('currentTab', newVal);
@@ -187,8 +89,9 @@ export default {
     // Extrae el valor de 'currentTab' de los parámetros de búsqueda
     const currentTabFromURL = currentURL.searchParams.get('currentTab');
 
-    // Convierte el valor a un número, ya que los parámetros de búsqueda son cadenas
-    this.currentTab = parseInt(currentTabFromURL) || 1;
+    if (currentTabFromURL) {
+      this.currentTab = currentTabFromURL;
+    }
   },
 };
 </script>

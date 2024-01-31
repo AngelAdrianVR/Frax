@@ -249,8 +249,8 @@ class GuestController extends Controller
     {
         $guest->clearMediaCollection();
         $guest_history = GuestHistory::where('guest_reference_id', $guest->id)->first(); //busca el historial de la visita programada a eliminar
-        $guest_history->delete(); //Elimina el registro de historial para que no se muestren los que se eliminaron.
-        $guest->delete();
+        $guest_history?->delete(); //Elimina el registro de historial para que no se muestren los que se eliminaron.
+        $guest?->delete();
 
         return response()->json(['item' => $guest]);
     }
