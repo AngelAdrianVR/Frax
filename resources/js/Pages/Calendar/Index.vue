@@ -4,10 +4,10 @@
               year: 'numeric'
             })
           }}</p>
-    <div class="relative overflow-hidden flex">
-      <section class="text-lg mx-2 w-1/4 mt-14">
+    <div class="relative overflow-hidden lg:flex">
+      <section class="text-lg mx-auto lg:mx-2 w-1/4 lg:mt-14">
         <div class="flex flex-col justify-center items-center">
-          <p class="text-8xl font-bold">12</p>
+          <p class="text-8xl font-bold">{{ daySelection }}</p>
           <div class="flex items-center">
             <i @click="changeMonth(-1)" class="fa-solid fa-angle-left text-primary text-xs mr-1 cursor-pointer p-1"></i>
             <p class="text-center text-xl ml-2 uppercase w-44">{{ currentMonth.toLocaleDateString('es-ES', {
@@ -19,11 +19,6 @@
         </div>
       </section>
 
-        <div class="flex space-x-2">
-          <Link :href="route('calendars.create')">
-          <PrimaryButton>Agendar</PrimaryButton>
-          </Link>
-        </div>
       <!-- <div class="mx-14">
         <button @click="showPendentInvitationsModal = true" v-if="pendent_invitations.length"
           class="bg-[#FEDBBD] text-[#FD8827] px-2 py-1 rounded-[5px] text-sm">Invitaciones pendientes <span
@@ -32,107 +27,40 @@
       </div> -->
 
       <!-- -------------- calendar section --------------- -->
-      <section @click="selectedDay = null" class="w-3/4 ml-auto min-h-screen lg:mr-14">
+      <section @click="selectedDay = null" class="lg:w-3/4 w-full mx-auto lg:ml-auto mb-10 lg:mr-14">
         <table class="w-full mt-8">
-          <tr class="text-center text-base *:bg-primarylight *:py-2">
-            <th>DOM</th>
-            <th>LUN</th>
-            <th>MAR</th>
-            <th>MIE</th>
-            <th>JUE</th>
-            <th>VIE</th>
-            <th>SAB</th>
-          </tr>
-          <tr v-for="(week, index) in weeks" :key="index" class="text-xs text-right">
-            <td v-for="day in week" :key="day" class="h-10 relative text-center">
-              <p @click="daySelection = day" class="rounded-full text-sm cursor-pointer hover:bg-gray-100 inline-block size-8 pt-1.5">{{ day }}</p>
-
-              <!-- Agregar línea para tareas y eventos -->
-              <div v-for="task in tasks.data" :key="task.id">
-                <div class="" v-if="isTaskDay(task, day)">
-                  <div @click.stop="selectedTask = task; selectedDay = day"
-                  :class="task.status == 'Terminada' ? 'bg-[#AFFD82] border-[#37951F]' : 'bg-primarylight'"
-                    class="border-primary border-l-4 border h-5 rounded-sm my-1 text-xs justify-between px-1 items-center cursor-pointer flex relative">
-                    <p class="text-start w-5/6 truncate">
-                      {{ task.title }}
-                    </p>
-                    <div>
-                      <svg v-if="task.type == 'Evento'" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                        fill="currentColor" class="bi bi-calendar4-event" viewBox="0 0 16 16">
-                        <path
-                          d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z" />
-                        <path d="M11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z" />
-                      </svg>
-                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-check2-circle" viewBox="0 0 16 16">
-                        <path
-                          d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
-                        <path
-                          d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
-                      </svg>
-                    </div>
-                    <div v-if="selectedTask === task && selectedDay == day" style="z-index: 999;"
-                      class="px-1 pb-3 absolute -bottom-56 -left-5 w-36 lg:w-56 h-auto bg-white rounded-md border cursor-default shadow-lg">
-                      <!-- --- Head --- -->
-                      <div class="flex items-center justify-end">
-                        <p class="border rounded-md py-[1px] px-[2px] bg-primarylight border-primary flex">
-                          {{ selectedTask.type }}
-                        <div class="ml-1">
-                          <svg v-if="selectedTask.type == 'Evento'" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                            fill="currentColor" class="bi bi-calendar4-event" viewBox="0 0 16 16">
-                            <path
-                              d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z" />
-                            <path
-                              d="M11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z" />
-                          </svg>
-                          <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                            class="bi bi-check2-circle" viewBox="0 0 16 16">
-                            <path
-                              d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
-                            <path
-                              d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
-                          </svg>
-                        </div>
-                        </p>
-                        <i @click.stop="selectedTask = null; selectedDay = null"
-                          class="fa-solid fa-xmark text-xs p-2 ml-4 cursor-pointer"></i>
-                      </div>
-                      <!-- --- Body --- -->
-                      <div class="px-3">
-                        <p class="font-bold text-left pb-[2px] pl-1">{{ selectedTask?.title }}</p>
-                        <div class="grid grid-cols-2 border-y border-[#9A9A9A] p-1 text-left">
-                          <p class="text-[#9A9A9A] text-xs">Hora inicio</p>
-                          <p class="text-[#9A9A9A] text-xs">Hora termino</p>
-                          <p class="text-xs mb-3">{{ selectedTask?.start_time ?? 'Todo el día' }}</p>
-                          <p class="text-xs mb-3">{{ selectedTask?.end_time ?? 'Todo el día' }}</p>
-                          <p class="text-[#9A9A9A] text-xs col-span-2">Descripción</p>
-                          <p class="text-xs col-span-2">{{ selectedTask?.description ?? 'Sin descripción' }}</p>
-                        </div>
-                      </div>
-                      <!-- --- Footer --- -->
-                      <div class="px-4 pt-2 flex justify-between items-center">
-                        <el-popconfirm v-if="selectedTask?.status === 'Pendiente'" confirm-button-text="Si"
-                          cancel-button-text="No" icon-color="#0355B5" title="Tarea terminada?" @confirm="taskDone">
-                          <template #reference>
-                            <PrimaryButton class="text-xs h-5">Hecho</PrimaryButton>
-                          </template>
-                        </el-popconfirm>
-                        <el-popconfirm confirm-button-text="Si" cancel-button-text="No" icon-color="#D90537"
-                          title="Eliminar tarea?" @confirm="deleteTask">
-                          <template #reference>
-                            <i class="fa-regular fa-trash-can text-primary cursor-pointer"></i>
-                          </template>
-                        </el-popconfirm>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
+            <tr class="text-center text-base *:bg-primarylight *:py-2">
+                <th>DOM</th>
+                <th>LUN</th>
+                <th>MAR</th>
+                <th>MIE</th>
+                <th>JUE</th>
+                <th>VIE</th>
+                <th>SAB</th>
+            </tr>
+            <tr v-for="(week, index) in weeks" :key="index" class="text-xs text-right">
+                <td v-for="day in week" :key="day" class="h-10 relative text-center">
+                    <!-- Agrega la clase 'text-red-500' si hay tareas para este día -->
+                    <p @click="daySelection = day" :class="{'text-white size-8 pt-1.5 bg-red-600': hasTasks(day), 'bg-gray-100': day === daySelection}" class="rounded-full text-sm cursor-pointer hover:bg-gray-100 hover:text-gray1 inline-block size-8 pt-1.5">{{ day }}</p>
+                </td>
+            </tr>
         </table>
-      </section>
+    </section>
     </div>
+
+    <!-- Tasks section ---------------------- -->
+      <div v-if="daySelection" class="border-t border-gray4 lg:mx-7 lg:py-7 lg:px-8 text-sm">
+        <div class="flex justify-between text-right">
+          <p class="font-bold">Actividades programadas <span class="text-gray3 ml-4">{{ formattedSelectedDate }}</span></p>
+          <Link :href="getCreateTaskUrl()">
+            <PrimaryButton>Agendar</PrimaryButton>
+          </Link>
+        </div>
+        <section class="grid grid-cols-2 lg:grid-cols-3 gap-3 mt-5">
+         <TaskCard v-for="task in filteredTasks" :key="task.id" :task="task" />
+        </section>
+      </div>
+      <!-- -------------------------------------- -->
 
     <DialogModal :show="showPendentInvitationsModal" @close="showPendentInvitationsModal = false">
       <template #title>
@@ -191,6 +119,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import DialogModal from "@/Components/DialogModal.vue";
+import TaskCard from "@/Components/MyComponents/Calendar/TaskCard.vue";
 import axios from 'axios';
 import moment from 'moment';
 import { format } from 'date-fns';
@@ -201,61 +130,82 @@ export default {
   data() {
     return {
       currentMonth: new Date(),
-      selectedTask: null, // Variable para realizar un seguimiento de la tarea seleccionada
-      selectedDay: null, // Seguinmiento del dia seleccionado
+      // selectedTask: null, // Variable para realizar un seguimiento de la tarea seleccionada
+      // selectedDay: null, // Seguinmiento del dia seleccionado
       showPendentInvitationsModal: false,
       pendent_invitations_local: this.pendent_invitations,
-      daySelection: null,
+      daySelection: new Date().getDate(), // Asigna el número del día actual
     }
   },
   components: {
     AppLayout,
     PrimaryButton,
     SecondaryButton,
-    Link,
     Dropdown,
     DropdownLink,
     DialogModal,
+    TaskCard,
+    Link
   },
   props: {
     tasks: Object,
     pendent_invitations: Array,
   },
   methods: {
-    async setAttendanceConfirmation(status, index) {
-      this.loading = true;
-      try {
-        const response = await axios.put(route('calendars.set-attendance-confirmation', this.pendent_invitations[index].id), {
-          status: status
+    hasTasks(day) {
+        // Verifica si hay tareas para el día seleccionado
+        const tasksForDay = this.tasks.data.filter(task => {
+            const taskDate = new Date(task.start_date);
+            const taskDay = taskDate.getDate();
+            const taskMonth = taskDate.getMonth() + 1; // Nota: getMonth devuelve 0-11, por eso sumamos 1
+            const taskYear = taskDate.getFullYear();
+
+            return taskDay === day && taskMonth === this.currentMonth.getMonth() + 1 && taskYear === this.currentMonth.getFullYear();
         });
 
-        if (response.status === 200) {
-          this.pendent_invitations_local.splice(index, 1);
-
-          if (response.data.item) {
-            this.tasks.data.push(response.data.item);
-          }
-
-          this.$notify({
-            title: 'Éxito',
-            message: 'Se ha cambiado el status de la invitacion a ' + status,
-            type: 'success'
-          });
-        }
-      } catch (error) {
-        this.$notify({
-          title: 'Error',
-          message: error.message,
-          type: 'error'
-        });
-      } finally {
-        this.loading = false;
-      }
+        return tasksForDay.length > 0;
     },
-    formatDateDns(date) {
-      const parsedDate = new Date(date);
-      return format(parsedDate, "dd MMM, yyyy", { locale: es }); // Formato personalizado
+    getCreateTaskUrl() {
+        // Formatea la fecha del día seleccionado en un formato adecuado para la URL
+        const formattedDateForUrl = format(new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), this.daySelection), 'yyyy-MM-dd', { locale: es });
+
+        // Construye la URL con la fecha como parámetro de consulta
+        return this.route('calendars.create', { date: formattedDateForUrl });
     },
+    // async setAttendanceConfirmation(status, index) {
+    //   this.loading = true;
+    //   try {
+    //     const response = await axios.put(route('calendars.set-attendance-confirmation', this.pendent_invitations[index].id), {
+    //       status: status
+    //     });
+
+    //     if (response.status === 200) {
+    //       this.pendent_invitations_local.splice(index, 1);
+
+    //       if (response.data.item) {
+    //         this.tasks.data.push(response.data.item);
+    //       }
+
+    //       this.$notify({
+    //         title: 'Éxito',
+    //         message: 'Se ha cambiado el status de la invitacion a ' + status,
+    //         type: 'success'
+    //       });
+    //     }
+    //   } catch (error) {
+    //     this.$notify({
+    //       title: 'Error',
+    //       message: error.message,
+    //       type: 'error'
+    //     });
+    //   } finally {
+    //     this.loading = false;
+    //   }
+    // },
+    // formatDateDns(date) {
+    //   const parsedDate = new Date(date);
+    //   return format(parsedDate, "dd MMM, yyyy", { locale: es }); // Formato personalizado
+    // },
     async taskDone() {
       try {
         const response = await axios.put(route('calendars.task-done', this.selectedTask));
@@ -271,49 +221,45 @@ export default {
       } catch (error) {
         console.log(error);
       }
-
-
     },
-    deleteTask() {
-      this.$inertia.delete(route('calendars.destroy', this.selectedTask));
-      this.$notify({
-        title: "Éxito",
-        message: "Tarea terminada",
-        type: "success",
-      });
-
-      this.selectedTask = null;
-    },
+    // deleteTask() {
+    //   this.$inertia.delete(route('calendars.destroy', this.selectedTask));
+    //   this.$notify({
+    //     title: "Éxito",
+    //     message: "Tarea terminada",
+    //     type: "success",
+    //   });
+    // },
     changeMonth(offset) {
       const newMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + offset, 1);
       this.currentMonth = newMonth;
     },
-    isTaskDay(task, day) {
-      if (day) {
-        const taskStartDate = new Date(task.start_date);
-        const currentDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
+    // isTaskDay(task, day) {
+    //   if (day) {
+    //     const taskStartDate = new Date(task.start_date);
+    //     const currentDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
 
-        // Convierte las fechas a objetos Moment
-        const momentFecha1 = moment(taskStartDate);
-        const momentFecha2 = moment(currentDay);
+    //     // Convierte las fechas a objetos Moment
+    //     const momentFecha1 = moment(taskStartDate);
+    //     const momentFecha2 = moment(currentDay);
 
-        return momentFecha1.isSame(momentFecha2);
-      }
-      return false;
-    },
-    getDurationTask() {
-      // Convierte las fechas en objetos Date
-      const startDate = new Date(this.selectedTask.start_date);
-      const finishDate = new Date(this.selectedTask.finish_date);
+    //     return momentFecha1.isSame(momentFecha2);
+    //   }
+    //   return false;
+    // },
+    // getDurationTask() {
+    //   // Convierte las fechas en objetos Date
+    //   const startDate = new Date(this.selectedTask.start_date);
+    //   const finishDate = new Date(this.selectedTask.finish_date);
 
-      // Calcula la diferencia en milisegundos
-      const diferenciaEnMilisegundos = finishDate - startDate;
+    //   // Calcula la diferencia en milisegundos
+    //   const diferenciaEnMilisegundos = finishDate - startDate;
 
-      // Convierte la diferencia en días
-      const duracionEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+    //   // Convierte la diferencia en días
+    //   const duracionEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
 
-      return duracionEnDias;
-    },
+    //   return duracionEnDias;
+    // },
     formatDate(dateString) {
       if (dateString) {
         const date = new Date(dateString);
@@ -356,6 +302,25 @@ export default {
       }
 
       return days;
+    },
+    formattedSelectedDate() {
+        const selectedDate = new Date(this.currentMonth);
+        selectedDate.setDate(this.daySelection);
+
+        return format(selectedDate, 'EEEE, d MMMM yyyy', { locale: es });
+    },
+    filteredTasks() {
+        if (!this.tasks.data) return [];
+
+        // Filtra las tareas que corresponden al día seleccionado
+        return this.tasks.data.filter(task => {
+            const taskDate = new Date(task.start_date);
+            const taskDay = taskDate.getDate();
+            const taskMonth = taskDate.getMonth() + 1; // Nota: getMonth devuelve 0-11, por eso sumamos 1
+            const taskYear = taskDate.getFullYear();
+
+            return taskDay === this.daySelection && taskMonth === this.currentMonth.getMonth() + 1 && taskYear === this.currentMonth.getFullYear();
+        });
     },
   },
 }
