@@ -10,6 +10,7 @@ use App\Models\GuestHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class GuestController extends Controller
 {
@@ -26,7 +27,7 @@ class GuestController extends Controller
     
     public function create()
     {
-        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::with('media')->latest()->get());
+        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::with('media')->where('user_id', auth()->id())->latest()->get());
 
         // return $favorite_guests;
 
@@ -80,26 +81,31 @@ class GuestController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        // //si se selecciona como visita frecuente comen tado porque no guarda las imagenes a la visita favorita
-        // if ($request->is_favorite_guest) {
-        //     $favorite_guest = FavoriteGuest::create([
-        //         'guest_type' => $request->gueguest_type,
-        //         'name' => $request->name,
-        //         'identification' => $request->identification,
-        //         'notes' => $request->notes,
-        //         'vehicle_details' => [$request->vehicle_details],
-        //         'user_id' => auth()->id(),
-        //     ]);
+        //si se selecciona como visita frecuente comen tado porque no guarda las imagenes a la visita favorita
+        if ($request->is_favorite_guest) {
+            $favorite_guest = FavoriteGuest::create([
+                'guest_type' => $request->gueguest_type,
+                'name' => $request->name,
+                'identification' => $request->identification,
+                'notes' => $request->notes,
+                'vehicle_details' => [$request->vehicle_details],
+                'user_id' => auth()->id(),
+            ]);
 
-        //     // Copiar la misma imagen de la visita regular a la visita favorita
-        //     if (isset($mediaItem)) {
-        //         $favorite_guest->addMedia($mediaItem->getPath())->toMediaCollection('guest_images');
-        //     }
+            // Copiar la misma imagen de la visita regular a la visita favorita
+            $guestMedia = $guest->getMedia()->all();
+            if ($guestMedia) {
+                $image = Media::find($guestMedia[0]['id']);
+                $clone = $image->replicate()->fill([
+                    'model_type' => FavoriteGuest::class,
+                    'model_id' => $favorite_guest->id
+                ]);
+                $clone->save();
+            }
             
-        // }
+        }
 
         return to_route('guests.index');
-
     }
 
     
@@ -112,9 +118,7 @@ class GuestController extends Controller
     public function edit($guest_id)
     {
         $guest = Guest::with('media')->find($guest_id);
-        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::with('media')->latest()->get());
-
-        // return $guest;
+        $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::with('media')->where('user_id', auth()->id())->latest()->get());
 
         return inertia('Guest/Edit', compact('guest', 'favorite_guests'));
     }

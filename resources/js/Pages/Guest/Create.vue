@@ -120,17 +120,16 @@
             <InputError :message="guestForm.errors.notes" />
           </div>
 
-          <!-- <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
-                    <Checkbox v-model:checked="guestForm.is_favorite_guest" class="bg-transparent disabled:border-gray-400" />
-                    <span class="ml-2 mr-2 text-xs">Agregar esta visita como frecuente</span>
-                    <el-tooltip
-                    content="Marca esta visita como frecuente para agilizar futuras programaciones de acceso"
-                    placement="top">
-                    <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
-                      <i class="fa-solid fa-info text-primary text-[7px]"></i>
-                    </div>
-                  </el-tooltip>
-                </label> -->
+          <label class="flex items-center mt-1 lg:mt-5 lg:ml-4 text-xs">
+            <Checkbox v-model:checked="guestForm.is_favorite_guest" class="bg-transparent disabled:border-gray-400" />
+            <span class="ml-2 mr-2 text-xs">Agregar esta visita como frecuente</span>
+            <el-tooltip content="Marca esta visita como frecuente para agilizar futuras programaciones de acceso"
+              placement="top">
+              <div class="rounded-full border border-primary w-3 h-3 flex items-center justify-center">
+                <i class="fa-solid fa-info text-primary text-[7px]"></i>
+              </div>
+            </el-tooltip>
+          </label>
         </section>
         <!----------------- Evento -------------------------------------->
         <section class="col-start-1" v-if="guestForm.type == 'Evento'">
@@ -215,7 +214,7 @@
       </form>
     </div>
     <!-- Visitante frecuente modal -------------------------------------------------->
-    <Modal :show="favoriteGuestModal" @close="favoriteGuestModal = false">
+    <Modal :show="favoriteGuestModal" @close="guestForm.reset(); favoriteGuestModal = false; selectedFavoriteGuest = null;">
       <div class="mx-7 my-4 space-y-4 relative">
         <div @click="favoriteGuestModal = false"
           class="cursor-pointer w-5 h-5 rounded-full border-2 border-black flex items-center justify-center absolute top-0 -right-2">
@@ -226,12 +225,11 @@
 
         <div class="mt-4">
           <el-select @change="findFavoriteGuest" class="w-full" v-model="favoriteGuestId" clearable filterable
-            placeholder="Seleccione" no-data-text="No hay opciones registradas"
+            placeholder="Seleccione" no-data-text="No hay visitas frecuentes registradas"
             no-match-text="No se encontraron coincidencias">
             <el-option v-for="item in favorite_guests.data" :key="item" :label="item.name" :value="item.id">
-              <figure v-if="item.media_guest?.length > 0" style="float: left">
-                <img class="object-contain bg-no-repeat size-6 rounded-full mt-1" :src="item.media_guest[0]?.original_url"
-                  alt="" />
+              <figure v-if="item.media_guest?.length > 0" style="float: left" class="flex items-center justify-center">
+                <img class="size-6 rounded-full mt-1" :src="item.media_guest[0]?.original_url" />
               </figure>
               <span v-else figurestyle="float: left"><i
                   class="fa-solid fa-circle-user text-blue-200 text-2xl mt-[2px]"></i></span>
@@ -340,14 +338,14 @@
             </div>
             <div class="mt-3">
               <InputLabel value="Notas" class="ml-3 mb-1" />
-              <el-input v-model="guestForm.notes" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" :maxlength="200"
-                show-word-limit clearable />
+              <el-input v-model="guestForm.notes" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                placeholder="Viene con muchas bolsas de mandado" :maxlength="200" show-word-limit clearable />
               <InputError :message="guestForm.errors.notes" />
             </div>
           </div>
         </section>
         <div class="flex justify-end space-x-1 pt-5 pb-1">
-          <CancelButton @click="guestForm.reset(); favoriteGuestModal = false">Cancelar</CancelButton>
+          <CancelButton @click="guestForm.reset(); favoriteGuestModal = false; selectedFavoriteGuest = null">Cancelar</CancelButton>
           <PrimaryButton
             :disabled="(guestForm.guest_type == 'Vehicular' && !selectedFavoriteGuest?.vehicle_details) || !favoriteGuestId || guestForm.processing"
             @click="store">Continuar</PrimaryButton>
@@ -436,7 +434,11 @@ export default {
         if (this.guestForm.guest_type == 'Peatonal') { //si no es vehicular el json de vehicle_details es null para no guardar el formato en la bd.
           this.guestForm.vehicle_details = null;
         }
-        this.guestForm.post(route("guests.store"), {
+        this.guestForm.transform((data) => ({
+          ...data,
+          name: this.selectedFavoriteGuest ? this.selectedFavoriteGuest.name : data.name,
+          is_favorite_guest: this.selectedFavoriteGuest ? false : data.is_favorite_guest,
+        })).post(route("guests.store"), {
           onSuccess: () => {
             this.$notify({
               title: "Correcto",

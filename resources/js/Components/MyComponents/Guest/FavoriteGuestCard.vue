@@ -4,7 +4,7 @@
   >
     <div class="px-3 py-3">
       <div class="flex justify-between">
-        <i class="fa-solid fa-star text-lg text-[#EEF317]"></i>
+        <i class="fa-solid fa-star text-lg text-[#e1cb3b]"></i>
         <!-- -----------photo--------- -->
         <div class="ml-10">
           <figure v-if="favoriteGuest.media_guest?.length > 0" class="bg-[#F2F2F2] w-44 h-36 rounded-sm">
