@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('repeater')->nullable();
             $table->string('reminder')->nullable();
             $table->json('participants')->nullable();
+            $table->unsignedSmallInteger('guests')->nullable();
             $table->text('description')->nullable();
             $table->text('location')->nullable();
             $table->boolean('is_full_day')->default(false);

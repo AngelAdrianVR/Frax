@@ -16,6 +16,7 @@ class Calendar extends Model
         'repeater', //repeat es una palabra reservada de SQL por eso lo cambié a repeater
         'reminder',
         'participants',
+        'guests',
         'description',
         'location',
         'status',

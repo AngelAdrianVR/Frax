@@ -13,21 +13,23 @@ class CalendarController extends Controller
     public function index()
     {
         $my_id = auth()->id();
-        $tasks = CalendarResource::collection(Calendar::where('user_id', $my_id)->get());
-        $pendent_invitations = Calendar::with(['user'])->where('participants', 'like', '%"user_id":' . auth()->id() . ',"status":"Pendiente"%')
-            ->get();
+        $tasks = CalendarResource::collection(Calendar::latest()->where('user_id', $my_id)
+                ->get(['id', 'type', 'title', 'participants', 'description', 'location', 'status', 'start_date', 'start_time', 'end_time', 'guests']));
+
+        // $pendent_invitations = Calendar::with(['user'])->where('participants', 'like', '%"user_id":' . auth()->id() . ',"status":"Pendiente"%')
+        //     ->get();
 
             // return $tasks;
-        return inertia('Calendar/Index', compact('tasks', 'pendent_invitations'));
+        return inertia('Calendar/Index', compact('tasks'));
     }
 
 
     public function create()
     {
         $date = request('date');
-        $users = User::where('is_active', true)->where('id', '!=', auth()->id())->whereNot('id', 1)->get();
+        // $users = User::where('is_active', true)->where('id', '!=', auth()->id())->whereNot('id', 1)->get();
 
-        return inertia('Calendar/Create', compact('users', 'date'));
+        return inertia('Calendar/Create', compact('date'));
     }
 
 
@@ -36,7 +38,8 @@ class CalendarController extends Controller
         $request->validate([
             'type' => 'required|string',
             'title' => 'required|string',
-            'participants' => 'nullable',
+            // 'participants' => 'nullable',
+            'guests' => 'nullable|numeric|min:0|max:150',
             'repeater' => 'nullable|string',
             'location' => 'nullable|string',
             'description' => 'nullable|string',
@@ -51,14 +54,14 @@ class CalendarController extends Controller
             'start_date' => 'required',
         ]);
 
-        $participants = [];
-        // procesar arreglo de participantes
-        foreach ($request->participants as $key => $participantId) {
-            $participants[] = [
-                "user_id" => $participantId,
-                "status" => "Pendiente",
-            ];
-        }
+        // $participants = [];
+        // // procesar arreglo de participantes
+        // foreach ($request->participants as $key => $participantId) {
+        //     $participants[] = [
+        //         "user_id" => $participantId,
+        //         "status" => "Pendiente",
+        //     ];
+        // }
 
         $calendar = Calendar::create([
             'type' => $request->type,
@@ -71,7 +74,8 @@ class CalendarController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'start_date' => $request->start_date,
-            'participants' => $participants,
+            'guests' => $request->guests,
+            // 'participants' => $participants,
             'user_id' => auth()->id(),
         ]);
 

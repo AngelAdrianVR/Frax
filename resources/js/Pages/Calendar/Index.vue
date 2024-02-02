@@ -41,7 +41,7 @@
             <tr v-for="(week, index) in weeks" :key="index" class="text-xs text-right">
                 <td v-for="day in week" :key="day" class="h-10 relative text-center">
                     <!-- Agrega la clase 'text-red-500' si hay tareas para este día -->
-                    <p @click="daySelection = day" :class="{'text-white size-8 pt-1.5 bg-red-600': hasTasks(day), 'bg-gray-100': day === daySelection}" class="rounded-full text-sm cursor-pointer hover:bg-gray-100 hover:text-gray1 inline-block size-8 pt-1.5">{{ day }}</p>
+                    <p @click="daySelection = day" :class="getDayClasses(day)" class="rounded-full text-sm cursor-pointer hover:bg-gray-100 hover:text-gray1 inline-block size-8 pt-1.5">{{ day }}</p>
                 </td>
             </tr>
         </table>
@@ -49,14 +49,15 @@
     </div>
 
     <!-- Tasks section ---------------------- -->
-      <div v-if="daySelection" class="border-t border-gray4 lg:mx-7 lg:py-7 lg:px-8 text-sm">
-        <div class="flex justify-between text-right">
+      <div v-if="daySelection" class="border-t border-gray4 lg:mx-7 py-7 lg:px-8 text-sm">
+        <div class="flex justify-between items-center text-right px-2">
           <p class="font-bold">Actividades programadas <span class="text-gray3 ml-4">{{ formattedSelectedDate }}</span></p>
           <Link :href="getCreateTaskUrl()">
-            <PrimaryButton>Agendar</PrimaryButton>
+            <PrimaryButton class="hidden md:block">Agendar</PrimaryButton>
+            <PrimaryButton class="md:hidden"><i class="fa-solid fa-plus"></i></PrimaryButton>
           </Link>
         </div>
-        <section class="grid grid-cols-2 lg:grid-cols-3 gap-3 mt-5">
+        <section class="lg:grid lg:grid-cols-3 gap-3 mt-5 px-2 space-y-2 lg:space-y-0">
          <TaskCard v-for="task in filteredTasks" :key="task.id" :task="task" />
         </section>
       </div>
@@ -130,8 +131,6 @@ export default {
   data() {
     return {
       currentMonth: new Date(),
-      // selectedTask: null, // Variable para realizar un seguimiento de la tarea seleccionada
-      // selectedDay: null, // Seguinmiento del dia seleccionado
       showPendentInvitationsModal: false,
       pendent_invitations_local: this.pendent_invitations,
       daySelection: new Date().getDate(), // Asigna el número del día actual
@@ -149,9 +148,16 @@ export default {
   },
   props: {
     tasks: Object,
-    pendent_invitations: Array,
+    // pendent_invitations: Array,
   },
   methods: {
+    getDayClasses(day) {
+            return {
+                'bg-red-600 size-8 pt-1.5 text-white': this.hasTasks(day),
+                'bg-green-600 size-8 pt-1.5 text-white': this.allTasksCompleted(day),
+                'bg-gray5 size-8 pt-1.5 text-gray1':  day === this.daySelection,
+            };
+        },
     hasTasks(day) {
         // Verifica si hay tareas para el día seleccionado
         const tasksForDay = this.tasks.data.filter(task => {
@@ -165,6 +171,19 @@ export default {
 
         return tasksForDay.length > 0;
     },
+    allTasksCompleted(day) {
+            // Verifica si todas las tareas para el día seleccionado están completadas
+            const tasksForDay = this.tasks.data.filter(task => {
+                const taskDate = new Date(task.start_date);
+                const taskDay = taskDate.getDate();
+                const taskMonth = taskDate.getMonth() + 1; // Nota: getMonth devuelve 0-11, por eso sumamos 1
+                const taskYear = taskDate.getFullYear();
+
+                return taskDay === day && taskMonth === this.currentMonth.getMonth() + 1 && taskYear === this.currentMonth.getFullYear();
+            });
+
+            return tasksForDay.length > 0 && tasksForDay.every(task => task.status === 'Terminada');
+        },
     getCreateTaskUrl() {
         // Formatea la fecha del día seleccionado en un formato adecuado para la URL
         const formattedDateForUrl = format(new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), this.daySelection), 'yyyy-MM-dd', { locale: es });
@@ -206,72 +225,10 @@ export default {
     //   const parsedDate = new Date(date);
     //   return format(parsedDate, "dd MMM, yyyy", { locale: es }); // Formato personalizado
     // },
-    async taskDone() {
-      try {
-        const response = await axios.put(route('calendars.task-done', this.selectedTask));
-
-        if (response.status === 200) {
-          this.$notify({
-            title: "Éxito",
-            message: "Tarea terminada",
-            type: "success",
-          });
-          this.selectedTask.status = 'Terminada';
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    // deleteTask() {
-    //   this.$inertia.delete(route('calendars.destroy', this.selectedTask));
-    //   this.$notify({
-    //     title: "Éxito",
-    //     message: "Tarea terminada",
-    //     type: "success",
-    //   });
-    // },
     changeMonth(offset) {
       const newMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + offset, 1);
       this.currentMonth = newMonth;
     },
-    // isTaskDay(task, day) {
-    //   if (day) {
-    //     const taskStartDate = new Date(task.start_date);
-    //     const currentDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
-
-    //     // Convierte las fechas a objetos Moment
-    //     const momentFecha1 = moment(taskStartDate);
-    //     const momentFecha2 = moment(currentDay);
-
-    //     return momentFecha1.isSame(momentFecha2);
-    //   }
-    //   return false;
-    // },
-    // getDurationTask() {
-    //   // Convierte las fechas en objetos Date
-    //   const startDate = new Date(this.selectedTask.start_date);
-    //   const finishDate = new Date(this.selectedTask.finish_date);
-
-    //   // Calcula la diferencia en milisegundos
-    //   const diferenciaEnMilisegundos = finishDate - startDate;
-
-    //   // Convierte la diferencia en días
-    //   const duracionEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
-
-    //   return duracionEnDias;
-    // },
-    formatDate(dateString) {
-      if (dateString) {
-        const date = new Date(dateString);
-        const options = {
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true, // Habilitar el formato AM/PM
-        };
-        return date.toLocaleTimeString(undefined, options);
-      }
-      return ''; // Manejar el caso en el que la fecha sea nula
-    }
   },
   computed: {
     weeks() {
