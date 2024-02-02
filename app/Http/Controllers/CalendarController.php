@@ -24,9 +24,10 @@ class CalendarController extends Controller
 
     public function create()
     {
+        $date = request('date');
         $users = User::where('is_active', true)->where('id', '!=', auth()->id())->whereNot('id', 1)->get();
 
-        return inertia('Calendar/Create', compact('users'));
+        return inertia('Calendar/Create', compact('users', 'date'));
     }
 
 
