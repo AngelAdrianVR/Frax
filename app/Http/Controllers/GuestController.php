@@ -14,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class GuestController extends Controller
 {
-    
+
     public function index()
     {
         $guests = GuestResource::collection(Guest::with('media')->latest()->where('user_id', auth()->id())->get());
@@ -24,7 +24,7 @@ class GuestController extends Controller
         return inertia('Guest/Index', compact('guests'));
     }
 
-    
+
     public function create()
     {
         $favorite_guests = FavoriteGuestResource::collection(FavoriteGuest::with('media')->where('user_id', auth()->id())->latest()->get());
@@ -34,7 +34,7 @@ class GuestController extends Controller
         return inertia('Guest/Create', compact('favorite_guests'));
     }
 
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -51,17 +51,17 @@ class GuestController extends Controller
         // Convierte el campo 'time' a un objeto Carbon y resta 6 horas
         $time = Carbon::parse($request->time)->subHours(6);
 
-       $extra_data = [
-        "user_id" => auth()->id(),
-        "time" => $time,
-        "qr_code" => $request->qr_code //generado en el mounted de la vista.
-       ];
-        
+        $extra_data = [
+            "user_id" => auth()->id(),
+            "time" => $time,
+            "qr_code" => $request->qr_code //generado en el mounted de la vista.
+        ];
+
         $guest = Guest::create($request->except('time') + $extra_data);
 
         // Guardar el archivo en la colección 'guest_images'
         if ($request->hasFile('guest_image')) {
-            $mediaItem = $guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
+            $guestImage = $guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
         }
 
         // Guardar el archivo en la colección 'vehicle_image'
@@ -93,28 +93,27 @@ class GuestController extends Controller
             ]);
 
             // Copiar la misma imagen de la visita regular a la visita favorita
-            $guestMedia = $guest->getMedia()->all();
-            if ($guestMedia) {
-                $image = Media::find($guestMedia[0]['id']);
-                $clone = $image->replicate()->fill([
+            $guestMedia = $guest->getMedia('guest_image')->all();
+            if ($guestImage) {
+                $clone = $guestImage->replicate()->fill([
                     'model_type' => FavoriteGuest::class,
-                    'model_id' => $favorite_guest->id
+                    'model_id' => $favorite_guest->id,
+                    'uuid' => uuid_create(UUID_TYPE_RANDOM),
                 ]);
                 $clone->save();
             }
-            
         }
 
         return to_route('guests.index');
     }
 
-    
+
     public function show(Guest $guest)
     {
         //
     }
 
-    
+
     public function edit($guest_id)
     {
         $guest = Guest::with('media')->find($guest_id);
@@ -123,7 +122,7 @@ class GuestController extends Controller
         return inertia('Guest/Edit', compact('guest', 'favorite_guests'));
     }
 
-    
+
     public function update(Request $request, Guest $guest)
     {
         $request->validate([
@@ -140,10 +139,10 @@ class GuestController extends Controller
         // Convierte el campo 'time' a un objeto Carbon y resta 6 horas
         $time = Carbon::parse($request->time)->subHours(6);
 
-       $extra_data = [
-        "time" => $time,
-       ];
-        
+        $extra_data = [
+            "time" => $time,
+        ];
+
         $guest->update($request->except('time') + $extra_data);
 
         // media ---------------------------------------------------
@@ -168,8 +167,7 @@ class GuestController extends Controller
             ]);
         }
 
-      return to_route('guests.index');
-
+        return to_route('guests.index');
     }
 
     public function updateWithMedia(Request $request, Guest $guest)
@@ -188,10 +186,10 @@ class GuestController extends Controller
         // Convierte el campo 'time' a un objeto Carbon y resta 6 horas
         $time = Carbon::parse($request->time)->subHours(6);
 
-       $extra_data = [
-        "time" => $time,
-       ];
-        
+        $extra_data = [
+            "time" => $time,
+        ];
+
         $guest->update($request->except('time') + $extra_data);
 
         // media
@@ -204,8 +202,8 @@ class GuestController extends Controller
             $guest->clearMediaCollection('vehicle_images');
         }
 
-         // Eliminar imágenes antiguas solo si se proporcionan nuevas imágenes
-         if ($request->hasFile('guest_image')) {
+        // Eliminar imágenes antiguas solo si se proporcionan nuevas imágenes
+        if ($request->hasFile('guest_image')) {
             $guest->clearMediaCollection('guest_images');
         }
 
@@ -213,8 +211,8 @@ class GuestController extends Controller
             $guest->clearMediaCollection('vehicle_images');
         }
 
-         // Guardar el archivo en la colección 'guest_images'
-         if ($request->hasFile('guest_image')) {
+        // Guardar el archivo en la colección 'guest_images'
+        if ($request->hasFile('guest_image')) {
             $guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
         }
 
@@ -235,20 +233,20 @@ class GuestController extends Controller
             ]);
 
             // Guardar el archivo en la colección 'guest_images'
-         if ($request->hasFile('guest_image')) {
-            $favorite_guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
+            if ($request->hasFile('guest_image')) {
+                $favorite_guest->addMediaFromRequest('guest_image')->toMediaCollection('guest_images');
+            }
+
+            // Guardar el archivo en la colección 'vehicle_image'
+            if ($request->hasFile('vehicle_image')) {
+                $favorite_guest->addMediaFromRequest('vehicle_image')->toMediaCollection('vehicle_images');
+            }
         }
 
-        // Guardar el archivo en la colección 'vehicle_image'
-        if ($request->hasFile('vehicle_image')) {
-            $favorite_guest->addMediaFromRequest('vehicle_image')->toMediaCollection('vehicle_images');
-        }
-        }
-
-      return to_route('guests.index');
+        return to_route('guests.index');
     }
 
-   
+
     public function destroy(Guest $guest)
     {
         $guest->clearMediaCollection();

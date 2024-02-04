@@ -1,6 +1,6 @@
 <template>
     <LoadingState :loading="loading" />
-    <div v-if="!loading">
+    <div v-if="!loading" class="min-h-[calc(100vh-9rem)]">
         <div class="flex justify-between items-center lg:mx-12 mb-10 mt-2">
             <h2 class="font-bold">Historial de visitas</h2>
         </div>
